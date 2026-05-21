@@ -70,11 +70,17 @@ void WorldMap::generateIsland(int startWidth, int endWidth, int startLength, int
 		if (i < START_OF_ISLAND || i > endLength - START_OF_ISLAND) {
 			this->generateSeaLine(startWidth, endWidth, i);
 		}
+		else if (i == START_OF_ISLAND || i == endLength - START_OF_ISLAND) {
+			std::tuple lengthAndStart = this->generateIslandLengthAndStart(islandLength, islandStart, startWidth, endWidth, i);
+			islandLength = std::get<0>(lengthAndStart);
+			islandStart = std::get<1>(lengthAndStart);
+			this->generateCoastLine(startWidth, endWidth, islandStart, islandStart + islandLength, i);
+		}
 		else {
 			std::tuple lengthAndStart = this->generateIslandLengthAndStart(islandLength, islandStart, startWidth, endWidth, i);
 			islandLength = std::get<0>(lengthAndStart);
 			islandStart = std::get<1>(lengthAndStart);
-			this->generateIslandLineTest(startWidth, endWidth, islandStart, islandStart + islandLength, i);
+			this->generateIslandLine(startWidth, endWidth, islandStart, islandStart + islandLength, i);
 		}
 	}
 }
@@ -87,14 +93,18 @@ void WorldMap::generateSeaLine(int startWidth, int endWidth, int length)
 	}
 }
 
-void WorldMap::generateIslandLine(int startWidth, int endWidth, int islandLength, int islandOffset, int length)
+void WorldMap::generateIslandLine(int startWidth, int endWidth, int island_begin, int island_end, int length)
 {
-	int islandTilesBuffer = islandLength;
 	for (int i = startWidth; i < endWidth; ++i) {
-		if (i > islandOffset && islandTilesBuffer > 0) {
+		if (i == island_begin || i == island_end) {
 			Coordinate coord(i, length);
+
+			this->worldMap[coord] = 'C';
+		}
+		else if (i > island_begin && i < island_end) {
+			Coordinate coord(i, length);
+
 			this->worldMap[coord] = 'O';
-			--islandTilesBuffer;
 		}
 		else {
 			Coordinate coord(i, length);
@@ -103,12 +113,13 @@ void WorldMap::generateIslandLine(int startWidth, int endWidth, int islandLength
 	}
 }
 
-void WorldMap::generateIslandLineTest(int startWidth, int endWidth, int island_begin, int island_end, int length) {
+void WorldMap::generateCoastLine(int startWidth, int endWidth, int island_begin, int island_end, int length)
+{
 	for (int i = startWidth; i < endWidth; ++i) {
 		if (i > island_begin && i < island_end) {
 			Coordinate coord(i, length);
 
-			this->worldMap[coord] = 'O';
+			this->worldMap[coord] = 'C';
 		}
 		else {
 			Coordinate coord(i, length);
@@ -116,7 +127,6 @@ void WorldMap::generateIslandLineTest(int startWidth, int endWidth, int island_b
 		}
 	}
 }
-
 
 std::ostream& operator<<(std::ostream& out, WorldMap& map)
 {
@@ -129,6 +139,9 @@ std::ostream& operator<<(std::ostream& out, WorldMap& map)
 			}
 			else if (temp == '~') {
 				out << "\033[34m";
+			}
+			else if (temp == 'C') {
+				out << "\033[33m";
 			}
 			out << temp;
 		}

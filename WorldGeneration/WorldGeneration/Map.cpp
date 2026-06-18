@@ -70,13 +70,51 @@ void WorldMap::generateIsland(int startWidth, int endWidth, int startLength, int
 		if (i < START_OF_ISLAND || i > endLength - START_OF_ISLAND) {
 			this->generateSeaLine(startWidth, endWidth, i);
 		}
+		else if (i == START_OF_ISLAND || i == endLength - START_OF_ISLAND) {
+			std::tuple lengthAndStart = this->generateIslandLengthAndStart(islandLength, islandStart, startWidth, endWidth, i);
+			islandLength = std::get<0>(lengthAndStart);
+			islandStart = std::get<1>(lengthAndStart);
+			this->generateCoastLine(startWidth, endWidth, islandStart, islandStart + islandLength, i);
+		}
 		else {
 			std::tuple lengthAndStart = this->generateIslandLengthAndStart(islandLength, islandStart, startWidth, endWidth, i);
 			islandLength = std::get<0>(lengthAndStart);
 			islandStart = std::get<1>(lengthAndStart);
-			this->generateIslandLineTest(startWidth, endWidth, islandStart, islandStart + islandLength, i);
+			this->generateIslandLine(startWidth, endWidth, islandStart, islandStart + islandLength, i);
 		}
 	}
+	//this->secondPass(startWidth, endWidth, startLength, endLength);
+}
+
+void WorldMap::secondPass(int startWidth, int endWidth, int startLength, int endLength) {
+	for (int i = startLength; i < endLength; ++i) {
+		for (int j = startWidth; j < endWidth; ++j) {
+			Coordinate coord(i, j);
+			if (this->isAdjacentTo(coord, '~') && this->worldMap[coord] != '~') {
+				this->worldMap[coord] = 'C';
+			}
+			//this->worldMap[coord] = 'B';
+		}
+	}
+}
+
+bool WorldMap::isAdjacentTo(Coordinate coord, char tile) {
+	
+	Coordinate leftAdjacentTile = Coordinate(coord.x - 1, coord.y);
+	Coordinate rightAdjacentTile = Coordinate(coord.x + 1, coord.y);
+	Coordinate upAdjacentTile = Coordinate(coord.x, coord.y + 1);
+	Coordinate downAdjacentTile = Coordinate(coord.x, coord.y - 1);
+	std::vector<Coordinate> coordinatesToCheck = { leftAdjacentTile, rightAdjacentTile, upAdjacentTile, downAdjacentTile };
+	for(Coordinate coord : coordinatesToCheck)
+	{
+		if (this->worldMap.contains(coord)) {
+			char foundTile = worldMap[coord];
+			if (foundTile == tile) {
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 void WorldMap::generateSeaLine(int startWidth, int endWidth, int length)
@@ -87,14 +125,18 @@ void WorldMap::generateSeaLine(int startWidth, int endWidth, int length)
 	}
 }
 
-void WorldMap::generateIslandLine(int startWidth, int endWidth, int islandLength, int islandOffset, int length)
+void WorldMap::generateIslandLine(int startWidth, int endWidth, int island_begin, int island_end, int length)
 {
-	int islandTilesBuffer = islandLength;
 	for (int i = startWidth; i < endWidth; ++i) {
-		if (i > islandOffset && islandTilesBuffer > 0) {
+		/*if (i == island_begin || i == island_end) {
 			Coordinate coord(i, length);
+
+			this->worldMap[coord] = 'C';
+		}*/
+		if (i >= island_begin && i <= island_end) {
+			Coordinate coord(i, length);
+
 			this->worldMap[coord] = 'O';
-			--islandTilesBuffer;
 		}
 		else {
 			Coordinate coord(i, length);
@@ -103,12 +145,13 @@ void WorldMap::generateIslandLine(int startWidth, int endWidth, int islandLength
 	}
 }
 
-void WorldMap::generateIslandLineTest(int startWidth, int endWidth, int island_begin, int island_end, int length) {
+void WorldMap::generateCoastLine(int startWidth, int endWidth, int island_begin, int island_end, int length)
+{
 	for (int i = startWidth; i < endWidth; ++i) {
 		if (i > island_begin && i < island_end) {
 			Coordinate coord(i, length);
 
-			this->worldMap[coord] = 'O';
+			this->worldMap[coord] = 'C';
 		}
 		else {
 			Coordinate coord(i, length);
@@ -116,7 +159,6 @@ void WorldMap::generateIslandLineTest(int startWidth, int endWidth, int island_b
 		}
 	}
 }
-
 
 std::ostream& operator<<(std::ostream& out, WorldMap& map)
 {
@@ -130,9 +172,16 @@ std::ostream& operator<<(std::ostream& out, WorldMap& map)
 			else if (temp == '~') {
 				out << "\033[34m";
 			}
+			else if (temp == 'C') {
+				out << "\033[33m";
+			}
 			out << temp;
 		}
 		out << std::endl;
 	}
+	for (int i = 0; i < map.length; ++i) {
+		out << '=';
+	}
+	out << std::endl;
 	return out;
 }

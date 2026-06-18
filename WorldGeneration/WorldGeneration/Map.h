@@ -14,8 +14,10 @@ public:
 	~WorldMap();
 	std::tuple<int, int> generateIslandLengthAndStart(int islandLength, int islandStart, int startWidth, int endWidth, int currentLength);
 	virtual void generateIsland(int startWidth, int endWidth, int startLength, int endLength);
+	void secondPass(int startWidth, int endWidth, int startLength, int endLength);
+	bool isAdjacentTo(Coordinate coord, char tile);
 	void generateSeaLine(int startWidth, int endWidth, int length);
 	virtual void generateIslandLine(int startWidth, int endWidth, int islandLength, int islandOffset, int length);
-	void generateIslandLineTest(int startWidth, int endWidth, int island_begin, int island_end, int length);
+	void generateCoastLine(int startWidth, int endWidth, int island_begin, int island_end, int length);
 	friend std::ostream& operator<<(std::ostream& out, WorldMap& map);
 };

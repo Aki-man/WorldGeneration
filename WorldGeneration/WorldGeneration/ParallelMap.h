@@ -12,15 +12,14 @@
 
 
 class ParallelWorldMap : public WorldMap {
-	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare> worldMap;
+	std::map<Coordinate, char> worldMap;
 	int width;
 	int length;
 public:
-	ParallelWorldMap() : width(0), length(0), worldMap(tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>()) {};
-	ParallelWorldMap(int width, int length) : width(width), length(length), worldMap(tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>()) {};
+	ParallelWorldMap() : width(0), length(0), worldMap(std::map<Coordinate, char>()) {};
+	ParallelWorldMap(int width, int length) : width(width), length(length), worldMap(std::map<Coordinate, char>()) {};
 	~ParallelWorldMap();
-	void generateIsland(int startWidth, int endWidth, int startLength, int endLength) override;
-	void generateSeaLine(int startWidth, int endWidth, int length);
-	void generateIslandLine(int startWidth, int endWidth, int islandLength, int islandOffset, int length) override;
+	void GenerateFourIslandMap() override;
+	void print(std::ostream& out) override;
 	friend std::ostream& operator<<(std::ostream& out, ParallelWorldMap& map);
 };

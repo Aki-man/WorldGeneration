@@ -129,12 +129,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Coordinate.cpp" />
+    <ClCompile Include="IslandGenerator.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="ParallelMap.cpp" />
     <ClCompile Include="WorldGeneration.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coordinate.h" />
+    <ClInclude Include="IslandGenerator.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MyHashCompare.h" />
     <ClInclude Include="ParallelMap.h" />

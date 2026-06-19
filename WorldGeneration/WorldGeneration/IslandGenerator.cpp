@@ -106,16 +106,15 @@ void IslandGenerator::generateSeaLine(int length)
 
 void IslandGenerator::generateIslandLine(int island_begin, int island_end, int length)
 {
+	std::uniform_int_distribution<int> forestChanceGenerator(0, config.forestSpawnChance);
 	for (int i = startWidth; i < endWidth; ++i) {
-		/*if (i == island_begin || i == island_end) {
-			Coordinate coord(i, length);
-
-			(*this->worldMap)[coord] = 'C';
-		}*/
 		if (i >= island_begin && i <= island_end) {
 			Coordinate coord(i, length);
-
-			(*this->worldMap)[coord] = 'O';
+			int forest = forestChanceGenerator(rd);
+			if (forest == config.forestSpawnChance)
+				(*this->worldMap)[coord] = 'T';
+			else
+				(*this->worldMap)[coord] = 'O';
 		}
 		else {
 			Coordinate coord(i, length);

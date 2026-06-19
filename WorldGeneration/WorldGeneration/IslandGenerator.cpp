@@ -56,8 +56,8 @@ std::tuple<int, int> IslandGenerator::generateMountainLengthAndStart(std::tuple<
 	int offsetChange = offsetChangeGenerator(rd);
 	if (std::rand() % 2 == 0) {
 		mountainLength += widthChange;
-		if (mountainLength > islandLength)
-			mountainLength = islandLength;
+		if (mountainLength > (islandLength/2))
+			mountainLength = islandLength/2;
 	}
 	else {
 		mountainLength -= widthChange;
@@ -206,22 +206,15 @@ void IslandGenerator::secondPass() {
 }
 
 void IslandGenerator::generateTileClump(Coordinate coord, int clumpSize, char tile) {
-	Coordinate upAdjacentTile(coord.x, coord.y - 1);
-	Coordinate downAdjacentTile(coord.x, coord.y + 1);
-	Coordinate leftAdjacentTile(coord.x - 1, coord.y);
-	Coordinate rightAdjacentTile(coord.x + 1, coord.y - 1);
-	Coordinate upLeftDiagonalTile(coord.x - 1, coord.y - 1);
-	Coordinate downLeftDiagonalTile(coord.x - 1, coord.y + 1);
-	Coordinate upRightAdjacentTile(coord.x + 1, coord.y - 1);
-	Coordinate downRightAdjacentTile(coord.x + 1, coord.y + 1);
-	std::vector<Coordinate> coordinatesToConvert = { upAdjacentTile,
-	downAdjacentTile,
-	leftAdjacentTile,
-	rightAdjacentTile,
-	upLeftDiagonalTile,
-	downLeftDiagonalTile,
-	upRightAdjacentTile,
-	downRightAdjacentTile, };
+	
+	std::vector<Coordinate> coordinatesToConvert = { Coordinate(coord.x, coord.y - 1),
+	Coordinate(coord.x, coord.y + 1),
+	Coordinate(coord.x - 1, coord.y),
+	Coordinate(coord.x + 1, coord.y - 1),
+	Coordinate(coord.x - 1, coord.y - 1),
+	Coordinate(coord.x - 1, coord.y + 1),
+	Coordinate(coord.x + 1, coord.y - 1),
+	Coordinate(coord.x + 1, coord.y + 1) };
 	(*this->worldMap)[coord] = tile;
 	std::uniform_int_distribution<int> randomCoordinateSelector(0, coordinatesToConvert.size()-1);
 	for (int i = 0; i < clumpSize; ++i) {

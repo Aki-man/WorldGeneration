@@ -1,15 +1,31 @@
 #pragma once
 class IslandGeneratorConfiguration {
 public:
-	const int islandGenerationStart = 1;
-	const int mapSeaBorderSize = 2;
-	const int randomIslandWidthChange = 2;
-	const int randomIslandOffsetChange = 3;
-	const double percentageForIslandNarrowing = 0.25;
+	const int islandGenerationStart;
+	const int mapSeaBorderSize;
+	const int randomIslandWidthChange;
+	const int randomIslandOffsetChange;
+	const double percentageForIslandNarrowing;
+	const int forestSpawnChance;
+	const int mountainGenerationStart;
+	const int randomMountainWidthChange ;
+	const int randomMountainOffsetChange;
+	IslandGeneratorConfiguration() : islandGenerationStart(5), 
+		mapSeaBorderSize(6),
+		randomIslandWidthChange(5),
+		randomIslandOffsetChange(5),
+		percentageForIslandNarrowing(0.25),
+		forestSpawnChance(3),
+		mountainGenerationStart(3),
+		randomMountainWidthChange(2),
+		randomMountainOffsetChange(3){};
 	IslandGeneratorConfiguration(int islandGenerationStart, int mapSeaBorder, int randomIslandWidthChange, int randomIslandOffsetChange,
-	double percentageForIslandNarrowing) : islandGenerationStart(islandGenerationStart), mapSeaBorderSize(mapSeaBorder),
+	double percentageForIslandNarrowing, int forestChance, int mountainGenerationStart,int randomMountainWidthChange,
+	 int randomMountainOffsetChange) : islandGenerationStart(islandGenerationStart), mapSeaBorderSize(mapSeaBorder),
 	randomIslandWidthChange(randomIslandWidthChange), randomIslandOffsetChange(randomIslandOffsetChange), 
-		percentageForIslandNarrowing(percentageForIslandNarrowing){};
+		percentageForIslandNarrowing(percentageForIslandNarrowing), forestSpawnChance(forestChance), mountainGenerationStart(mountainGenerationStart),
+		randomMountainWidthChange(randomMountainWidthChange),randomMountainOffsetChange(randomMountainOffsetChange){};
+	
 	~IslandGeneratorConfiguration();
 
 };

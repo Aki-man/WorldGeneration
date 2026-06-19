@@ -61,8 +61,8 @@ std::tuple<int, int> IslandGenerator::generateMountainLengthAndStart(std::tuple<
 	}
 	else {
 		mountainLength -= widthChange;
-		if (mountainLength < 0)
-			mountainLength = 0;
+		if (mountainLength <= 0)
+			mountainLength = 1;
 	}
 	if (std::rand() % 2 == 0) {
 		mountainStart += offsetChange;
@@ -87,11 +87,11 @@ void IslandGenerator::generateIsland()
 	std::uniform_int_distribution<int>  lengthGenerator(int((endWidth-startWidth)/6), int((endWidth - startWidth) / 4));
 	std::uniform_int_distribution<int> mountainGenerationStartGenerator(startLength, endLength);
 	
+	
 	int mountainStartOfGeneration = mountainGenerationStartGenerator(rd);
 	std::uniform_int_distribution<int> mountainGenerationEndGenerator(mountainStartOfGeneration, endLength);
 	int mountainEndOfGeneration = mountainGenerationEndGenerator(rd);
 	int islandLength = lengthGenerator(rd);
-	
 	int islandStart = startGenerator(rd);
 
 	std::uniform_int_distribution<int> islandEndGenerator(endLength - config.islandGenerationStart - 3, endLength - 3);
@@ -102,27 +102,22 @@ void IslandGenerator::generateIsland()
 	bool generateIsland = false;
 	bool generateMountain = false;
 	for (int i = startLength; i < endLength; ++i) {
-		if (!generateIsland) {
-			this->generateSeaLine(i);
-		}
-		else{
-			std::tuple lengthAndStart = this->generateIslandLengthAndStart(islandLength, islandStart, i);
-			islandLength = std::get<0>(lengthAndStart);
-			islandStart = std::get<1>(lengthAndStart);
-			if(!generateMountain)
-				this->generateIslandLine(islandStart, islandStart + islandLength, i);
-			else {
-				std::tuple mountainLengthAndStart = this->generateMountainLengthAndStart(lengthAndStart, mountainLength, mountainStart);
-				mountainLength = std::get<0>(mountainLengthAndStart);
-				mountainStart = std::get<1>(mountainLengthAndStart);
-				this->generateIslandLineWithMountain(islandStart, islandStart + islandLength, i, mountainStart, mountainStart + mountainLength);
-				if (i > mountainEndOfGeneration)
-					generateMountain = false;
-			}
-		}
 		
+		std::tuple lengthAndStart = this->generateIslandLengthAndStart(islandLength, islandStart, i);
+		islandLength = std::get<0>(lengthAndStart);
+		islandStart = std::get<1>(lengthAndStart);
+
+		std::tuple mountainLengthAndStart = this->generateMountainLengthAndStart(lengthAndStart, mountainLength, mountainStart);
+		mountainLength = std::get<0>(mountainLengthAndStart);
+		mountainStart = std::get<1>(mountainLengthAndStart);
+
+		this->generateIslandOrIslandWithMountain(i, islandLength, islandStart, mountainLength, mountainStart, generateIsland, generateMountain, mountainEndOfGeneration);
+
 		generateIsland = this->shouldIslandGenerate(i, generateIsland, islandEnd);
 	
+		if (i > mountainEndOfGeneration)
+			generateMountain = false;
+
 		if (i > mountainStartOfGeneration) {
 			if (std::rand() % 4 == 0) {
 				generateMountain = true;
@@ -136,6 +131,22 @@ void IslandGenerator::generateIsland()
 		}
 	}
 }
+
+void IslandGenerator::generateIslandOrIslandWithMountain(int i, int islandLength, int islandStart, int mountainLength, int mountainStart,bool generateIsland, bool generateMountain, bool mountainEndOfGeneration)
+{
+	if (!generateIsland) {
+		this->generateSeaLine(i);
+	}
+	else {
+		if (!generateMountain)
+			this->generateIslandLine(islandStart, islandStart + islandLength, i);
+		else {
+			this->generateIslandLineWithMountain(islandStart, islandStart + islandLength, i, mountainStart, mountainStart + mountainLength);
+		}
+	}
+}
+
+
 
 bool IslandGenerator::shouldIslandGenerate(int length, bool generateIsland, int islandEnd)
 {

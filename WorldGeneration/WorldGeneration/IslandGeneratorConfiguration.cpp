@@ -1,10 +1,17 @@
 #include "IslandGeneratorConfiguration.h"
 
-IslandGeneratorConfiguration::~IslandGeneratorConfiguration()
+IslandGeneratorConfiguration IslandGeneratorConfiguration::generateConfiguration(int islandLength, int islandWidth)
 {
-	const int islandGenerationStart = 0;
-	const int mapSeaBorderSize = 0;
-	const int randomIslandWidthChange = 0;
-	const int randomIslandOffsetChange = 0;
-	const double percentageForIslandNarrowing = 0;
+	return IslandGeneratorConfiguration(
+	int(islandLength/20),
+	int(islandLength / 20),
+		int(islandLength / 20),
+		int(islandLength / 20),
+		0.25,
+		8,
+		int(islandLength / 25),
+		int(islandLength / 50),
+		int(islandLength / 50),
+		int(islandLength / 25)
+	);
 }

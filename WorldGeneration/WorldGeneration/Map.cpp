@@ -14,7 +14,7 @@ WorldMap::~WorldMap()
 
 void WorldMap::GenerateFourIslandMap()
 {
-	IslandGeneratorConfiguration config = IslandGeneratorConfiguration();
+	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length/2, this->width/2);
 	IslandGenerator generatorOne(&worldMap, 0,this->width/2, 0,this->length/2, config);
 	generatorOne.generateIsland();
 	IslandGenerator generatorTwo(&this->worldMap, this->width/2, this->width, 0, this->length / 2, config);
@@ -46,7 +46,7 @@ void WorldMap::print(std::ostream& out)
 			else if (temp == 'T') {
 				out << "\033[38;5;22m";
 			}
-			else if (temp == '~') {
+			else if (temp == '~' || temp == 'L') {
 				out << "\033[34m";
 			}
 			else if (temp == 'C') {

@@ -10,22 +10,23 @@ public:
 	const int mountainGenerationStart;
 	const int randomMountainWidthChange ;
 	const int randomMountainOffsetChange;
+	const int lakeNumber;
 	IslandGeneratorConfiguration() : islandGenerationStart(5), 
 		mapSeaBorderSize(6),
 		randomIslandWidthChange(5),
 		randomIslandOffsetChange(5),
 		percentageForIslandNarrowing(0.25),
-		forestSpawnChance(3),
+		forestSpawnChance(8),
 		mountainGenerationStart(3),
 		randomMountainWidthChange(2),
-		randomMountainOffsetChange(3){};
+		randomMountainOffsetChange(3),
+		lakeNumber(4){};
 	IslandGeneratorConfiguration(int islandGenerationStart, int mapSeaBorder, int randomIslandWidthChange, int randomIslandOffsetChange,
 	double percentageForIslandNarrowing, int forestChance, int mountainGenerationStart,int randomMountainWidthChange,
-	 int randomMountainOffsetChange) : islandGenerationStart(islandGenerationStart), mapSeaBorderSize(mapSeaBorder),
+	 int randomMountainOffsetChange, int lakeNumber) : islandGenerationStart(islandGenerationStart), mapSeaBorderSize(mapSeaBorder),
 	randomIslandWidthChange(randomIslandWidthChange), randomIslandOffsetChange(randomIslandOffsetChange), 
 		percentageForIslandNarrowing(percentageForIslandNarrowing), forestSpawnChance(forestChance), mountainGenerationStart(mountainGenerationStart),
-		randomMountainWidthChange(randomMountainWidthChange),randomMountainOffsetChange(randomMountainOffsetChange){};
-	
-	~IslandGeneratorConfiguration();
+		randomMountainWidthChange(randomMountainWidthChange),randomMountainOffsetChange(randomMountainOffsetChange), lakeNumber(lakeNumber){};
 
+	static IslandGeneratorConfiguration generateConfiguration(int islandLength, int islandWidth);
 };

@@ -5,6 +5,7 @@
 #include <iostream>
 
 class WorldMap {
+protected:
 	std::map<Coordinate, char> worldMap;
 	int width;
 	int length;

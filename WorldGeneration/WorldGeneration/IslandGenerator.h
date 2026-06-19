@@ -19,10 +19,12 @@ public:
 		worldMap(worldMap), startWidth(startWidth), endWidth(endWidth), startLength(startLength), endLength(endLength), config(config), rd(std::random_device()){};
 	~IslandGenerator();
 	std::tuple<int, int> generateIslandLengthAndStart(int islandLength, int islandStart, int currentLength);
+	std::tuple<int, int> generateMountainLengthAndStart(std::tuple<int, int> islandLengthAndStart, int mountainLength, int mountainStart);
 	virtual void generateIsland();
 	void secondPass();
 	bool isAdjacentTo(Coordinate coord, char tile);
 	void generateSeaLine(int length);
 	virtual void generateIslandLine(int islandLength, int islandOffset, int length);
+	void generateIslandLineWithMountain(int island_begin, int island_end, int length, int mountain_begin, int mountain_end);
 
 };

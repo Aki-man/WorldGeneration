@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClCompile Include="Coordinate.cpp" />
     <ClCompile Include="IslandGenerator.cpp" />
+    <ClCompile Include="IslandGeneratorConfiguration.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="ParallelMap.cpp" />
     <ClCompile Include="WorldGeneration.cpp" />

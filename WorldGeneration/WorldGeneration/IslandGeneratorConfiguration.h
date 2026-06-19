@@ -10,5 +10,6 @@ public:
 	double percentageForIslandNarrowing) : islandGenerationStart(islandGenerationStart), mapSeaBorderSize(mapSeaBorder),
 	randomIslandWidthChange(randomIslandWidthChange), randomIslandOffsetChange(randomIslandOffsetChange), 
 		percentageForIslandNarrowing(percentageForIslandNarrowing){};
+	~IslandGeneratorConfiguration();
 
 };

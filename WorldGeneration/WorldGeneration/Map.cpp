@@ -14,7 +14,7 @@ WorldMap::~WorldMap()
 
 void WorldMap::GenerateFourIslandMap()
 {
-	IslandGeneratorConfiguration config(1,2,2,3,0.25);
+	IslandGeneratorConfiguration config(3,2,2,3,0.25);
 	IslandGenerator generatorOne(&worldMap, 0,this->width/2, 0,this->length/2, config);
 	generatorOne.generateIsland();
 	IslandGenerator generatorTwo(&this->worldMap, this->width/2, this->width, 0, this->length / 2, config);

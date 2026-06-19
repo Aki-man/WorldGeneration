@@ -24,10 +24,10 @@ void WorldMap::GenerateFourIslandMap()
 	IslandGenerator generatorFour(&this->worldMap, this->width/2, this->width, this->length/2, this->length, config);
 	generatorFour.generateIsland();
 
-	generatorOne.secondPass(3);
-	generatorTwo.secondPass(3);
-	generatorThree.secondPass(3);
-	generatorFour.secondPass(3);
+	generatorOne.secondPass();
+	generatorTwo.secondPass();
+	generatorThree.secondPass();
+	generatorFour.secondPass();
 	//map.generateIsland(0, 50, 0, 50);
 	//map.generateIsland(50, 100, 0, 50);
 	//map.generateIsland(0, 50, 50, 100);

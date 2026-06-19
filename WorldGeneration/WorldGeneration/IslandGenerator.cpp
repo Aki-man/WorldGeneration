@@ -144,7 +144,8 @@ void IslandGenerator::generateIsland()
 	}
 }
 
-void IslandGenerator::secondPass(int lakeNumber) {
+void IslandGenerator::secondPass() {
+	int lakeNumber = config.lakeNumber;
 	for (int i = startLength; i < endLength; ++i) {
 		for (int j = startWidth; j < endWidth; ++j) {
 			Coordinate coord(i, j);
@@ -152,7 +153,7 @@ void IslandGenerator::secondPass(int lakeNumber) {
 				(*this->worldMap)[coord] = 'C';
 			}
 			else if (((*this->worldMap)[coord] == 'O' || (*this->worldMap)[coord] == 'T') && lakeNumber > 0) {
-				std::uniform_int_distribution<int> randomLakesize(0, 6);
+				std::uniform_int_distribution<int> randomLakesize(1, 8);
 				if (std::rand() % 20 == 0) {
 					this->generateTileClump(coord, randomLakesize(rd), 'L');
 					--lakeNumber;

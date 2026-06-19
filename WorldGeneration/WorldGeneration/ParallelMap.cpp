@@ -30,10 +30,10 @@ void ParallelWorldMap::GenerateFourIslandMap()
 	g.run([&] {generatorFour.generateIsland(); });
 	g.wait();
 
-	g.run([&] {generatorOne.secondPass(); });
-	g.run([&] {generatorTwo.secondPass(); });
-	g.run([&] {generatorThree.secondPass(); });
-	g.run([&] {generatorFour.secondPass(); });
+	g.run([&] {generatorOne.secondPass(3); });
+	g.run([&] {generatorTwo.secondPass(3); });
+	g.run([&] {generatorThree.secondPass(3); });
+	g.run([&] {generatorFour.secondPass(3); });
 	g.wait();
 
 }

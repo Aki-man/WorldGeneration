@@ -144,12 +144,49 @@ void IslandGenerator::generateIsland()
 	}
 }
 
-void IslandGenerator::secondPass() {
+void IslandGenerator::secondPass(int lakeNumber) {
 	for (int i = startLength; i < endLength; ++i) {
 		for (int j = startWidth; j < endWidth; ++j) {
 			Coordinate coord(i, j);
 			if (this->isAdjacentTo(coord, '~') && (*this->worldMap)[coord] != '~') {
 				(*this->worldMap)[coord] = 'C';
+			}
+			else if (((*this->worldMap)[coord] == 'O' || (*this->worldMap)[coord] == 'T') && lakeNumber > 0) {
+				std::uniform_int_distribution<int> randomLakesize(0, 6);
+				if (std::rand() % 20 == 0) {
+					this->generateLake(coord, randomLakesize(rd));
+					--lakeNumber;
+				}
+			}
+		}
+	}
+}
+
+void IslandGenerator::generateLake(Coordinate coord, int lakeSize) {
+	Coordinate upAdjacentTile(coord.x, coord.y - 1);
+	Coordinate downAdjacentTile(coord.x, coord.y + 1);
+	Coordinate leftAdjacentTile(coord.x - 1, coord.y);
+	Coordinate rightAdjacentTile(coord.x + 1, coord.y - 1);
+	Coordinate upLeftDiagonalTile(coord.x - 1, coord.y - 1);
+	Coordinate downLeftDiagonalTile(coord.x - 1, coord.y + 1);
+	Coordinate upRightAdjacentTile(coord.x + 1, coord.y - 1);
+	Coordinate downRightAdjacentTile(coord.x + 1, coord.y + 1);
+	std::vector<Coordinate> coordinatesToConvert = { upAdjacentTile,
+	downAdjacentTile,
+	leftAdjacentTile,
+	rightAdjacentTile,
+	upLeftDiagonalTile,
+	downLeftDiagonalTile,
+	upRightAdjacentTile,
+	downRightAdjacentTile, };
+	(*this->worldMap)[coord] = 'L';
+	std::uniform_int_distribution<int> randomCoordinateSelector(0, coordinatesToConvert.size()-1);
+	for (int i = 0; i < lakeSize; ++i) {
+		Coordinate coord = coordinatesToConvert[randomCoordinateSelector(rd)];
+		if ((*this->worldMap).contains(coord)) {
+			char foundTile = (*worldMap)[coord];
+			if (foundTile != 'C' && foundTile != '~') {
+				(*this->worldMap)[coord] = 'L';
 			}
 		}
 	}

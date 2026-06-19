@@ -21,7 +21,8 @@ public:
 	std::tuple<int, int> generateIslandLengthAndStart(int islandLength, int islandStart, int currentLength);
 	std::tuple<int, int> generateMountainLengthAndStart(std::tuple<int, int> islandLengthAndStart, int mountainLength, int mountainStart);
 	virtual void generateIsland();
-	void secondPass();
+	void secondPass(int lakeNumber);
+	void generateLake(Coordinate coord, int lakeSize);
 	bool isAdjacentTo(Coordinate coord, char tile);
 	void generateSeaLine(int length);
 	virtual void generateIslandLine(int islandLength, int islandOffset, int length);

@@ -24,10 +24,10 @@ void WorldMap::GenerateFourIslandMap()
 	IslandGenerator generatorFour(&this->worldMap, this->width/2, this->width, this->length/2, this->length, config);
 	generatorFour.generateIsland();
 
-	generatorOne.secondPass();
-	generatorTwo.secondPass();
-	generatorThree.secondPass();
-	generatorFour.secondPass();
+	generatorOne.secondPass(3);
+	generatorTwo.secondPass(3);
+	generatorThree.secondPass(3);
+	generatorFour.secondPass(3);
 	//map.generateIsland(0, 50, 0, 50);
 	//map.generateIsland(50, 100, 0, 50);
 	//map.generateIsland(0, 50, 50, 100);
@@ -46,7 +46,7 @@ void WorldMap::print(std::ostream& out)
 			else if (temp == 'T') {
 				out << "\033[38;5;22m";
 			}
-			else if (temp == '~') {
+			else if (temp == '~' || temp == 'L') {
 				out << "\033[34m";
 			}
 			else if (temp == 'C') {

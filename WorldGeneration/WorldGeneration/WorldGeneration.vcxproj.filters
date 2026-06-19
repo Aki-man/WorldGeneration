@@ -33,6 +33,9 @@
     <ClCompile Include="IslandGeneratorConfiguration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LengthAndStartGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ParallelMap.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IslandGeneratorConfiguration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LengthAndStartGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

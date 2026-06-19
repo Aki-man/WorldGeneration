@@ -1,6 +1,7 @@
 #include "IslandGenerator.h"
 #include "IslandGeneratorConfiguration.h"
 #include <random>
+#include "LengthAndStartGenerator.h"
 
 IslandGenerator::~IslandGenerator()
 {
@@ -12,74 +13,6 @@ IslandGenerator::~IslandGenerator()
 	
 
 }
-
-std::tuple<int, int> IslandGenerator::generateIslandLengthAndStart(int islandLength, int islandStart, int currentLength, bool getWider) {
-
-	
-	std::uniform_int_distribution<int> widthChangeGenerator(1, config.randomIslandWidthChange);
-	std::uniform_int_distribution<int> offsetChangeGenerator(1, config.randomIslandOffsetChange);
-	int widthChange = widthChangeGenerator(rd);
-	int offsetChange = offsetChangeGenerator(rd);
-	if (std::rand() % 2 == 0 || (getWider && std::rand()%3!=0)) {
-		islandLength += widthChange;
-		if (islandLength > endWidth - startWidth - config.mapSeaBorderSize) 
-			islandLength = endWidth - startWidth - config.mapSeaBorderSize;
-	}
-	else {
-		islandLength -= widthChange;
-		if (islandLength < 0) 
-			islandLength = 1;
-	}
-	if (std::rand() % 2 == 0) {
-		islandStart += offsetChange;
-
-		if (islandStart + islandLength > startWidth + (endWidth - startWidth) - (config.mapSeaBorderSize / 2)) 
-			islandStart = startWidth + (endWidth - startWidth) - islandLength - (config.mapSeaBorderSize / 2);
-	}
-	else {
-		islandStart -= offsetChange;
-		if (islandStart < startWidth + (config.mapSeaBorderSize / 2)) 
-			islandStart = startWidth + (config.mapSeaBorderSize / 2);
-	}
-	std::tuple<int, int> returnValue = std::make_tuple(islandLength, islandStart);
-	return returnValue;
-}
-
-std::tuple<int, int> IslandGenerator::generateMountainLengthAndStart(std::tuple<int, int> islandLengthAndStart, int mountainLength, int mountainStart)
-{
-	int islandLength = std::get<0>(islandLengthAndStart);
-	int islandStart = std::get<1>(islandLengthAndStart);
-	int islandEnd = islandStart + islandLength;
-	std::uniform_int_distribution<int> widthChangeGenerator(0, config.randomMountainWidthChange);
-	std::uniform_int_distribution<int> offsetChangeGenerator(0, config.randomMountainOffsetChange);
-	int widthChange = widthChangeGenerator(rd);
-	int offsetChange = offsetChangeGenerator(rd);
-	if (std::rand() % 2 == 0) {
-		mountainLength += widthChange;
-		if (mountainLength > (islandLength/2))
-			mountainLength = islandLength/2;
-	}
-	else {
-		mountainLength -= widthChange;
-		if (mountainLength < 0)
-			mountainLength = 0;
-	}
-	if (std::rand() % 2 == 0) {
-		mountainStart += offsetChange;
-
-		if (mountainStart + mountainLength > islandStart +  islandLength)
-			mountainStart = islandStart + islandLength - mountainLength;
-	}
-	else {
-		mountainStart -= offsetChange;
-		if (mountainStart < islandStart)
-			mountainStart = islandStart;
-	}
-	std::tuple<int, int> returnValue = std::make_tuple(mountainLength, mountainStart);
-	return returnValue;
-}
-
-
 
 void IslandGenerator::generateIsland()
 {
@@ -102,9 +35,10 @@ void IslandGenerator::generateIsland()
 	bool generateIsland = false;
 	bool generateMountain = false;
 	bool getWider = false;
+	LengthAndStartGenerator lengthAndStartGen(this->startWidth, this->endWidth, this->rd, this->config);
 	for (int i = startLength; i < endLength; ++i) {
 		
-		std::tuple lengthAndStart = this->generateIslandLengthAndStart(islandLength, islandStart, i, getWider);
+		std::tuple lengthAndStart = lengthAndStartGen.generateIslandLengthAndStart(islandLength, islandStart, i, getWider);
 		islandLength = std::get<0>(lengthAndStart);
 		islandStart = std::get<1>(lengthAndStart);
 
@@ -113,7 +47,7 @@ void IslandGenerator::generateIsland()
 		else if (i > config.percentageForIslandNarrowing * endLength)
 			getWider = false;
 
-		std::tuple mountainLengthAndStart = this->generateMountainLengthAndStart(lengthAndStart, mountainLength, mountainStart);
+		std::tuple mountainLengthAndStart = lengthAndStartGen.generateMountainLengthAndStart(lengthAndStart, mountainLength, mountainStart);
 		mountainLength = std::get<0>(mountainLengthAndStart);
 		mountainStart = std::get<1>(mountainLengthAndStart);
 
@@ -323,6 +257,3 @@ void IslandGenerator::generateIslandLineWithMountain(int island_begin, int islan
 		}
 	}
 }
-
-
-

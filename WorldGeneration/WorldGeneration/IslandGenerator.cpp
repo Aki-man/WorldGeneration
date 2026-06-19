@@ -121,14 +121,7 @@ void IslandGenerator::generateIsland()
 			}
 		}
 		
-		if (i > config.islandGenerationStart && !generateIsland) {
-			if (std::rand() % 4 == 0) {
-				generateIsland = true;
-			}
-			
-		}
-		if (i > islandEnd)
-			generateIsland = false;
+		generateIsland = this->shouldIslandGenerate(i, generateIsland, islandEnd);
 	
 		if (i > mountainStartOfGeneration) {
 			if (std::rand() % 4 == 0) {
@@ -142,6 +135,19 @@ void IslandGenerator::generateIsland()
 			}
 		}
 	}
+}
+
+bool IslandGenerator::shouldIslandGenerate(int length, bool generateIsland, int islandEnd)
+{
+	if (length > config.islandGenerationStart && !generateIsland) {
+		if (std::rand() % 4 == 0)
+			generateIsland = true;
+	}
+
+	if (length > islandEnd)
+		generateIsland = false;
+
+	return generateIsland;
 }
 
 void IslandGenerator::secondPass() {

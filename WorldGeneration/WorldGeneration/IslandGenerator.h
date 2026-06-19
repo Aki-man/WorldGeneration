@@ -21,6 +21,7 @@ public:
 	std::tuple<int, int> generateIslandLengthAndStart(int islandLength, int islandStart, int currentLength);
 	std::tuple<int, int> generateMountainLengthAndStart(std::tuple<int, int> islandLengthAndStart, int mountainLength, int mountainStart);
 	virtual void generateIsland();
+	bool shouldIslandGenerate(int length, bool generateIsland, int islandEnd);
 	void secondPass();
 	void generateTileClump(Coordinate coord, int clumpSize, char tile);
 	void generateRiver(Coordinate startCoord, bool isGoingLeft, bool isGoingUp);

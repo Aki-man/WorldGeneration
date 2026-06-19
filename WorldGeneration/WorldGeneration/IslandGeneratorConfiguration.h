@@ -1,19 +1,19 @@
 #pragma once
 class IslandGeneratorConfiguration {
 public:
-	const int islandGenerationStart = 5;
-	const int mapSeaBorderSize = 2;
-	const int randomIslandWidthChange = 2;
-	const int randomIslandOffsetChange = 3;
-	const double percentageForIslandNarrowing = 0.25;
-	const int forestSpawnChance = 3;
-	const int mountainGenerationStart = 3;
-	const int randomMountainWidthChange = 2;
-	const int randomMountainOffsetChange = 3;
+	const int islandGenerationStart;
+	const int mapSeaBorderSize;
+	const int randomIslandWidthChange;
+	const int randomIslandOffsetChange;
+	const double percentageForIslandNarrowing;
+	const int forestSpawnChance;
+	const int mountainGenerationStart;
+	const int randomMountainWidthChange ;
+	const int randomMountainOffsetChange;
 	IslandGeneratorConfiguration() : islandGenerationStart(5), 
-		mapSeaBorderSize(2),
-		randomIslandWidthChange(2),
-		randomIslandOffsetChange(3),
+		mapSeaBorderSize(6),
+		randomIslandWidthChange(5),
+		randomIslandOffsetChange(5),
 		percentageForIslandNarrowing(0.25),
 		forestSpawnChance(3),
 		mountainGenerationStart(3),

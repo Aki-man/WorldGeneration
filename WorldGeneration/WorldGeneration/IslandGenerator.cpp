@@ -20,9 +20,9 @@ std::tuple<int, int> IslandGenerator::generateIslandLengthAndStart(int islandLen
 	std::uniform_int_distribution<int> offsetChangeGenerator(0, config.randomIslandOffsetChange);
 	int widthChange = widthChangeGenerator(rd);
 	int offsetChange = offsetChangeGenerator(rd);
-	if (std::rand() % 3 != 0) {
+	if (std::rand() % 2 == 0) {
 		islandLength += widthChange;
-		if (islandLength > endWidth - startWidth) 
+		if (islandLength > endWidth - startWidth - config.mapSeaBorderSize) 
 			islandLength = endWidth - startWidth - config.mapSeaBorderSize;
 	}
 	else {
@@ -93,12 +93,16 @@ void IslandGenerator::generateIsland()
 	int islandLength = lengthGenerator(rd);
 	
 	int islandStart = startGenerator(rd);
+
+	std::uniform_int_distribution<int> islandEndGenerator(endLength - config.islandGenerationStart - 3, endLength - 3);
+	int islandEnd = islandEndGenerator(rd);
+
 	int mountainStart = 0;
 	int mountainLength = 0;
 	bool generateIsland = false;
 	bool generateMountain = false;
 	for (int i = startLength; i < endLength; ++i) {
-		if (i < config.islandGenerationStart || i > endLength - config.islandGenerationStart) {
+		if (!generateIsland) {
 			this->generateSeaLine(i);
 		}
 		else{
@@ -116,6 +120,16 @@ void IslandGenerator::generateIsland()
 					generateMountain = false;
 			}
 		}
+		
+		if (i > config.islandGenerationStart && !generateIsland) {
+			if (std::rand() % 4 == 0) {
+				generateIsland = true;
+			}
+			
+		}
+		if (i > islandEnd)
+			generateIsland = false;
+	
 		if (i > mountainStartOfGeneration) {
 			if (std::rand() % 4 == 0) {
 				generateMountain = true;

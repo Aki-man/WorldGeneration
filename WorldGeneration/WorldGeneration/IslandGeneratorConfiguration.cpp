@@ -10,8 +10,8 @@ IslandGeneratorConfiguration IslandGeneratorConfiguration::generateConfiguration
 		0.25,
 		8,
 		int(islandLength / 25),
-		int(islandLength / 50),
-		int(islandLength / 50),
-		int(islandLength / 25)
+		int(islandLength / 25),
+		int(islandLength / 25),
+		int(islandLength / 15)
 	);
 }

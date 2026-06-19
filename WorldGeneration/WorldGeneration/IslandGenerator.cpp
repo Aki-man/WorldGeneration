@@ -1,6 +1,7 @@
 #include "IslandGenerator.h"
 #include "IslandGeneratorConfiguration.h"
 #include <random>
+#include "LengthAndStartGenerator.h"
 
 IslandGenerator::~IslandGenerator()
 {
@@ -13,85 +14,17 @@ IslandGenerator::~IslandGenerator()
 
 }
 
-std::tuple<int, int> IslandGenerator::generateIslandLengthAndStart(int islandLength, int islandStart, int currentLength) {
-
-	
-	std::uniform_int_distribution<int> widthChangeGenerator(1, config.randomIslandWidthChange);
-	std::uniform_int_distribution<int> offsetChangeGenerator(1, config.randomIslandOffsetChange);
-	int widthChange = widthChangeGenerator(rd);
-	int offsetChange = offsetChangeGenerator(rd);
-	if (std::rand() % 2 == 0) {
-		islandLength += widthChange;
-		if (islandLength > endWidth - startWidth - config.mapSeaBorderSize) 
-			islandLength = endWidth - startWidth - config.mapSeaBorderSize;
-	}
-	else {
-		islandLength -= widthChange;
-		if (islandLength < 0) 
-			islandLength = 1;
-	}
-	if (std::rand() % 2 == 0) {
-		islandStart += offsetChange;
-
-		if (islandStart + islandLength > startWidth + (endWidth - startWidth) - (config.mapSeaBorderSize / 2)) 
-			islandStart = startWidth + (endWidth - startWidth) - islandLength - (config.mapSeaBorderSize / 2);
-	}
-	else {
-		islandStart -= offsetChange;
-		if (islandStart < startWidth + (config.mapSeaBorderSize / 2)) 
-			islandStart = startWidth + (config.mapSeaBorderSize / 2);
-	}
-	std::tuple<int, int> returnValue = std::make_tuple(islandLength, islandStart);
-	return returnValue;
-}
-
-std::tuple<int, int> IslandGenerator::generateMountainLengthAndStart(std::tuple<int, int> islandLengthAndStart, int mountainLength, int mountainStart)
-{
-	int islandLength = std::get<0>(islandLengthAndStart);
-	int islandStart = std::get<1>(islandLengthAndStart);
-	int islandEnd = islandStart + islandLength;
-	std::uniform_int_distribution<int> widthChangeGenerator(0, config.randomMountainWidthChange);
-	std::uniform_int_distribution<int> offsetChangeGenerator(0, config.randomMountainOffsetChange);
-	int widthChange = widthChangeGenerator(rd);
-	int offsetChange = offsetChangeGenerator(rd);
-	if (std::rand() % 2 == 0) {
-		mountainLength += widthChange;
-		if (mountainLength > islandLength)
-			mountainLength = islandLength;
-	}
-	else {
-		mountainLength -= widthChange;
-		if (mountainLength < 0)
-			mountainLength = 0;
-	}
-	if (std::rand() % 2 == 0) {
-		mountainStart += offsetChange;
-
-		if (mountainStart + mountainLength > islandStart +  islandLength)
-			mountainStart = islandStart + islandLength - mountainLength;
-	}
-	else {
-		mountainStart -= offsetChange;
-		if (mountainStart < islandStart)
-			mountainStart = islandStart;
-	}
-	std::tuple<int, int> returnValue = std::make_tuple(mountainLength, mountainStart);
-	return returnValue;
-}
-
-
-
 void IslandGenerator::generateIsland()
 {
 	std::uniform_int_distribution<int>  startGenerator(0, endWidth - startWidth);
 	std::uniform_int_distribution<int>  lengthGenerator(int((endWidth-startWidth)/6), int((endWidth - startWidth) / 4));
 	std::uniform_int_distribution<int> mountainGenerationStartGenerator(startLength, endLength);
 	
+	
 	int mountainStartOfGeneration = mountainGenerationStartGenerator(rd);
 	std::uniform_int_distribution<int> mountainGenerationEndGenerator(mountainStartOfGeneration, endLength);
 	int mountainEndOfGeneration = mountainGenerationEndGenerator(rd);
 	int islandLength = lengthGenerator(rd);
-	
 	int islandStart = startGenerator(rd);
 
 	std::uniform_int_distribution<int> islandEndGenerator(endLength - config.islandGenerationStart - 3, endLength - 3);
@@ -101,36 +34,31 @@ void IslandGenerator::generateIsland()
 	int mountainLength = 0;
 	bool generateIsland = false;
 	bool generateMountain = false;
+	bool getWider = false;
+	LengthAndStartGenerator lengthAndStartGen(this->startWidth, this->endWidth, this->rd, this->config);
 	for (int i = startLength; i < endLength; ++i) {
-		if (!generateIsland) {
-			this->generateSeaLine(i);
-		}
-		else{
-			std::tuple lengthAndStart = this->generateIslandLengthAndStart(islandLength, islandStart, i);
-			islandLength = std::get<0>(lengthAndStart);
-			islandStart = std::get<1>(lengthAndStart);
-			if(!generateMountain)
-				this->generateIslandLine(islandStart, islandStart + islandLength, i);
-			else {
-				std::tuple mountainLengthAndStart = this->generateMountainLengthAndStart(lengthAndStart, mountainLength, mountainStart);
-				mountainLength = std::get<0>(mountainLengthAndStart);
-				mountainStart = std::get<1>(mountainLengthAndStart);
-				this->generateIslandLineWithMountain(islandStart, islandStart + islandLength, i, mountainStart, mountainStart + mountainLength);
-				if (i > mountainEndOfGeneration)
-					generateMountain = false;
-			}
-		}
 		
-		if (i > config.islandGenerationStart && !generateIsland) {
-			if (std::rand() % 4 == 0) {
-				generateIsland = true;
-			}
-			
-		}
-		if (i > islandEnd)
-			generateIsland = false;
+		std::tuple lengthAndStart = lengthAndStartGen.generateIslandLengthAndStart(islandLength, islandStart, i, getWider);
+		islandLength = std::get<0>(lengthAndStart);
+		islandStart = std::get<1>(lengthAndStart);
+
+		if (islandLength < (endWidth - startWidth)/4 && i < config.percentageForIslandNarrowing * endLength)
+			getWider = true;
+		else if (i > config.percentageForIslandNarrowing * endLength)
+			getWider = false;
+
+		std::tuple mountainLengthAndStart = lengthAndStartGen.generateMountainLengthAndStart(lengthAndStart, mountainLength, mountainStart);
+		mountainLength = std::get<0>(mountainLengthAndStart);
+		mountainStart = std::get<1>(mountainLengthAndStart);
+
+		this->generateIslandOrIslandWithMountain(i, islandLength, islandStart, mountainLength, mountainStart, generateIsland, generateMountain, mountainEndOfGeneration);
+
+		generateIsland = this->shouldIslandGenerate(i, generateIsland, islandEnd);
 	
-		if (i > mountainStartOfGeneration) {
+		if (i > mountainEndOfGeneration)
+			generateMountain = false;
+
+		if (i > mountainStartOfGeneration && i < mountainEndOfGeneration && !generateMountain) {
 			if (std::rand() % 4 == 0) {
 				generateMountain = true;
 				std::uniform_int_distribution<int> mountainStartGenerator(islandStart, (islandStart + islandLength));
@@ -144,13 +72,42 @@ void IslandGenerator::generateIsland()
 	}
 }
 
+void IslandGenerator::generateIslandOrIslandWithMountain(int i, int islandLength, int islandStart, int mountainLength, int mountainStart,bool generateIsland, bool generateMountain, bool mountainEndOfGeneration)
+{
+	if (!generateIsland) {
+		this->generateSeaLine(i);
+	}
+	else {
+		if (!generateMountain)
+			this->generateIslandLine(islandStart, islandStart + islandLength, i);
+		else {
+			this->generateIslandLineWithMountain(islandStart, islandStart + islandLength, i, mountainStart, mountainStart + mountainLength);
+		}
+	}
+}
+
+
+
+bool IslandGenerator::shouldIslandGenerate(int length, bool generateIsland, int islandEnd)
+{
+	if (length > config.islandGenerationStart && !generateIsland) {
+		if (std::rand() % 4 == 0)
+			generateIsland = true;
+	}
+
+	if (length > islandEnd)
+		generateIsland = false;
+
+	return generateIsland;
+}
+
 void IslandGenerator::secondPass() {
 	int lakeNumber = config.lakeNumber;
 	bool riverGenerated = false;
 	for (int i = startLength; i < endLength; ++i) {
 		for (int j = startWidth; j < endWidth; ++j) {
 			Coordinate coord(i, j);
-			if (this->isAdjacentTo(coord, '~') && (*this->worldMap)[coord] != '~' && (*this->worldMap)[coord] != 'R') {
+			if (this->isAdjacentTo(coord, '~') && (*this->worldMap)[coord] != '~' && (*this->worldMap)[coord] != 'R' && (*this->worldMap)[coord] != 'M') {
 				(*this->worldMap)[coord] = 'C';
 			}
 			else if (((*this->worldMap)[coord] == 'O' || (*this->worldMap)[coord] == 'T') && lakeNumber > 0) {
@@ -183,29 +140,22 @@ void IslandGenerator::secondPass() {
 }
 
 void IslandGenerator::generateTileClump(Coordinate coord, int clumpSize, char tile) {
-	Coordinate upAdjacentTile(coord.x, coord.y - 1);
-	Coordinate downAdjacentTile(coord.x, coord.y + 1);
-	Coordinate leftAdjacentTile(coord.x - 1, coord.y);
-	Coordinate rightAdjacentTile(coord.x + 1, coord.y - 1);
-	Coordinate upLeftDiagonalTile(coord.x - 1, coord.y - 1);
-	Coordinate downLeftDiagonalTile(coord.x - 1, coord.y + 1);
-	Coordinate upRightAdjacentTile(coord.x + 1, coord.y - 1);
-	Coordinate downRightAdjacentTile(coord.x + 1, coord.y + 1);
-	std::vector<Coordinate> coordinatesToConvert = { upAdjacentTile,
-	downAdjacentTile,
-	leftAdjacentTile,
-	rightAdjacentTile,
-	upLeftDiagonalTile,
-	downLeftDiagonalTile,
-	upRightAdjacentTile,
-	downRightAdjacentTile, };
+	
+	std::vector<Coordinate> coordinatesToConvert = { Coordinate(coord.x, coord.y - 1),
+	Coordinate(coord.x, coord.y + 1),
+	Coordinate(coord.x - 1, coord.y),
+	Coordinate(coord.x + 1, coord.y - 1),
+	Coordinate(coord.x - 1, coord.y - 1),
+	Coordinate(coord.x - 1, coord.y + 1),
+	Coordinate(coord.x + 1, coord.y - 1),
+	Coordinate(coord.x + 1, coord.y + 1) };
 	(*this->worldMap)[coord] = tile;
 	std::uniform_int_distribution<int> randomCoordinateSelector(0, coordinatesToConvert.size()-1);
 	for (int i = 0; i < clumpSize; ++i) {
 		Coordinate coord = coordinatesToConvert[randomCoordinateSelector(rd)];
 		if ((*this->worldMap).contains(coord)) {
 			char foundTile = (*worldMap)[coord];
-			if (foundTile != 'C' && foundTile != '~' && foundTile != 'R') {
+			if (foundTile != 'C' && foundTile != '~' && foundTile != 'R' && foundTile != 'M') {
 				(*this->worldMap)[coord] = tile;
 			}
 		}
@@ -283,11 +233,16 @@ void IslandGenerator::generateIslandLine(int island_begin, int island_end, int l
 void IslandGenerator::generateIslandLineWithMountain(int island_begin, int island_end, int length, int mountain_begin, int mountain_end)
 {
 	std::uniform_int_distribution<int> forestChanceGenerator(0, config.forestSpawnChance);
+	std::uniform_int_distribution<int> mountainForestChanceGenerator(0, config.forestSpawnChance + (config.forestSpawnChance*0.25));
 	for (int i = startWidth; i < endWidth; ++i) {
 		if (i >= island_begin && i <= island_end) {
 			Coordinate coord(i, length);
 			if (i > mountain_begin && i <= mountain_end) {
-				(*this->worldMap)[coord] = 'M';
+				int forest = mountainForestChanceGenerator(rd);
+				if (forest == config.forestSpawnChance)
+					(*this->worldMap)[coord] = 'T';
+				else 
+					(*this->worldMap)[coord] = 'M';
 				continue;
 			}
 			int forest = forestChanceGenerator(rd);
@@ -302,6 +257,3 @@ void IslandGenerator::generateIslandLineWithMountain(int island_begin, int islan
 		}
 	}
 }
-
-
-

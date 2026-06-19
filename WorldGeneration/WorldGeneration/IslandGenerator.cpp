@@ -16,8 +16,8 @@ IslandGenerator::~IslandGenerator()
 std::tuple<int, int> IslandGenerator::generateIslandLengthAndStart(int islandLength, int islandStart, int currentLength) {
 
 	
-	std::uniform_int_distribution<int> widthChangeGenerator(0, config.randomIslandWidthChange);
-	std::uniform_int_distribution<int> offsetChangeGenerator(0, config.randomIslandOffsetChange);
+	std::uniform_int_distribution<int> widthChangeGenerator(1, config.randomIslandWidthChange);
+	std::uniform_int_distribution<int> offsetChangeGenerator(1, config.randomIslandOffsetChange);
 	int widthChange = widthChangeGenerator(rd);
 	int offsetChange = offsetChangeGenerator(rd);
 	if (std::rand() % 2 == 0) {
@@ -146,10 +146,11 @@ void IslandGenerator::generateIsland()
 
 void IslandGenerator::secondPass() {
 	int lakeNumber = config.lakeNumber;
+	bool riverGenerated = false;
 	for (int i = startLength; i < endLength; ++i) {
 		for (int j = startWidth; j < endWidth; ++j) {
 			Coordinate coord(i, j);
-			if (this->isAdjacentTo(coord, '~') && (*this->worldMap)[coord] != '~') {
+			if (this->isAdjacentTo(coord, '~') && (*this->worldMap)[coord] != '~' && (*this->worldMap)[coord] != 'R') {
 				(*this->worldMap)[coord] = 'C';
 			}
 			else if (((*this->worldMap)[coord] == 'O' || (*this->worldMap)[coord] == 'T') && lakeNumber > 0) {
@@ -163,6 +164,18 @@ void IslandGenerator::secondPass() {
 				if (std::rand() % 3 == 0) {
 					std::uniform_int_distribution<int> randomForestSize(0, 4);
 					this->generateTileClump(coord, randomForestSize(rd), 'T');
+				}
+			}
+			if (this->isAdjacentTo(coord, 'M') && !riverGenerated) {
+				bool goingLeft = true;
+				if (std::rand() % 2 == 0)
+					goingLeft = false;
+				bool goingUp = true;
+				if (std::rand() % 2 == 0)
+					goingUp = false;
+				if (std::rand() % 10 == 0) {
+					this->generateRiver(coord, goingLeft, goingUp);
+					riverGenerated = true;
 				}
 			}
 		}
@@ -192,9 +205,31 @@ void IslandGenerator::generateTileClump(Coordinate coord, int clumpSize, char ti
 		Coordinate coord = coordinatesToConvert[randomCoordinateSelector(rd)];
 		if ((*this->worldMap).contains(coord)) {
 			char foundTile = (*worldMap)[coord];
-			if (foundTile != 'C' && foundTile != '~') {
+			if (foundTile != 'C' && foundTile != '~' && foundTile != 'R') {
 				(*this->worldMap)[coord] = tile;
 			}
+		}
+	}
+}
+
+void IslandGenerator::generateRiver(Coordinate startCoordinate, bool isGoingLeft, bool isGoingUp)
+{
+	Coordinate currentCoordinate = startCoordinate;
+	while (true) {
+		(*this->worldMap)[currentCoordinate] = 'R';
+		if (this->isAdjacentTo(currentCoordinate, '~'))
+			break;
+		if (std::rand() % 2 == 0) {
+			if (isGoingLeft)
+				currentCoordinate = Coordinate(currentCoordinate.x - 1, currentCoordinate.y);
+			else
+				currentCoordinate = Coordinate(currentCoordinate.x + 1, currentCoordinate.y);
+		}
+		else {
+			if (isGoingUp)
+				currentCoordinate = Coordinate(currentCoordinate.x, currentCoordinate.y - 1);
+			else
+				currentCoordinate = Coordinate(currentCoordinate.x, currentCoordinate.y + 1);
 		}
 	}
 }

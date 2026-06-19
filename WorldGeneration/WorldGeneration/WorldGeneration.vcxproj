@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="Coordinate.h" />
     <ClInclude Include="IslandGenerator.h" />
+    <ClInclude Include="IslandGeneratorConfiguration.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MyHashCompare.h" />
     <ClInclude Include="ParallelMap.h" />

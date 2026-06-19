@@ -11,24 +11,18 @@ IslandGenerator::~IslandGenerator()
 
 }
 
-const int START_OF_ISLAND = 1;
-const int SEA_BORDER_SIZE = 2;
-const int RANDOM_WIDTH_CHANGE = 2;
-const int RANDOM_ISLAND_OFFSET = 3;
-const double PERCENTAGE_FOR_NARROWING = 0.25;
-
 std::tuple<int, int> IslandGenerator::generateIslandLengthAndStart(int islandLength, int islandStart, int currentLength) {
 
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> widthChangeGenerator(0, RANDOM_WIDTH_CHANGE);
-	std::uniform_int_distribution<int> offsetChangeGenerator(0, RANDOM_ISLAND_OFFSET);
+	std::uniform_int_distribution<int> widthChangeGenerator(0, config.randomIslandWidthChange);
+	std::uniform_int_distribution<int> offsetChangeGenerator(0, config.randomIslandOffsetChange);
 	int widthChange = widthChangeGenerator(rd);
 	int offsetChange = offsetChangeGenerator(rd);
 	if (std::rand() % 2 == 0) {
 		islandLength += widthChange;
 		if (islandLength > endWidth - startWidth) {
-			islandLength = endWidth - startWidth - SEA_BORDER_SIZE;
+			islandLength = endWidth - startWidth - config.mapSeaBorderSize;
 		}
 	}
 	else {
@@ -40,14 +34,14 @@ std::tuple<int, int> IslandGenerator::generateIslandLengthAndStart(int islandLen
 	if (std::rand() % 2 == 0) {
 		islandStart += offsetChange;
 
-		if (islandStart + islandLength > startWidth + (endWidth - startWidth) - (SEA_BORDER_SIZE / 2)) {
-			islandStart = startWidth + (endWidth - startWidth) - islandLength - (SEA_BORDER_SIZE / 2);
+		if (islandStart + islandLength > startWidth + (endWidth - startWidth) - (config.mapSeaBorderSize / 2)) {
+			islandStart = startWidth + (endWidth - startWidth) - islandLength - (config.mapSeaBorderSize / 2);
 		}
 	}
 	else {
 		islandStart -= offsetChange;
-		if (islandStart < startWidth + (SEA_BORDER_SIZE / 2)) {
-			islandStart = startWidth + (SEA_BORDER_SIZE / 2);
+		if (islandStart < startWidth + (config.mapSeaBorderSize / 2)) {
+			islandStart = startWidth + (config.mapSeaBorderSize / 2);
 		}
 	}
 	std::tuple<int, int> returnValue = std::make_tuple(islandLength, islandStart);
@@ -58,8 +52,8 @@ void IslandGenerator::generateIsland()
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int>  widthGenerator(0, RANDOM_WIDTH_CHANGE);
-	std::uniform_int_distribution<int>  offsetGenerator(0, RANDOM_ISLAND_OFFSET);
+	std::uniform_int_distribution<int>  widthGenerator(0, config.randomIslandWidthChange);
+	std::uniform_int_distribution<int>  offsetGenerator(0, config.randomIslandOffsetChange);
 	std::uniform_int_distribution<int>  startGenerator(0, endWidth - startWidth);
 	std::uniform_int_distribution<int>  lengthGenerator(0, int((endWidth - startWidth) / 4));
 	std::uniform_int_distribution<int> coinFlip(0, 1);
@@ -68,10 +62,10 @@ void IslandGenerator::generateIsland()
 	int islandStart = startGenerator(gen);
 	bool generateIsland = false;
 	for (int i = startLength; i < endLength; ++i) {
-		if (i < START_OF_ISLAND || i > endLength - START_OF_ISLAND) {
+		if (i < config.islandGenerationStart || i > endLength - config.islandGenerationStart) {
 			this->generateSeaLine(i);
 		}
-		else if (i == START_OF_ISLAND || i == endLength - START_OF_ISLAND) {
+		else if (i == config.islandGenerationStart || i == endLength - config.islandGenerationStart) {
 			std::tuple lengthAndStart = this->generateIslandLengthAndStart(islandLength, islandStart, i);
 			islandLength = std::get<0>(lengthAndStart);
 			islandStart = std::get<1>(lengthAndStart);

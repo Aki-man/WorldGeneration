@@ -1,5 +1,6 @@
 #pragma once
 #include "coordinate.h"
+#include "IslandGeneratorConfiguration.h"
 #include <map>
 #include <string>
 #include <iostream>
@@ -10,9 +11,10 @@ class IslandGenerator {
 	int endWidth;
 	int startLength;
 	int endLength;
+	IslandGeneratorConfiguration config;
 public:
-	IslandGenerator(std::map<Coordinate, char>* worldMap, int startWidth, int endWidth, int startLength, int endLength) :
-		worldMap(worldMap), startWidth(startWidth), endWidth(endWidth), startLength(startLength), endLength(endLength) {};
+	IslandGenerator(std::map<Coordinate, char>* worldMap, int startWidth, int endWidth, int startLength, int endLength, IslandGeneratorConfiguration config) :
+		worldMap(worldMap), startWidth(startWidth), endWidth(endWidth), startLength(startLength), endLength(endLength), config(config){};
 	~IslandGenerator();
 	std::tuple<int, int> generateIslandLengthAndStart(int islandLength, int islandStart, int currentLength);
 	virtual void generateIsland();

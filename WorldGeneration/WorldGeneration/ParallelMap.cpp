@@ -17,10 +17,11 @@ ParallelWorldMap::~ParallelWorldMap()
 
 void ParallelWorldMap::GenerateFourIslandMap()
 {
-	IslandGenerator generatorOne(&worldMap, 0, this->width / 2, 0, this->length / 2);
-	IslandGenerator generatorTwo(&this->worldMap, this->width / 2, this->width, 0, this->length / 2);
-	IslandGenerator generatorThree(&this->worldMap, 0, this->width / 2, this->length / 2, this->length);
-	IslandGenerator generatorFour(&this->worldMap, this->width / 2, this->width, this->length / 2, this->length);
+	IslandGeneratorConfiguration config(1, 2, 2, 3, 0.25);
+	IslandGenerator generatorOne(&worldMap, 0, this->width / 2, 0, this->length / 2, config);
+	IslandGenerator generatorTwo(&this->worldMap, this->width / 2, this->width, 0, this->length / 2, config);
+	IslandGenerator generatorThree(&this->worldMap, 0, this->width / 2, this->length / 2, this->length, config);
+	IslandGenerator generatorFour(&this->worldMap, this->width / 2, this->width, this->length / 2, this->length, config);
 	
 	task_group g;
 	g.run([&] {generatorOne.generateIsland(); });

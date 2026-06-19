@@ -1,5 +1,6 @@
 #include "map.h"
 #include "IslandGenerator.h"
+#include "IslandGeneratorConfiguration.h"
 #include <random>
 #include <tuple>
 
@@ -13,13 +14,14 @@ WorldMap::~WorldMap()
 
 void WorldMap::GenerateFourIslandMap()
 {
-	IslandGenerator generatorOne(&worldMap, 0,this->width/2, 0,this->length/2);
+	IslandGeneratorConfiguration config(1,2,2,3,0.25);
+	IslandGenerator generatorOne(&worldMap, 0,this->width/2, 0,this->length/2, config);
 	generatorOne.generateIsland();
-	IslandGenerator generatorTwo(&this->worldMap, this->width/2, this->width, 0, this->length / 2);
+	IslandGenerator generatorTwo(&this->worldMap, this->width/2, this->width, 0, this->length / 2, config);
 	generatorTwo.generateIsland();
-	IslandGenerator generatorThree(&this->worldMap, 0, this->width / 2, this->length / 2, this->length);
+	IslandGenerator generatorThree(&this->worldMap, 0, this->width / 2, this->length / 2, this->length, config);
 	generatorThree.generateIsland();
-	IslandGenerator generatorFour(&this->worldMap, this->width/2, this->width, this->length/2, this->length);
+	IslandGenerator generatorFour(&this->worldMap, this->width/2, this->width, this->length/2, this->length, config);
 	generatorFour.generateIsland();
 
 	generatorOne.secondPass();

@@ -28,4 +28,5 @@ public:
 		percentageForIslandNarrowing(percentageForIslandNarrowing), forestSpawnChance(forestChance), mountainGenerationStart(mountainGenerationStart),
 		randomMountainWidthChange(randomMountainWidthChange),randomMountainOffsetChange(randomMountainOffsetChange), lakeNumber(lakeNumber){};
 
+	static IslandGeneratorConfiguration generateConfiguration(int islandLength, int islandWidth);
 };

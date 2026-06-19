@@ -85,6 +85,11 @@ void IslandGenerator::generateIsland()
 {
 	std::uniform_int_distribution<int>  startGenerator(0, endWidth - startWidth);
 	std::uniform_int_distribution<int>  lengthGenerator(0, int((endWidth - startWidth) / 4));
+	std::uniform_int_distribution<int> mountainGenerationStartGenerator(startLength, endLength);
+	
+	int mountainStartOfGeneration = mountainGenerationStartGenerator(rd);
+	std::uniform_int_distribution<int> mountainGenerationEndGenerator(mountainStartOfGeneration, endLength);
+	int mountainEndOfGeneration = mountainGenerationEndGenerator(rd);
 	int islandLength = lengthGenerator(rd);
 	
 	int islandStart = startGenerator(rd);
@@ -107,9 +112,11 @@ void IslandGenerator::generateIsland()
 				mountainLength = std::get<0>(mountainLengthAndStart);
 				mountainStart = std::get<1>(mountainLengthAndStart);
 				this->generateIslandLineWithMountain(islandStart, islandStart + islandLength, i, mountainStart, mountainStart + mountainLength);
+				if (i > mountainEndOfGeneration)
+					generateMountain = false;
 			}
 		}
-		if (i > startLength / 2) {
+		if (i > mountainStartOfGeneration) {
 			if (std::rand() % 4 == 0) {
 				generateMountain = true;
 				mountainStart = islandStart + 2;

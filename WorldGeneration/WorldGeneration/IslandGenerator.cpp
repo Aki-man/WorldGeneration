@@ -20,7 +20,7 @@ std::tuple<int, int> IslandGenerator::generateIslandLengthAndStart(int islandLen
 	std::uniform_int_distribution<int> offsetChangeGenerator(0, config.randomIslandOffsetChange);
 	int widthChange = widthChangeGenerator(rd);
 	int offsetChange = offsetChangeGenerator(rd);
-	if (std::rand() % 2 == 0) {
+	if (std::rand() % 3 != 0) {
 		islandLength += widthChange;
 		if (islandLength > endWidth - startWidth) 
 			islandLength = endWidth - startWidth - config.mapSeaBorderSize;
@@ -119,8 +119,12 @@ void IslandGenerator::generateIsland()
 		if (i > mountainStartOfGeneration) {
 			if (std::rand() % 4 == 0) {
 				generateMountain = true;
-				mountainStart = islandStart + 2;
-				mountainLength = 3;
+				std::uniform_int_distribution<int> mountainStartGenerator(islandStart, (islandStart + islandLength));
+
+				mountainStart = mountainStartGenerator(rd);
+
+				std::uniform_int_distribution<int> mountainLengthGenerator(0, islandLength / 2);
+				mountainLength = mountainLengthGenerator(rd);
 			}
 		}
 	}

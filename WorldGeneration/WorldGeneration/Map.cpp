@@ -46,7 +46,7 @@ void WorldMap::print(std::ostream& out)
 			else if (temp == 'T') {
 				out << "\033[38;5;22m";
 			}
-			else if (temp == '~' || temp == 'L') {
+			else if (temp == '~' || temp == 'L' || temp == 'R') {
 				out << "\033[34m";
 			}
 			else if (temp == 'C') {

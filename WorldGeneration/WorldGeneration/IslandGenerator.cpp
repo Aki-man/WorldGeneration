@@ -146,6 +146,7 @@ void IslandGenerator::generateIsland()
 
 void IslandGenerator::secondPass() {
 	int lakeNumber = config.lakeNumber;
+	bool riverGenerated = false;
 	for (int i = startLength; i < endLength; ++i) {
 		for (int j = startWidth; j < endWidth; ++j) {
 			Coordinate coord(i, j);
@@ -163,6 +164,14 @@ void IslandGenerator::secondPass() {
 				if (std::rand() % 3 == 0) {
 					std::uniform_int_distribution<int> randomForestSize(0, 4);
 					this->generateTileClump(coord, randomForestSize(rd), 'T');
+				}
+			}
+			if (this->isAdjacentTo(coord, 'M') && !riverGenerated) {
+				bool goingLeft = true;
+				bool goingUp = true;
+				if (std::rand() % 10 == 0) {
+					this->generateRiver(coord, goingLeft, goingUp);
+					riverGenerated = true;
 				}
 			}
 		}
@@ -195,6 +204,28 @@ void IslandGenerator::generateTileClump(Coordinate coord, int clumpSize, char ti
 			if (foundTile != 'C' && foundTile != '~') {
 				(*this->worldMap)[coord] = tile;
 			}
+		}
+	}
+}
+
+void IslandGenerator::generateRiver(Coordinate startCoordinate, bool isGoingLeft, bool isGoingUp)
+{
+	Coordinate currentCoordinate = startCoordinate;
+	while (true) {
+		(*this->worldMap)[currentCoordinate] = 'R';
+		if (this->isAdjacentTo(currentCoordinate, '~'))
+			break;
+		if (std::rand() % 2 == 0) {
+			if (isGoingLeft)
+				currentCoordinate = Coordinate(currentCoordinate.x - 1, currentCoordinate.y);
+			else
+				currentCoordinate = Coordinate(currentCoordinate.x + 1, currentCoordinate.y);
+		}
+		else {
+			if (isGoingUp)
+				currentCoordinate = Coordinate(currentCoordinate.x, currentCoordinate.y - 1);
+			else
+				currentCoordinate = Coordinate(currentCoordinate.x, currentCoordinate.y + 1);
 		}
 	}
 }

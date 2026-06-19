@@ -4,7 +4,8 @@
 
 int main()
 {
-    WorldMap map(100, 100);
+    WorldMap map = WorldMap(100, 100);
+    map.GenerateFourIslandMap();
    /* map.generateIsland(0, 50, 0, 50);
     map.generateIsland(50, 100, 0, 50);
     map.generateIsland(0, 50, 50, 100);
@@ -12,16 +13,7 @@ int main()
     /*map.generateIsland(0, 50, 0, 100);
     map.generateIsland(50, 100, 0, 50);
     map.generateIsland(50, 100, 50, 100);*/
-    for (int i = 0; i < 10; ++i) {
-        for (int j = 0; j < 10; ++j) {
-            map.generateIsland(i * 10, (i + 1) * 10, j * 10, (j + 1) * 10);
-        }
-    }
-    std::cout << map;
-    for (int i = 0; i < 10; ++i) {
-        for (int j = 0; j < 10; ++j) {
-            map.secondPass(i * 10, (i + 1) * 10, j * 10, (j + 1) * 10);
-        }
-    }
+    
+
     std::cout << map;
 }

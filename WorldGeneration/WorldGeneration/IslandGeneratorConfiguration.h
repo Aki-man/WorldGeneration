@@ -15,7 +15,7 @@ public:
 		randomIslandWidthChange(5),
 		randomIslandOffsetChange(5),
 		percentageForIslandNarrowing(0.25),
-		forestSpawnChance(3),
+		forestSpawnChance(8),
 		mountainGenerationStart(3),
 		randomMountainWidthChange(2),
 		randomMountainOffsetChange(3){};

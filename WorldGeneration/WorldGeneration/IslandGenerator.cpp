@@ -154,15 +154,21 @@ void IslandGenerator::secondPass(int lakeNumber) {
 			else if (((*this->worldMap)[coord] == 'O' || (*this->worldMap)[coord] == 'T') && lakeNumber > 0) {
 				std::uniform_int_distribution<int> randomLakesize(0, 6);
 				if (std::rand() % 20 == 0) {
-					this->generateLake(coord, randomLakesize(rd));
+					this->generateTileClump(coord, randomLakesize(rd), 'L');
 					--lakeNumber;
+				}
+			}
+			if ((*this->worldMap)[coord] == 'T') {
+				if (std::rand() % 3 == 0) {
+					std::uniform_int_distribution<int> randomForestSize(0, 4);
+					this->generateTileClump(coord, randomForestSize(rd), 'T');
 				}
 			}
 		}
 	}
 }
 
-void IslandGenerator::generateLake(Coordinate coord, int lakeSize) {
+void IslandGenerator::generateTileClump(Coordinate coord, int clumpSize, char tile) {
 	Coordinate upAdjacentTile(coord.x, coord.y - 1);
 	Coordinate downAdjacentTile(coord.x, coord.y + 1);
 	Coordinate leftAdjacentTile(coord.x - 1, coord.y);
@@ -179,14 +185,14 @@ void IslandGenerator::generateLake(Coordinate coord, int lakeSize) {
 	downLeftDiagonalTile,
 	upRightAdjacentTile,
 	downRightAdjacentTile, };
-	(*this->worldMap)[coord] = 'L';
+	(*this->worldMap)[coord] = tile;
 	std::uniform_int_distribution<int> randomCoordinateSelector(0, coordinatesToConvert.size()-1);
-	for (int i = 0; i < lakeSize; ++i) {
+	for (int i = 0; i < clumpSize; ++i) {
 		Coordinate coord = coordinatesToConvert[randomCoordinateSelector(rd)];
 		if ((*this->worldMap).contains(coord)) {
 			char foundTile = (*worldMap)[coord];
 			if (foundTile != 'C' && foundTile != '~') {
-				(*this->worldMap)[coord] = 'L';
+				(*this->worldMap)[coord] = tile;
 			}
 		}
 	}

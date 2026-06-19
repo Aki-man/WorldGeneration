@@ -18,7 +18,7 @@ public:
 	IslandGenerator(std::map<Coordinate, char>* worldMap, int startWidth, int endWidth, int startLength, int endLength, IslandGeneratorConfiguration config) :
 		worldMap(worldMap), startWidth(startWidth), endWidth(endWidth), startLength(startLength), endLength(endLength), config(config), rd(std::random_device()){};
 	~IslandGenerator();
-	std::tuple<int, int> generateIslandLengthAndStart(int islandLength, int islandStart, int currentLength);
+	std::tuple<int, int> generateIslandLengthAndStart(int islandLength, int islandStart, int currentLength, bool getWider);
 	std::tuple<int, int> generateMountainLengthAndStart(std::tuple<int, int> islandLengthAndStart, int mountainLength, int mountainStart);
 	virtual void generateIsland();
 	void generateIslandOrIslandWithMountain(int i, int islandLength, int islandStart, int mountainLength, int mountainStart, bool generateIsland, bool generateMountain, bool mountainEndOfGeneration);

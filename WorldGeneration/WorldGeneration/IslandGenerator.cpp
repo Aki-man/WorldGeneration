@@ -84,7 +84,7 @@ std::tuple<int, int> IslandGenerator::generateMountainLengthAndStart(std::tuple<
 void IslandGenerator::generateIsland()
 {
 	std::uniform_int_distribution<int>  startGenerator(0, endWidth - startWidth);
-	std::uniform_int_distribution<int>  lengthGenerator(0, int((endWidth - startWidth) / 4));
+	std::uniform_int_distribution<int>  lengthGenerator(int((endWidth-startWidth)/6), int((endWidth - startWidth) / 4));
 	std::uniform_int_distribution<int> mountainGenerationStartGenerator(startLength, endLength);
 	
 	int mountainStartOfGeneration = mountainGenerationStartGenerator(rd);

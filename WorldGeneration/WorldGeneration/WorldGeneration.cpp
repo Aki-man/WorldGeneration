@@ -1,6 +1,5 @@
 #include <iostream>
 #include "Map.h"
-#include "ParallelMap.h"
 #include "Player.h"
 #include <tbb/tick_count.h>
 #include "ParallelPlayer.h"

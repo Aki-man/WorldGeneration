@@ -2,6 +2,7 @@
 #include "Map.h"
 #include "ParallelMap.h"
 #include "Player.h"
+#include <tbb/tick_count.h>
 
 void PlayerMenu(WorldMap map) {
     Player newPlayer(Coordinate(50, 50), map, 20);
@@ -29,14 +30,26 @@ void PlayerMenu(WorldMap map) {
     }
 }
 
+void ParallelGenerationTest(int n) {
+    std::cout << "Starting serial generation" << std::endl;
+    tbb::tick_count startTime = tbb::tick_count::now();
+    WorldMap map = WorldMap(n, n);
+    map.GenerateFourIslandMap();
+    tbb::tick_count endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Serial time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    std::cout << "Starting parallel generation" << std::endl;
+    startTime = tbb::tick_count::now();
+    ParallelWorldMap parallelMap = ParallelWorldMap(n, n);
+    map.GenerateFourIslandMap();
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Parallel time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+}
+
 int main()
 {
-    ParallelWorldMap map = ParallelWorldMap(100, 100);
-    map.GenerateFourIslandMap();
-    std::cout << map;
-
-    //PlayerMenu(map);
-    
-
+    ParallelGenerationTest(2000);
     
 }

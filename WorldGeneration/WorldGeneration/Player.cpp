@@ -39,10 +39,13 @@ void Player::getView()
 
 void Player::getViewWithShadows() {
 	Coordinate startingCoordinate = Coordinate(currentCoordinate.x, currentCoordinate.y);
+	double increasePerTile = 0;
+	double currentIncrease = 0;
 	for (int numberOfRays = -this->viewSize; numberOfRays < this->viewSize; ++numberOfRays) {
 		bool ranIntoBlock = false;
-		for (int i = 0; i <= this->viewSize * 2; ++i) {
-			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + i, startingCoordinate.y + numberOfRays);
+		double currentIncrease = 0;
+		for (int i = 1; i <= this->viewSize * 2; ++i) {
+			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + i, startingCoordinate.y + int(currentIncrease));
 			if (ranIntoBlock) {
 				this->currentView[viewedCoordinate] = '+';
 
@@ -56,10 +59,11 @@ void Player::getViewWithShadows() {
 			else {
 				this->currentView[viewedCoordinate] = '/';
 			}
+			currentIncrease += increasePerTile/2;
 		}
 		ranIntoBlock = false;
-		for (int i = 0; i >= -this->viewSize * 2; --i) {
-			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + i, startingCoordinate.y + numberOfRays);
+		for (int i = -1; i >= -this->viewSize * 2; --i) {
+			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + i, startingCoordinate.y - int(currentIncrease));
 			if (ranIntoBlock) {
 				this->currentView[viewedCoordinate] = '+';
 
@@ -73,8 +77,9 @@ void Player::getViewWithShadows() {
 			else {
 				this->currentView[viewedCoordinate] = '/';
 			}
+			currentIncrease += increasePerTile / 2;
 		}
-		
+		increasePerTile += 0.25;
 	}
 	this->currentView[this->currentCoordinate] = '*';
 }

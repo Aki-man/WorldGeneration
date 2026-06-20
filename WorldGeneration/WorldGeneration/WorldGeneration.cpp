@@ -30,9 +30,9 @@ void PlayerMenu(WorldMap map) {
     }
 }
 
-/*void ParallelPlayerMenu(ParallelWorldMap map) {
+void ParallelPlayerMenu(ParallelWorldMap map) {
     WorldMap worldmap = WorldMap();
-    ParallelPlayer newPlayer(Coordinate(50, 50), worldmap, map, 20);
+    ParallelPlayer newPlayer(Coordinate(50, 50), worldmap, &map, 20);
     while (true) {
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
@@ -55,7 +55,7 @@ void PlayerMenu(WorldMap map) {
             continue;
         system("cls");
     }
-}*/
+}
 
 void ParallelGenerationTest(int n) {
     std::cout << "Starting serial generation" << std::endl;
@@ -78,8 +78,9 @@ void ParallelGenerationTest(int n) {
 int main()
 {
     
-    //ParallelWorldMap parallelMap = ParallelWorldMap(1000, 1000);
-    //parallelMap.GenerateFourIslandMap();
-    //ParallelPlayerMenu(parallelMap);
-    ParallelGenerationTest(1000);
+    ParallelWorldMap parallelMap = ParallelWorldMap(100, 100);
+    parallelMap.GenerateFourIslandMap();
+    //std::cout << parallelMap;
+    ParallelPlayerMenu(parallelMap);
+    //ParallelGenerationTest(100);
 }

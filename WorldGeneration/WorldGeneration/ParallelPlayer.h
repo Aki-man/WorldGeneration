@@ -3,10 +3,11 @@
 #include "ParallelMap.h"
 
 class ParallelPlayer : public Player{
-	ParallelWorldMap& parallelWorld;
+	ParallelWorldMap* parallelWorld;
 	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare> parallelView;
 public:
-	ParallelPlayer(Coordinate start, WorldMap& map,ParallelWorldMap& world, int view) : Player(start, map, view), parallelWorld(world), parallelView(tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>()) {};
+	ParallelPlayer(Coordinate start, WorldMap& map,ParallelWorldMap* world, int view) : Player(start, map, view),
+		parallelWorld(world), parallelView(tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>()) {};
 
 	
 	virtual void getViewWithShadows() override;

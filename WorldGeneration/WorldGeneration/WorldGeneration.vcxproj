@@ -133,6 +133,7 @@
     <ClCompile Include="IslandGeneratorConfiguration.cpp" />
     <ClCompile Include="LengthAndStartGenerator.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="ParallelIslandGenerator.cpp" />
     <ClCompile Include="ParallelMap.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="WorldGeneration.cpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="LengthAndStartGenerator.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MyHashCompare.h" />
+    <ClInclude Include="ParallelIslandGenerator.h" />
     <ClInclude Include="ParallelMap.h" />
     <ClInclude Include="ParallelMapHelper.h" />
     <ClInclude Include="Player.h" />

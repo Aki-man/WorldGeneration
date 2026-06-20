@@ -128,6 +128,91 @@ void Player::getViewWithShadows() {
 			currentIncrease += increasePerTile;
 			//currentIncrease += increasePerTile/2;
 		}
+		ranIntoBlock = false;
+		currentIncrease = 0;
+		for (int i = 1; i <= this->viewSize * 2; ++i) {
+
+			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + int(currentIncrease), startingCoordinate.y + i);
+			if (ranIntoBlock) {
+				this->currentView[viewedCoordinate] = '+';
+
+			}
+			else if (this->world.worldMap.contains(viewedCoordinate)) {
+				char temp = this->world.worldMap[viewedCoordinate];
+				this->currentView[viewedCoordinate] = temp;
+				if (temp == 'M' || temp == 'T')
+					ranIntoBlock = true;
+			}
+			else {
+				this->currentView[viewedCoordinate] = '/';
+			}
+			currentIncrease += increasePerTile;
+			//currentIncrease += increasePerTile/2;
+		}
+		ranIntoBlock = false;
+		currentIncrease = 0;
+		for (int i = -1; i >= -this->viewSize * 2; --i) {
+
+			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + int(currentIncrease), startingCoordinate.y + i);
+			if (ranIntoBlock) {
+				this->currentView[viewedCoordinate] = '+';
+
+			}
+			else if (this->world.worldMap.contains(viewedCoordinate)) {
+				char temp = this->world.worldMap[viewedCoordinate];
+				this->currentView[viewedCoordinate] = temp;
+				if (temp == 'M' || temp == 'T')
+					ranIntoBlock = true;
+			}
+			else {
+				this->currentView[viewedCoordinate] = '/';
+			}
+			currentIncrease += increasePerTile;
+			//currentIncrease += increasePerTile/2;
+		}
+		ranIntoBlock = false;
+		currentIncrease = 0;
+		for (int i = 1; i <= this->viewSize * 2; ++i) {
+
+			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x - int(currentIncrease), startingCoordinate.y + i);
+			if (ranIntoBlock) {
+				this->currentView[viewedCoordinate] = '+';
+
+			}
+			else if (this->world.worldMap.contains(viewedCoordinate)) {
+				char temp = this->world.worldMap[viewedCoordinate];
+				this->currentView[viewedCoordinate] = temp;
+				if (temp == 'M' || temp == 'T')
+					ranIntoBlock = true;
+			}
+			else {
+				this->currentView[viewedCoordinate] = '/';
+			}
+			currentIncrease += increasePerTile;
+			//currentIncrease += increasePerTile/2;
+		}
+		ranIntoBlock = false;
+		currentIncrease = 0;
+		for (int i = -1; i >= -this->viewSize * 2; --i) {
+
+			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x - int(currentIncrease), startingCoordinate.y + i);
+			if (ranIntoBlock) {
+				this->currentView[viewedCoordinate] = '+';
+
+			}
+			else if (this->world.worldMap.contains(viewedCoordinate)) {
+				char temp = this->world.worldMap[viewedCoordinate];
+				this->currentView[viewedCoordinate] = temp;
+				if (temp == 'M' || temp == 'T')
+					ranIntoBlock = true;
+			}
+			else {
+				this->currentView[viewedCoordinate] = '/';
+			}
+			currentIncrease += increasePerTile;
+			//currentIncrease += increasePerTile/2;
+		}
+		//double increase = double(double(this->viewSize) / 100);
 		increasePerTile += 0.1;
 	}
 	this->currentView[this->currentCoordinate] = '*';

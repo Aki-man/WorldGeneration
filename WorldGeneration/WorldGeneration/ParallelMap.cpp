@@ -19,11 +19,11 @@ ParallelWorldMap::~ParallelWorldMap()
 void ParallelWorldMap::GenerateFourIslandMap()
 {
 	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);
-	ParallelIslandGenerator generatorOne(nullptr, &this->parallelWorldMap,0, this->width / 2, 0, this->length / 2, config);
+	ParallelIslandGenerator generatorOne(nullptr, &this->parallelWorldMap, 0, this->width / 2, 0, this->length / 2, config);
 	ParallelIslandGenerator generatorTwo(nullptr, &this->parallelWorldMap, this->width / 2, this->width, 0, this->length / 2, config);
 	ParallelIslandGenerator generatorThree(nullptr, &this->parallelWorldMap, 0, this->width / 2, this->length / 2, this->length, config);
 	ParallelIslandGenerator generatorFour(nullptr, &this->parallelWorldMap, this->width / 2, this->width, this->length / 2, this->length, config);
-	
+
 	task_group g;
 	g.run([&] {generatorOne.generateIsland(); });
 	g.run([&] {generatorTwo.generateIsland(); });
@@ -31,13 +31,12 @@ void ParallelWorldMap::GenerateFourIslandMap()
 	g.run([&] {generatorFour.generateIsland(); });
 	g.wait();
 
-	task_group g2;
-	g2.run([&] {generatorOne.secondPass(); });
-	g2.run([&] {generatorTwo.secondPass(); });
-	g2.run([&] {generatorThree.secondPass(); });
-	g2.run([&] {generatorFour.secondPass(); });
-	g2.wait();
+	generatorOne.secondPass();
+	generatorTwo.secondPass();
+	generatorThree.secondPass();
+	generatorFour.secondPass();
 }
+
 
 
 void ParallelWorldMap::print(std::ostream& out)

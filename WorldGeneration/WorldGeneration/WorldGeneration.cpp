@@ -3,16 +3,10 @@
 #include "ParallelMap.h"
 #include "Player.h"
 
-int main()
-{
-    WorldMap map = WorldMap(1000, 1000);
-    map.GenerateFourIslandMap();
-    //std::cout << map;
-
+void PlayerMenu(WorldMap map) {
     Player newPlayer(Coordinate(50, 50), map, 20);
     while (true) {
         newPlayer.getViewWithShadows();
-        std::cout << newPlayer << std::endl;
         newPlayer.cleanUpView();
 
         std::cout << newPlayer << std::endl;
@@ -33,6 +27,15 @@ int main()
             continue;
         system("cls");
     }
+}
+
+int main()
+{
+    WorldMap map = WorldMap(1000, 1000);
+    map.GenerateFourIslandMap();
+    //std::cout << map;
+
+    PlayerMenu(map);
     
 
     

@@ -6,10 +6,11 @@
 
 class WorldMap {
 protected:
-	std::map<Coordinate, char> worldMap;
+	
 	int width;
 	int length;
 public:
+	std::map<Coordinate, char> worldMap;
 	WorldMap() : width(0), length(0), worldMap(std::map<Coordinate, char>()) {};
 	WorldMap(int width, int length) : width(width), length(length), worldMap(std::map<Coordinate, char>()) {};
 	~WorldMap();

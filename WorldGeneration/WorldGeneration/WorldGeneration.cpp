@@ -31,11 +31,11 @@ void PlayerMenu(WorldMap map) {
 
 int main()
 {
-    WorldMap map = WorldMap(1000, 1000);
+    ParallelWorldMap map = ParallelWorldMap(100, 100);
     map.GenerateFourIslandMap();
-    //std::cout << map;
+    std::cout << map;
 
-    PlayerMenu(map);
+    //PlayerMenu(map);
     
 
     

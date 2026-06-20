@@ -8,6 +8,8 @@
 
 class IslandGenerator {
 	std::map<Coordinate, char> *worldMap;
+protected:
+	
 	int startWidth;
 	int endWidth;
 	int startLength;
@@ -20,15 +22,15 @@ public:
 	~IslandGenerator();
 	//std::tuple<int, int> generateIslandLengthAndStart(int islandLength, int islandStart, int currentLength, bool getWider);
 	//std::tuple<int, int> generateMountainLengthAndStart(std::tuple<int, int> islandLengthAndStart, int mountainLength, int mountainStart);
-	virtual void generateIsland();
+	void generateIsland();
 	void generateIslandOrIslandWithMountain(int i, int islandLength, int islandStart, int mountainLength, int mountainStart, bool generateIsland, bool generateMountain, bool mountainEndOfGeneration);
 	bool shouldIslandGenerate(int length, bool generateIsland, int islandEnd);
-	void secondPass();
-	void generateTileClump(Coordinate coord, int clumpSize, char tile);
-	void generateRiver(Coordinate startCoord, bool isGoingLeft, bool isGoingUp);
-	bool isAdjacentTo(Coordinate coord, char tile);
-	void generateSeaLine(int length);
+	virtual void secondPass();
+	virtual void generateTileClump(Coordinate coord, int clumpSize, char tile);
+	virtual void generateRiver(Coordinate startCoord, bool isGoingLeft, bool isGoingUp);
+	virtual bool isAdjacentTo(Coordinate coord, char tile);
+	virtual void generateSeaLine(int length);
 	virtual void generateIslandLine(int islandLength, int islandOffset, int length);
-	void generateIslandLineWithMountain(int island_begin, int island_end, int length, int mountain_begin, int mountain_end);
+	virtual void generateIslandLineWithMountain(int island_begin, int island_end, int length, int mountain_begin, int mountain_end);
 
 };

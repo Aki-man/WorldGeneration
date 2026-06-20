@@ -10,8 +10,6 @@ IslandGenerator::~IslandGenerator()
 	this->endWidth = 0;
 	this->startLength = 0;
 	this->endLength = 0;
-	
-
 }
 
 void IslandGenerator::generateIsland()

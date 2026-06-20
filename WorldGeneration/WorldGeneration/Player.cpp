@@ -22,9 +22,9 @@ void Player::moveRight()
 
 void Player::getView()
 {
-	Coordinate startingCoordinate = Coordinate(currentCoordinate.x - 5, currentCoordinate.y - 5);
-	for (int i = 0; i <= 10; ++i) {
-		for (int j = 0; j <= 10; ++j) {
+	Coordinate startingCoordinate = Coordinate(currentCoordinate.x - this->viewSize, currentCoordinate.y - this->viewSize);
+	for (int i = 0; i <= this->viewSize*2; ++i) {
+		for (int j = 0; j <= this->viewSize*2; ++j) {
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + j, startingCoordinate.y + i);
 			if (this->world.worldMap.contains(viewedCoordinate)) {
 				this->currentView[viewedCoordinate] = this->world.worldMap[viewedCoordinate];
@@ -39,9 +39,9 @@ void Player::getView()
 
 std::ostream& operator<<(std::ostream& out, Player& player)
 {
-	Coordinate startingCoordinate = Coordinate(player.currentCoordinate.x - 5, player.currentCoordinate.y - 5);
-	for (int i = 0; i <= 10; ++i) {
-		for (int j = 0; j <= 10; ++j) {
+	Coordinate startingCoordinate = Coordinate(player.currentCoordinate.x - player.viewSize, player.currentCoordinate.y - player.viewSize);
+	for (int i = 0; i <= player.viewSize*2; ++i) {
+		for (int j = 0; j <= player.viewSize*2; ++j) {
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + j, startingCoordinate.y + i);
 			char temp = player.currentView[viewedCoordinate];
 			if (temp == 'O') {

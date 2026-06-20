@@ -9,7 +9,7 @@ int main()
     map.GenerateFourIslandMap();
     std::cout << map;
 
-    Player newPlayer(Coordinate(20, 20), map);
+    Player newPlayer(Coordinate(20, 20), map, 10);
     while (true) {
         newPlayer.getView();
 

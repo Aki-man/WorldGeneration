@@ -8,8 +8,9 @@ public:
 	Coordinate currentCoordinate;
 	std::map<Coordinate, char> currentView;
 	WorldMap& world;
+	int viewSize;
 
-	Player(Coordinate start, WorldMap& world): currentCoordinate(start), currentView(std::map<Coordinate, char>()), world(world) {};
+	Player(Coordinate start, WorldMap& world, int view): currentCoordinate(start), currentView(std::map<Coordinate, char>()), world(world), viewSize(view) {};
 	void moveUp();
 	void moveDown();
 	void moveLeft();

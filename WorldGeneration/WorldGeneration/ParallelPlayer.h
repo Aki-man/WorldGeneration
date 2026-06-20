@@ -13,7 +13,7 @@ public:
 	virtual void getViewWithShadows() override;
 	void getFirstQuarter(double increasePerTile, Coordinate startingCoordinate);
 	void getSecondQuarter(double increasePerTile, Coordinate startingCoordinate);
-	void getThirdQuearter(double increasePerTile, Coordinate startingCoordinate);
+	void getThirdQuarter(double increasePerTile, Coordinate startingCoordinate);
 	void getFourthQuarter(double increasePerTile, Coordinate startingCoordinate);
 	virtual bool checkAddingCurrentCoordinate(Coordinate coord, bool ranIntoBlock) override;
 	virtual void cleanUpView() override;

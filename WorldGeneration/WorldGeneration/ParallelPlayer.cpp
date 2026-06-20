@@ -8,14 +8,21 @@ void ParallelPlayer::getViewWithShadows()
 	//double currentIncrease = 0;
 	double increasePerTile = 0;
 	for (int numberOfRays = 0; numberOfRays < 20; ++numberOfRays) {
-
-		this->getFirstQuarter(increasePerTile, startingCoordinate);
-		this->getSecondQuarter(increasePerTile, startingCoordinate);
+		tbb::task_group g;
+		g.run([&] {this->getFirstQuarter(increasePerTile, startingCoordinate); });
+		g.run([&] {this->getSecondQuarter(increasePerTile, startingCoordinate); });
+		g.run([&] {this->getThirdQuarter(increasePerTile, startingCoordinate); });
+		g.run([&] {this->getFourthQuarter(increasePerTile, startingCoordinate); });
+		g.wait();
+		/*this->getSecondQuarter(increasePerTile, startingCoordinate);
 		this->getThirdQuearter(increasePerTile, startingCoordinate);
-		this->getFourthQuarter(increasePerTile, startingCoordinate);
+		this->getFourthQuarter(increasePerTile, startingCoordinate);*/
 		increasePerTile += 0.1;
 	}
-	this->currentView[this->currentCoordinate] = '*';
+	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
+	this->parallelView.insert(a, startingCoordinate);
+	a->second = '*';
+	//this->currentView[this->currentCoordinate] = '*';
 }
 
 void ParallelPlayer::getFirstQuarter(double increasePerTile, Coordinate startingCoordinate)
@@ -57,7 +64,7 @@ void ParallelPlayer::getSecondQuarter(double increasePerTile, Coordinate startin
 	}
 }
 
-void ParallelPlayer::getThirdQuearter(double increasePerTile, Coordinate startingCoordinate)
+void ParallelPlayer::getThirdQuarter(double increasePerTile, Coordinate startingCoordinate)
 {
 	bool ranIntoBlock = false;
 	double currentIncrease = increasePerTile;
@@ -131,8 +138,10 @@ void ParallelPlayer::cleanUpView()
 			tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
 			bool found = this->parallelView.find(a, viewedCoordinate);
 			if (!found) {
-				if (this->isAdjacent(viewedCoordinate, '+'))
+				if (this->isAdjacent(viewedCoordinate, '+')) {
+					this->parallelView.insert(a, viewedCoordinate);
 					a->second = '+';
+				}
 				else {
 					found = (*this->parallelWorld).parallelWorldMap.find(a, viewedCoordinate);
 					char temp = a->second;

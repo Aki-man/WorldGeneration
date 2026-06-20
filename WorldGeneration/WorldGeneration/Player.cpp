@@ -23,8 +23,8 @@ void Player::moveRight()
 void Player::getView()
 {
 	Coordinate startingCoordinate = Coordinate(currentCoordinate.x - 5, currentCoordinate.y - 5);
-	for (int i = 0; i < 10; ++i) {
-		for (int j = 0; j < 10; ++j) {
+	for (int i = 0; i <= 10; ++i) {
+		for (int j = 0; j <= 10; ++j) {
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + j, startingCoordinate.y + i);
 			if (this->world.worldMap.contains(viewedCoordinate)) {
 				this->currentView[viewedCoordinate] = this->world.worldMap[viewedCoordinate];
@@ -64,8 +64,10 @@ std::ostream& operator<<(std::ostream& out, Player& player)
 			}
 			out << temp;
 		}
+		
 		out << std::endl;
 	}
+	out << std::endl << "X:" << player.currentCoordinate.x << " Y:" << player.currentCoordinate.y;
 	out << std::endl;
 	
 

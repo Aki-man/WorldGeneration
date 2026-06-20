@@ -12,8 +12,9 @@
 
 
 class ParallelWorldMap : public WorldMap {
-	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare> parallelWorldMap;
+	
 public:
+	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare> parallelWorldMap;
 	ParallelWorldMap() : WorldMap(), parallelWorldMap(tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>()) {};
 	ParallelWorldMap(int width, int length) : WorldMap(width, length) {};
 	~ParallelWorldMap();

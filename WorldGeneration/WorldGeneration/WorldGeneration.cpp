@@ -1,8 +1,8 @@
 #include <iostream>
 #include "Map.h"
-#include "ParallelMap.h"
 #include "Player.h"
 #include <tbb/tick_count.h>
+#include "ParallelPlayer.h"
 
 void PlayerMenu(WorldMap map) {
     Player newPlayer(Coordinate(50, 50), map, 20);
@@ -10,6 +10,32 @@ void PlayerMenu(WorldMap map) {
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
 
+        std::cout << newPlayer << std::endl;
+        std::cout << "please press a WASD button or l to leave" << std::endl;
+        std::string entry;
+        std::cin >> entry;
+        if (entry == "w" || entry == "W")
+            newPlayer.moveUp();
+        else if (entry == "s" || entry == "S")
+            newPlayer.moveDown();
+        else if (entry == "a" || entry == "A")
+            newPlayer.moveLeft();
+        else if (entry == "d" || entry == "D")
+            newPlayer.moveRight();
+        else if (entry == "l")
+            break;
+        else
+            continue;
+        system("cls");
+    }
+}
+
+void ParallelPlayerMenu(ParallelWorldMap map) {
+    WorldMap worldmap = WorldMap();
+    ParallelPlayer newPlayer(Coordinate(50, 50), worldmap, map, 20);
+    while (true) {
+        newPlayer.getViewWithShadows();
+        newPlayer.cleanUpView();
         std::cout << newPlayer << std::endl;
         std::cout << "please press a WASD button or l to leave" << std::endl;
         std::string entry;
@@ -50,6 +76,8 @@ void ParallelGenerationTest(int n) {
 
 int main()
 {
-    ParallelGenerationTest(2000);
+    ParallelWorldMap parallelMap = ParallelWorldMap(1000, 1000);
+    parallelMap.GenerateFourIslandMap();
+    ParallelPlayerMenu(parallelMap);
     
 }

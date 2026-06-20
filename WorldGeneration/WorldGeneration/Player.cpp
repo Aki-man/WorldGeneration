@@ -51,19 +51,7 @@ void Player::getViewWithShadows() {
 		for (int i = 1; i <= this->viewSize * 2; ++i) {
 
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + i, startingCoordinate.y + int(currentIncrease));
-			if (ranIntoBlock) {
-				this->currentView[viewedCoordinate] = '+';
-
-			}
-			else if (this->world.worldMap.contains(viewedCoordinate)) {
-				char temp = this->world.worldMap[viewedCoordinate];
-				this->currentView[viewedCoordinate] = temp;
-				if (temp == 'M' || temp == 'T')
-					ranIntoBlock = true;
-			}
-			else {
-				this->currentView[viewedCoordinate] = '/';
-			}
+			ranIntoBlock = this->checkAddingCurrentCoordinate(viewedCoordinate, ranIntoBlock);
 			currentIncrease += increasePerTile;
 		}
 		ranIntoBlock = false;
@@ -71,19 +59,7 @@ void Player::getViewWithShadows() {
 		for (int i = 1; i <= this->viewSize * 2; ++i) {
 
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + i, startingCoordinate.y - int(currentIncrease));
-			if (ranIntoBlock) {
-				this->currentView[viewedCoordinate] = '+';
-
-			}
-			else if (this->world.worldMap.contains(viewedCoordinate)) {
-				char temp = this->world.worldMap[viewedCoordinate];
-				this->currentView[viewedCoordinate] = temp;
-				if (temp == 'M' || temp == 'T')
-					ranIntoBlock = true;
-			}
-			else {
-				this->currentView[viewedCoordinate] = '/';
-			}
+			ranIntoBlock = this->checkAddingCurrentCoordinate(viewedCoordinate, ranIntoBlock);
 			currentIncrease += increasePerTile;
 		
 		}
@@ -91,19 +67,7 @@ void Player::getViewWithShadows() {
 		ranIntoBlock = false;
 		for (int i = -1; i >= -this->viewSize * 2; --i) {
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + i, startingCoordinate.y - int(currentIncrease));
-			if (ranIntoBlock) {
-				this->currentView[viewedCoordinate] = '+';
-
-			}
-			else if (this->world.worldMap.contains(viewedCoordinate)) {
-				char temp = this->world.worldMap[viewedCoordinate];
-				this->currentView[viewedCoordinate] = temp;
-				if (temp == 'M' || temp == 'T')
-					ranIntoBlock = true;
-			}
-			else {
-				this->currentView[viewedCoordinate] = '/';
-			}
+			ranIntoBlock = this->checkAddingCurrentCoordinate(viewedCoordinate, ranIntoBlock);
 			currentIncrease += increasePerTile;
 		}
 		ranIntoBlock = false;
@@ -111,19 +75,7 @@ void Player::getViewWithShadows() {
 		for (int i = -1; i >= -this->viewSize * 2; --i) {
 
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + i, startingCoordinate.y + int(currentIncrease));
-			if (ranIntoBlock) {
-				this->currentView[viewedCoordinate] = '+';
-
-			}
-			else if (this->world.worldMap.contains(viewedCoordinate)) {
-				char temp = this->world.worldMap[viewedCoordinate];
-				this->currentView[viewedCoordinate] = temp;
-				if (temp == 'M' || temp == 'T')
-					ranIntoBlock = true;
-			}
-			else {
-				this->currentView[viewedCoordinate] = '/';
-			}
+			ranIntoBlock = this->checkAddingCurrentCoordinate(viewedCoordinate, ranIntoBlock);
 			currentIncrease += increasePerTile;
 		}
 		ranIntoBlock = false;
@@ -131,19 +83,7 @@ void Player::getViewWithShadows() {
 		for (int i = 1; i <= this->viewSize * 2; ++i) {
 
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + int(currentIncrease), startingCoordinate.y + i);
-			if (ranIntoBlock) {
-				this->currentView[viewedCoordinate] = '+';
-
-			}
-			else if (this->world.worldMap.contains(viewedCoordinate)) {
-				char temp = this->world.worldMap[viewedCoordinate];
-				this->currentView[viewedCoordinate] = temp;
-				if (temp == 'M' || temp == 'T')
-					ranIntoBlock = true;
-			}
-			else {
-				this->currentView[viewedCoordinate] = '/';
-			}
+			ranIntoBlock = this->checkAddingCurrentCoordinate(viewedCoordinate, ranIntoBlock);
 			currentIncrease += increasePerTile;
 		}
 		ranIntoBlock = false;
@@ -151,19 +91,7 @@ void Player::getViewWithShadows() {
 		for (int i = -1; i >= -this->viewSize * 2; --i) {
 
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + int(currentIncrease), startingCoordinate.y + i);
-			if (ranIntoBlock) {
-				this->currentView[viewedCoordinate] = '+';
-
-			}
-			else if (this->world.worldMap.contains(viewedCoordinate)) {
-				char temp = this->world.worldMap[viewedCoordinate];
-				this->currentView[viewedCoordinate] = temp;
-				if (temp == 'M' || temp == 'T')
-					ranIntoBlock = true;
-			}
-			else {
-				this->currentView[viewedCoordinate] = '/';
-			}
+			ranIntoBlock = this->checkAddingCurrentCoordinate(viewedCoordinate, ranIntoBlock);
 			currentIncrease += increasePerTile;
 		}
 		ranIntoBlock = false;
@@ -171,19 +99,7 @@ void Player::getViewWithShadows() {
 		for (int i = 1; i <= this->viewSize * 2; ++i) {
 
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x - int(currentIncrease), startingCoordinate.y + i);
-			if (ranIntoBlock) {
-				this->currentView[viewedCoordinate] = '+';
-
-			}
-			else if (this->world.worldMap.contains(viewedCoordinate)) {
-				char temp = this->world.worldMap[viewedCoordinate];
-				this->currentView[viewedCoordinate] = temp;
-				if (temp == 'M' || temp == 'T')
-					ranIntoBlock = true;
-			}
-			else {
-				this->currentView[viewedCoordinate] = '/';
-			}
+			ranIntoBlock = this->checkAddingCurrentCoordinate(viewedCoordinate, ranIntoBlock);
 			currentIncrease += increasePerTile;
 		}
 		ranIntoBlock = false;
@@ -191,24 +107,31 @@ void Player::getViewWithShadows() {
 		for (int i = -1; i >= -this->viewSize * 2; --i) {
 
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x - int(currentIncrease), startingCoordinate.y + i);
-			if (ranIntoBlock) {
-				this->currentView[viewedCoordinate] = '+';
-
-			}
-			else if (this->world.worldMap.contains(viewedCoordinate)) {
-				char temp = this->world.worldMap[viewedCoordinate];
-				this->currentView[viewedCoordinate] = temp;
-				if (temp == 'M' || temp == 'T')
-					ranIntoBlock = true;
-			}
-			else {
-				this->currentView[viewedCoordinate] = '/';
-			}
+			ranIntoBlock = this->checkAddingCurrentCoordinate(viewedCoordinate, ranIntoBlock);
 			currentIncrease += increasePerTile;
 		}
 		increasePerTile += 0.1;
 	}
 	this->currentView[this->currentCoordinate] = '*';
+}
+
+bool Player::checkAddingCurrentCoordinate(Coordinate viewedCoordinate, bool ranIntoBlock)
+{
+	if (ranIntoBlock) {
+
+		this->currentView[viewedCoordinate] = '+';
+
+	}
+	else if (this->world.worldMap.contains(viewedCoordinate)) {
+		char temp = this->world.worldMap[viewedCoordinate];
+		this->currentView[viewedCoordinate] = temp;
+		if (temp == 'M' || temp == 'T')
+			ranIntoBlock = true;
+	}
+	else {
+		this->currentView[viewedCoordinate] = '/';
+	}
+	return ranIntoBlock;
 }
 
 void Player::cleanUpView() {

@@ -17,6 +17,7 @@ public:
 	void moveRight();
 	void getView();
 	void getViewWithShadows();
+	bool checkAddingCurrentCoordinate(Coordinate coord, bool ranIntoBlock);
 	void cleanUpView();
 	bool isAdjacent(Coordinate coord, char tile);
 

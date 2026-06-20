@@ -134,6 +134,7 @@
     <ClCompile Include="LengthAndStartGenerator.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="ParallelMap.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="WorldGeneration.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +146,7 @@
     <ClInclude Include="MyHashCompare.h" />
     <ClInclude Include="ParallelMap.h" />
     <ClInclude Include="ParallelMapHelper.h" />
+    <ClInclude Include="Player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

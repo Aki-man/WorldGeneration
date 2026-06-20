@@ -1,19 +1,42 @@
 #include <iostream>
 #include "Map.h"
 #include "ParallelMap.h"
+#include "Player.h"
+
+void PlayerMenu(WorldMap map) {
+    Player newPlayer(Coordinate(50, 50), map, 20);
+    while (true) {
+        newPlayer.getViewWithShadows();
+        newPlayer.cleanUpView();
+
+        std::cout << newPlayer << std::endl;
+        std::cout << "please press a WASD button or l to leave" << std::endl;
+        std::string entry;
+        std::cin >> entry;
+        if (entry == "w" || entry == "W")
+            newPlayer.moveUp();
+        else if (entry == "s" || entry == "S")
+            newPlayer.moveDown();
+        else if (entry == "a" || entry == "A")
+            newPlayer.moveLeft();
+        else if (entry == "d" || entry == "D")
+            newPlayer.moveRight();
+        else if (entry == "l")
+            break;
+        else
+            continue;
+        system("cls");
+    }
+}
 
 int main()
 {
-    WorldMap map = WorldMap(100, 100);
+    WorldMap map = WorldMap(1000, 1000);
     map.GenerateFourIslandMap();
-   /* map.generateIsland(0, 50, 0, 50);
-    map.generateIsland(50, 100, 0, 50);
-    map.generateIsland(0, 50, 50, 100);
-    map.generateIsland(50, 100, 50, 100);*/
-    /*map.generateIsland(0, 50, 0, 100);
-    map.generateIsland(50, 100, 0, 50);
-    map.generateIsland(50, 100, 50, 100);*/
+    //std::cout << map;
+
+    PlayerMenu(map);
     
 
-    std::cout << map;
+    
 }

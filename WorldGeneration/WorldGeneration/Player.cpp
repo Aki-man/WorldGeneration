@@ -1,4 +1,5 @@
 #include "Player.h"
+#include <vector>
 
 void Player::moveUp()
 {
@@ -43,7 +44,7 @@ void Player::getViewWithShadows() {
 	
 	//double currentIncrease = 0;
 	double increasePerTile = 0;
-	for (int numberOfRays = -this->viewSize; numberOfRays < this->viewSize; ++numberOfRays) {
+	for (int numberOfRays = 0; numberOfRays < 20; ++numberOfRays) {
 		
 		bool ranIntoBlock = false;
 		double currentIncrease = increasePerTile;
@@ -64,7 +65,6 @@ void Player::getViewWithShadows() {
 				this->currentView[viewedCoordinate] = '/';
 			}
 			currentIncrease += increasePerTile;
-			//currentIncrease += increasePerTile/2;
 		}
 		ranIntoBlock = false;
 		currentIncrease = increasePerTile;
@@ -85,7 +85,7 @@ void Player::getViewWithShadows() {
 				this->currentView[viewedCoordinate] = '/';
 			}
 			currentIncrease += increasePerTile;
-			//currentIncrease += increasePerTile/2;
+		
 		}
 		currentIncrease = increasePerTile;
 		ranIntoBlock = false;
@@ -105,7 +105,6 @@ void Player::getViewWithShadows() {
 				this->currentView[viewedCoordinate] = '/';
 			}
 			currentIncrease += increasePerTile;
-			//currentIncrease += increasePerTile / 2;
 		}
 		ranIntoBlock = false;
 		currentIncrease = increasePerTile;
@@ -126,7 +125,6 @@ void Player::getViewWithShadows() {
 				this->currentView[viewedCoordinate] = '/';
 			}
 			currentIncrease += increasePerTile;
-			//currentIncrease += increasePerTile/2;
 		}
 		ranIntoBlock = false;
 		currentIncrease = increasePerTile;
@@ -147,7 +145,6 @@ void Player::getViewWithShadows() {
 				this->currentView[viewedCoordinate] = '/';
 			}
 			currentIncrease += increasePerTile;
-			//currentIncrease += increasePerTile/2;
 		}
 		ranIntoBlock = false;
 		currentIncrease = increasePerTile;
@@ -168,7 +165,6 @@ void Player::getViewWithShadows() {
 				this->currentView[viewedCoordinate] = '/';
 			}
 			currentIncrease += increasePerTile;
-			//currentIncrease += increasePerTile/2;
 		}
 		ranIntoBlock = false;
 		currentIncrease = increasePerTile;
@@ -189,7 +185,6 @@ void Player::getViewWithShadows() {
 				this->currentView[viewedCoordinate] = '/';
 			}
 			currentIncrease += increasePerTile;
-			//currentIncrease += increasePerTile/2;
 		}
 		ranIntoBlock = false;
 		currentIncrease = increasePerTile;
@@ -210,12 +205,48 @@ void Player::getViewWithShadows() {
 				this->currentView[viewedCoordinate] = '/';
 			}
 			currentIncrease += increasePerTile;
-			//currentIncrease += increasePerTile/2;
 		}
-		//double increase = double(double(this->viewSize) / 100);
 		increasePerTile += 0.1;
 	}
 	this->currentView[this->currentCoordinate] = '*';
+}
+
+void Player::cleanUpView() {
+	Coordinate startingCoordinate = Coordinate(this->currentCoordinate.x -this->viewSize,this->currentCoordinate.y - this->viewSize);
+	for (int i = 0; i <= this->viewSize * 2; ++i) {
+		for (int j = 0; j <= this->viewSize * 2; ++j) {
+			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + j, startingCoordinate.y + i);
+			char temp;
+			if (!this->currentView.contains(viewedCoordinate)) {
+				if (this->isAdjacent(viewedCoordinate, '+'))
+					this->currentView[viewedCoordinate] = '+';
+				else
+					if (this->world.worldMap.contains(viewedCoordinate))
+						this->currentView[viewedCoordinate] = this->world.worldMap[viewedCoordinate];
+					else
+						this->currentView[viewedCoordinate] = '/';
+			}
+		}
+
+	}
+}
+
+bool Player::isAdjacent(Coordinate coord, char tile) {
+	Coordinate leftAdjacentTile = Coordinate(coord.x - 1, coord.y);
+	Coordinate rightAdjacentTile = Coordinate(coord.x + 1, coord.y);
+	Coordinate upAdjacentTile = Coordinate(coord.x, coord.y + 1);
+	Coordinate downAdjacentTile = Coordinate(coord.x, coord.y - 1);
+	std::vector<Coordinate> coordinatesToCheck = { leftAdjacentTile, rightAdjacentTile, upAdjacentTile, downAdjacentTile };
+	for (Coordinate coord : coordinatesToCheck)
+	{
+		if (this->currentView.contains(coord)) {
+			char foundTile = this->currentView[coord];
+			if (foundTile == tile) {
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 std::ostream& operator<<(std::ostream& out, Player& player)

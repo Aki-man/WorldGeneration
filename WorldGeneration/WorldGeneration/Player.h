@@ -17,6 +17,8 @@ public:
 	void moveRight();
 	void getView();
 	void getViewWithShadows();
+	void cleanUpView();
+	bool isAdjacent(Coordinate coord, char tile);
 
 	friend std::ostream& operator<<(std::ostream& out, Player& player);
 	

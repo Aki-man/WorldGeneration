@@ -5,13 +5,15 @@
 
 int main()
 {
-    WorldMap map = WorldMap(100, 100);
+    WorldMap map = WorldMap(1000, 1000);
     map.GenerateFourIslandMap();
-    std::cout << map;
+    //std::cout << map;
 
-    Player newPlayer(Coordinate(50, 50), map, 9);
+    Player newPlayer(Coordinate(50, 50), map, 20);
     while (true) {
         newPlayer.getViewWithShadows();
+        std::cout << newPlayer << std::endl;
+        newPlayer.cleanUpView();
 
         std::cout << newPlayer << std::endl;
         std::cout << "please press a WASD button or l to leave" << std::endl;
@@ -25,8 +27,11 @@ int main()
             newPlayer.moveLeft();
         else if (entry == "d" || entry == "D")
             newPlayer.moveRight();
-        else
+        else if (entry == "l")
             break;
+        else
+            continue;
+        system("cls");
     }
     
 

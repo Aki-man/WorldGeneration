@@ -38,13 +38,17 @@ void Player::getView()
 }
 
 void Player::getViewWithShadows() {
+	this->currentView.clear();
 	Coordinate startingCoordinate = Coordinate(currentCoordinate.x, currentCoordinate.y);
+	
+	//double currentIncrease = 0;
 	double increasePerTile = 0;
-	double currentIncrease = 0;
 	for (int numberOfRays = -this->viewSize; numberOfRays < this->viewSize; ++numberOfRays) {
+		
 		bool ranIntoBlock = false;
 		double currentIncrease = 0;
 		for (int i = 1; i <= this->viewSize * 2; ++i) {
+
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + i, startingCoordinate.y + int(currentIncrease));
 			if (ranIntoBlock) {
 				this->currentView[viewedCoordinate] = '+';
@@ -59,8 +63,31 @@ void Player::getViewWithShadows() {
 			else {
 				this->currentView[viewedCoordinate] = '/';
 			}
-			currentIncrease += increasePerTile/2;
+			currentIncrease += increasePerTile;
+			//currentIncrease += increasePerTile/2;
 		}
+		ranIntoBlock = false;
+		currentIncrease = 0;
+		for (int i = 1; i <= this->viewSize * 2; ++i) {
+
+			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + i, startingCoordinate.y - int(currentIncrease));
+			if (ranIntoBlock) {
+				this->currentView[viewedCoordinate] = '+';
+
+			}
+			else if (this->world.worldMap.contains(viewedCoordinate)) {
+				char temp = this->world.worldMap[viewedCoordinate];
+				this->currentView[viewedCoordinate] = temp;
+				if (temp == 'M' || temp == 'T')
+					ranIntoBlock = true;
+			}
+			else {
+				this->currentView[viewedCoordinate] = '/';
+			}
+			currentIncrease += increasePerTile;
+			//currentIncrease += increasePerTile/2;
+		}
+		currentIncrease = 0;
 		ranIntoBlock = false;
 		for (int i = -1; i >= -this->viewSize * 2; --i) {
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + i, startingCoordinate.y - int(currentIncrease));
@@ -77,9 +104,31 @@ void Player::getViewWithShadows() {
 			else {
 				this->currentView[viewedCoordinate] = '/';
 			}
-			currentIncrease += increasePerTile / 2;
+			currentIncrease += increasePerTile;
+			//currentIncrease += increasePerTile / 2;
 		}
-		increasePerTile += 0.25;
+		ranIntoBlock = false;
+		currentIncrease = 0;
+		for (int i = -1; i >= -this->viewSize * 2; --i) {
+
+			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + i, startingCoordinate.y + int(currentIncrease));
+			if (ranIntoBlock) {
+				this->currentView[viewedCoordinate] = '+';
+
+			}
+			else if (this->world.worldMap.contains(viewedCoordinate)) {
+				char temp = this->world.worldMap[viewedCoordinate];
+				this->currentView[viewedCoordinate] = temp;
+				if (temp == 'M' || temp == 'T')
+					ranIntoBlock = true;
+			}
+			else {
+				this->currentView[viewedCoordinate] = '/';
+			}
+			currentIncrease += increasePerTile;
+			//currentIncrease += increasePerTile/2;
+		}
+		increasePerTile += 0.1;
 	}
 	this->currentView[this->currentCoordinate] = '*';
 }
@@ -90,7 +139,12 @@ std::ostream& operator<<(std::ostream& out, Player& player)
 	for (int i = 0; i <= player.viewSize*2; ++i) {
 		for (int j = 0; j <= player.viewSize*2; ++j) {
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + j, startingCoordinate.y + i);
-			char temp = player.currentView[viewedCoordinate];
+			char temp;
+			if (!player.currentView.contains(viewedCoordinate)) {
+				temp = '=';
+			}
+			else
+				temp = player.currentView[viewedCoordinate];
 			if (temp == 'O') {
 				out << "\033[32m";
 			}

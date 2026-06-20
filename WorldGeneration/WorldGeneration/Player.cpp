@@ -118,9 +118,8 @@ void Player::getViewWithShadows() {
 bool Player::checkAddingCurrentCoordinate(Coordinate viewedCoordinate, bool ranIntoBlock)
 {
 	if (ranIntoBlock) {
-
-		this->currentView[viewedCoordinate] = '+';
-
+		if(!this->currentView.contains(viewedCoordinate))
+			this->currentView[viewedCoordinate] = '+';
 	}
 	else if (this->world.worldMap.contains(viewedCoordinate)) {
 		char temp = this->world.worldMap[viewedCoordinate];
@@ -155,6 +154,7 @@ void Player::cleanUpView() {
 }
 
 bool Player::isAdjacent(Coordinate coord, char tile) {
+	int adjacentCount = 0;
 	Coordinate leftAdjacentTile = Coordinate(coord.x - 1, coord.y);
 	Coordinate rightAdjacentTile = Coordinate(coord.x + 1, coord.y);
 	Coordinate upAdjacentTile = Coordinate(coord.x, coord.y + 1);
@@ -165,10 +165,12 @@ bool Player::isAdjacent(Coordinate coord, char tile) {
 		if (this->currentView.contains(coord)) {
 			char foundTile = this->currentView[coord];
 			if (foundTile == tile) {
-				return true;
+				adjacentCount++;
 			}
 		}
 	}
+	if(adjacentCount >=2)
+		return true;
 	return false;
 }
 

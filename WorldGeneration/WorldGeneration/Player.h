@@ -16,6 +16,7 @@ public:
 	void moveLeft();
 	void moveRight();
 	void getView();
+	void getViewWithShadows();
 
 	friend std::ostream& operator<<(std::ostream& out, Player& player);
 	

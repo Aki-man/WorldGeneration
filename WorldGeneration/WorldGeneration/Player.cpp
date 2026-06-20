@@ -37,6 +37,48 @@ void Player::getView()
 	this->currentView[this->currentCoordinate] = '*';
 }
 
+void Player::getViewWithShadows() {
+	Coordinate startingCoordinate = Coordinate(currentCoordinate.x, currentCoordinate.y);
+	for (int numberOfRays = -this->viewSize; numberOfRays < this->viewSize; ++numberOfRays) {
+		bool ranIntoBlock = false;
+		for (int i = 0; i <= this->viewSize * 2; ++i) {
+			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + i, startingCoordinate.y + numberOfRays);
+			if (ranIntoBlock) {
+				this->currentView[viewedCoordinate] = '+';
+
+			}
+			else if (this->world.worldMap.contains(viewedCoordinate)) {
+				char temp = this->world.worldMap[viewedCoordinate];
+				this->currentView[viewedCoordinate] = temp;
+				if (temp == 'M' || temp == 'T')
+					ranIntoBlock = true;
+			}
+			else {
+				this->currentView[viewedCoordinate] = '/';
+			}
+		}
+		ranIntoBlock = false;
+		for (int i = 0; i >= -this->viewSize * 2; --i) {
+			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + i, startingCoordinate.y + numberOfRays);
+			if (ranIntoBlock) {
+				this->currentView[viewedCoordinate] = '+';
+
+			}
+			else if (this->world.worldMap.contains(viewedCoordinate)) {
+				char temp = this->world.worldMap[viewedCoordinate];
+				this->currentView[viewedCoordinate] = temp;
+				if (temp == 'M' || temp == 'T')
+					ranIntoBlock = true;
+			}
+			else {
+				this->currentView[viewedCoordinate] = '/';
+			}
+		}
+		
+	}
+	this->currentView[this->currentCoordinate] = '*';
+}
+
 std::ostream& operator<<(std::ostream& out, Player& player)
 {
 	Coordinate startingCoordinate = Coordinate(player.currentCoordinate.x - player.viewSize, player.currentCoordinate.y - player.viewSize);

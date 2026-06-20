@@ -11,7 +11,7 @@ int main()
 
     Player newPlayer(Coordinate(20, 20), map, 10);
     while (true) {
-        newPlayer.getView();
+        newPlayer.getViewWithShadows();
 
         std::cout << newPlayer << std::endl;
         std::cout << "please press a WASD button or l to leave" << std::endl;

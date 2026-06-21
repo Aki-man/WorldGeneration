@@ -141,6 +141,74 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
         std::cout << "Player save succeeded\n";
 }
 
+void Tests::SaveWorldToFileTestSerial(int n, std::string fileName)
+{
+    std::cout << "Generated island size " << n << "*" << n << std::endl;
+    std::cout << "------------------------------------------------" << std::endl;
+    std::cout << "Starting serial generation" << std::endl;
+    tbb::tick_count startTime = tbb::tick_count::now();
+    WorldMap map = WorldMap(n, n);
+    map.GenerateFourIslandMap();
+    tbb::tick_count endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Serial generation time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    if (n <= 200)
+        std::cout << map;
+
+    
+
+    std::cout << "------------------------------------------------" << std::endl;
+
+    std::cout << "Starting serial save" << std::endl;
+    startTime = tbb::tick_count::now();
+    map.save(fileName);
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Serial saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    map = WorldMap(n, n);
+    std::cout << "Starting serial load" << std::endl;
+    startTime = tbb::tick_count::now();
+    bool success = map.load(fileName);
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Serial loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    if (success)
+        std::cout << "File loading succeded" << std::endl;
+    else
+        std::cout << "File loading failed" << std::endl;
+    if (n <= 200)
+        std::cout << map;
+
+    std::cout << "------------------------------------------------" << std::endl;
+
+    std::cout << "Starting serial parall save" << std::endl;
+    startTime = tbb::tick_count::now();
+    map.parallelSave(fileName + "Parallel");
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Serial parallel saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    map = WorldMap(n, n);
+    std::cout << "Starting parallel serial load" << std::endl;
+    startTime = tbb::tick_count::now();
+    success = map.load(fileName);
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Serial parallel loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    if (success)
+        std::cout << "File loading succeded" << std::endl;
+    else
+        std::cout << "File loading failed" << std::endl;
+    if (n <= 200)
+        std::cout << map;
+
+    std::cout << "------------------------------------------------" << std::endl;
+}
+
 void Tests::BatchTests(int islandSize, int viewSize, std::string fileName) {
     std::cout << "Starting generation tests:" << std::endl;
     ParallelGenerationTest(islandSize);

@@ -65,16 +65,7 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
     if (n <= 200)
         std::cout << map;
 
-    std::cout << "Starting parallel generation" << std::endl;
-    startTime = tbb::tick_count::now();
-    ParallelWorldMap parallelMap = ParallelWorldMap(n, n);
-    parallelMap.GenerateFourIslandMap();
-    endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Parallel time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-
-    if (n <= 200)
-        std::cout << parallelMap;
+    
 
     std::cout << "------------------------------------------------" << std::endl;
 
@@ -102,6 +93,17 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
 
     std::cout << "------------------------------------------------" << std::endl;
 
+    std::cout << "Starting parallel generation" << std::endl;
+    startTime = tbb::tick_count::now();
+    ParallelWorldMap parallelMap = ParallelWorldMap(n, n);
+    parallelMap.GenerateFourIslandMap();
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Parallel time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    if (n <= 200)
+        std::cout << parallelMap;
+
     std::cout << "Starting parallel save" << std::endl;
     startTime = tbb::tick_count::now();
     parallelMap.save(fileName);
@@ -115,7 +117,7 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
     success = parallelMap.load(fileName);
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
-    std::cout << "Serial loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+    std::cout << "Parallel loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
 
     if (success)
         std::cout << "File loading succeded" << std::endl;

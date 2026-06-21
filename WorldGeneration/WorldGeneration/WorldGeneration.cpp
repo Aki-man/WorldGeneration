@@ -87,5 +87,5 @@ void ParallelPlayerMenu(int n) {
 
 int main()
 {
-    Tests::SaveWorldToFileTest(1000, "testFile");
+    Tests::SaveWorldToFileTest(150, "testFile");
 }

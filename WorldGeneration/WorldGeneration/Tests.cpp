@@ -184,7 +184,7 @@ void Tests::SaveWorldToFileTestSerial(int n, std::string fileName)
 
     std::cout << "------------------------------------------------" << std::endl;
 
-    std::cout << "Starting serial parall save" << std::endl;
+    std::cout << "Starting serial parallel save" << std::endl;
     startTime = tbb::tick_count::now();
     map.parallelSave(fileName + "Parallel");
     endTime = tbb::tick_count::now();
@@ -194,7 +194,7 @@ void Tests::SaveWorldToFileTestSerial(int n, std::string fileName)
     map = WorldMap(n, n);
     std::cout << "Starting parallel serial load" << std::endl;
     startTime = tbb::tick_count::now();
-    success = map.load(fileName);
+    success = map.load(fileName + "Parallel");
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Serial parallel loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";

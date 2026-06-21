@@ -152,7 +152,9 @@
     <ClInclude Include="IslandGeneratorConfiguration.h" />
     <ClInclude Include="LengthAndStartGenerator.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="MyEquality.h" />
     <ClInclude Include="MyHashCompare.h" />
+    <ClInclude Include="MyHasher.h" />
     <ClInclude Include="ParallelIslandGenerator.h" />
     <ClInclude Include="ParallelMap.h" />
     <ClInclude Include="ParallelMapHelper.h" />

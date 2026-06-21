@@ -2,7 +2,7 @@
 #include "map.h"
 #include <random>
 #include <tbb/parallel_for.h>
-#include <tbb/concurrent_hash_map.h>
+#include <tbb/concurrent_unordered_map.h>
 #include "ParallelMapHelper.h"
 #include "IslandGenerator.h"
 #include "ParallelIslandGenerator.h"
@@ -75,13 +75,12 @@ void ParallelWorldMap::saveMapChunk(std::string fileName, int i, int l) {
 	std::ofstream file(fileName, std::ios::out | std::ios::binary);
 	for (int j = i * (this->length / 2); j < (i + 1) * (this->length / 2); ++j) {
 		for (int k = l * (this->width / 2); k < (l + 1) * (this->length / 2); ++k) {
-			tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::const_accessor a;
-			bool found = this->parallelWorldMap.find(a, Coordinate(j, k));
+			bool found = this->parallelWorldMap.contains(Coordinate(j, k));
 			std::string savedData;
 			if (!found)
 				savedData = "=";
 			else
-				savedData = std::to_string(j) + " " + std::to_string(k) + " " + a->second + " ";
+				savedData = std::to_string(j) + " " + std::to_string(k) + " " + this->parallelWorldMap.at(Coordinate(j, k)) + " ";
 			file << savedData;
 		}
 	}
@@ -115,9 +114,7 @@ void ParallelWorldMap::loadMapChunk(std::string fileName, int i, int l) {
 		file >> x;
 		file >> y;
 		file >> tile;
-		tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-		this->parallelWorldMap.insert(a, Coordinate(x, y));
-		a->second = tile;
+		this->parallelWorldMap.insert({ Coordinate(x, y), tile });
 	}
 	file.close();
 }
@@ -128,12 +125,10 @@ std::ostream& operator<<(std::ostream& out, ParallelWorldMap& map)
 	for (int i = 0; i < map.length; ++i) {
 		for (int j = 0; j < map.width; ++j) {
 			Coordinate coord(j, i);
-
-			tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::const_accessor a;
-			bool found = map.parallelWorldMap.find(a, coord);
+			bool found = map.parallelWorldMap.contains(coord);
 			char temp = '=';
 			if(found)
-				temp = a->second;
+				temp = map.parallelWorldMap.at(coord);
 			if (temp == 'O') {
 				out << "\033[32m";
 			}

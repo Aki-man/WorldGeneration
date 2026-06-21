@@ -2,6 +2,17 @@
 #include "coordinate.h"
 #include <cmath>
 
+template<>
+struct std::hash<Coordinate>
+{
+	std::size_t operator()(const Coordinate& key) const noexcept
+	{
+		size_t h = 0;
+		h += key.x * 3 + key.y * 2 + std::pow(key.x, key.y);
+		return h;
+	}
+};
+
 struct MyHashCompare {
 	static size_t hash(const Coordinate& coord) {
 		size_t h = 0;

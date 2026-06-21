@@ -7,13 +7,13 @@
 #include <iostream>
 #include <tbb/parallel_for.h>
 #include <tbb/blocked_range.h>
-#include <tbb/concurrent_hash_map.h>
+#include <tbb/concurrent_unordered_map.h>
 
 class ParallelWorldMap : public WorldMap {
 
 public:
-	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare> parallelWorldMap;
-	ParallelWorldMap() : WorldMap(), parallelWorldMap(tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>()) {};
+	tbb::concurrent_unordered_map<Coordinate, char> parallelWorldMap;
+	ParallelWorldMap() : WorldMap(), parallelWorldMap(tbb::concurrent_unordered_map<Coordinate, char>()) {};
 	ParallelWorldMap(int width, int length) : WorldMap(width, length) {};
 	~ParallelWorldMap();
 	void GenerateFourIslandMap() override;

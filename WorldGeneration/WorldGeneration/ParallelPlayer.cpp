@@ -19,9 +19,8 @@ void ParallelPlayer::getViewWithShadows()
 		this->getFourthQuarter(increasePerTile, startingCoordinate);*/
 		increasePerTile += 0.1;
 	}
-	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-	this->parallelView.insert(a, startingCoordinate);
-	a->second = '*';
+	this->parallelView.insert({ startingCoordinate, '*' });
+	
 	//this->currentView[this->currentCoordinate] = '*';
 }
 
@@ -106,24 +105,20 @@ void ParallelPlayer::getFourthQuarter(double increasePerTile, Coordinate startin
 
 bool ParallelPlayer::checkAddingCurrentCoordinate(Coordinate viewedCoordinate, bool ranIntoBlock)
 {
-	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-	bool found = (*this->parallelWorld).parallelWorldMap.find(a, viewedCoordinate);
+	bool found = (*this->parallelWorld).parallelWorldMap.contains(viewedCoordinate);
 	if (ranIntoBlock) {
-		bool found = parallelView.find(a, viewedCoordinate);
+		bool found = parallelView.contains(viewedCoordinate);
 		if (!found)
-			parallelView.insert(a, viewedCoordinate);
-			a->second = '+';
+			parallelView.insert({ viewedCoordinate, '+' });
 	}
 	else if (found) {
-		char temp = a->second;
-		parallelView.insert(a, viewedCoordinate);
-		a->second = temp;
+		char temp = (*this->parallelWorld).parallelWorldMap.at(viewedCoordinate);
+		parallelView.insert({ viewedCoordinate, temp });
 		if (temp == 'M' || temp == 'T')
 			ranIntoBlock = true;
 	}
 	else {
-		parallelView.insert(a, viewedCoordinate);
-		a->second = '/';
+		parallelView.insert({ viewedCoordinate, '/' });
 	}
 	return ranIntoBlock;
 }
@@ -131,30 +126,27 @@ bool ParallelPlayer::checkAddingCurrentCoordinate(Coordinate viewedCoordinate, b
 void ParallelPlayer::cleanUpView()
 {
 	Coordinate startingCoordinate = Coordinate(this->currentCoordinate.x - this->viewSize, this->currentCoordinate.y - this->viewSize);
-	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
 	for (int i = 0; i <= this->viewSize * 2; ++i) {
 		for (int j = 0; j <= this->viewSize * 2; ++j) {
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + j, startingCoordinate.y + i);
 			char temp;
 			
-			bool found = this->parallelView.find(a, viewedCoordinate);
+			bool found = this->parallelView.contains(viewedCoordinate);
 			if (!found) {
 				if (this->isAdjacent(viewedCoordinate, '+')) {
-					this->parallelView.insert(a, viewedCoordinate);
-					a->second = '+';
+					this->parallelView.insert({ viewedCoordinate, '+'});
+				
 				}
 				else {
-					bool found = (*this->parallelWorld).parallelWorldMap.find(a, viewedCoordinate);
+					bool found = (*this->parallelWorld).parallelWorldMap.contains(viewedCoordinate);
 
 
 					if (found) {
-						char temp = a->second;
-						this->parallelView.insert(a, viewedCoordinate);
-						a->second = temp;
+						char temp = (*this->parallelWorld).parallelWorldMap.at(viewedCoordinate);
+						this->parallelView.insert({ viewedCoordinate, temp });
 					}
 					else {
-						this->parallelView.insert(a, viewedCoordinate);
-						a->second = '/';
+						this->parallelView.insert({ viewedCoordinate, '/'});
 					}
 				}
 			}
@@ -173,10 +165,10 @@ bool ParallelPlayer::isAdjacent(Coordinate coord, char tile)
 	std::vector<Coordinate> coordinatesToCheck = { leftAdjacentTile, rightAdjacentTile, upAdjacentTile, downAdjacentTile };
 	for (Coordinate coord : coordinatesToCheck)
 	{
-		tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::const_accessor a;
-		bool found = this->parallelView.find(a, coord);
+
+		bool found = this->parallelView.contains(coord);
 		if (found) {
-			char foundTile = a->second;
+			char foundTile = this->parallelView.at(coord);
 			if (foundTile == tile) {
 				adjacentCount++;
 			}
@@ -194,13 +186,12 @@ std::ostream& operator<<(std::ostream& out, ParallelPlayer& player)
 		for (int j = 0; j <= player.viewSize * 2; ++j) {
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + j, startingCoordinate.y + i);
 			char temp;
-			tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::const_accessor a;
-			bool found = player.parallelView.find(a, viewedCoordinate);
+			bool found = player.parallelView.contains(viewedCoordinate);
 			if (!found) {
 				temp = '=';
 			}
 			else
-				temp = a->second;
+				temp = player.parallelView.at(viewedCoordinate);
 			if (temp == 'O') {
 				out << "\033[32m";
 			}

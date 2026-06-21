@@ -1,13 +1,15 @@
 #pragma once
 #include "Player.h"
 #include "ParallelMap.h"
+#include "MyEquality.h"
+#include "MyHasher.h"
 
 class ParallelPlayer : public Player{
 	ParallelWorldMap* parallelWorld;
-	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare> parallelView;
+	tbb::concurrent_unordered_map<Coordinate, char> parallelView;
 public:
 	ParallelPlayer(Coordinate start, WorldMap& map,ParallelWorldMap* world, int view) : Player(start, map, view),
-		parallelWorld(world), parallelView(tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>()) {};
+		parallelWorld(world), parallelView(tbb::concurrent_unordered_map<Coordinate, char>()) {};
 
 	
 	virtual void getViewWithShadows() override;

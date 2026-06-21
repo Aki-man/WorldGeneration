@@ -1,4 +1,5 @@
 #include "ParallelIslandGenerator.h"
+#include <concurrent_unordered_map.h>
 
 ParallelIslandGenerator::~ParallelIslandGenerator()
 {
@@ -16,18 +17,16 @@ void ParallelIslandGenerator::secondPass()
 	for (int i = startLength; i < endLength; ++i) {
 		for (int j = startWidth; j < endWidth; ++j) {
 			Coordinate coord(i, j);
-			tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::const_accessor a;
-			bool found = (*this->parallelWorldMap).find(a, coord);
+			
+			bool found = (*this->parallelWorldMap).contains(coord);
 			
 			char tile = '=';
 			if(found)
-				tile = a->second;
-			a.release();
+				tile = (*this->parallelWorldMap).at(coord);
 			if (this->isAdjacentTo(coord, '~') && tile != '~' && tile != 'R' && tile != 'M') {
-				tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor writer;
-				(*this->parallelWorldMap).insert(writer, coord);
-				writer->second = 'C';
-				writer.release();
+				
+				(*this->parallelWorldMap).insert({ coord, 'C' });
+				
 			}
 			else if ((tile == 'O' ||tile == 'T') && lakeNumber > 0) {
 				std::uniform_int_distribution<int> randomLakesize(1, 8);
@@ -68,21 +67,7 @@ void ParallelIslandGenerator::generateTileClump(Coordinate coord, int clumpSize,
 	Coordinate(coord.x - 1, coord.y + 1),
 	Coordinate(coord.x + 1, coord.y - 1),
 	Coordinate(coord.x + 1, coord.y + 1) };
-	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-	(*this->parallelWorldMap).insert(a, coord);
-	a->second = tile;
-	/*std::uniform_int_distribution<int> randomCoordinateSelector(0, coordinatesToConvert.size() - 1);
-	for (int i = 0; i < clumpSize; ++i) {
-		Coordinate coord = coordinatesToConvert[randomCoordinateSelector(rd)];
-		bool found = (*this->parallelWorldMap).find(a, coord);
-		if (found) {
-			char foundTile = a->second;
-			if (foundTile != 'C' && foundTile != '~' && foundTile != 'R' && foundTile != 'M') {
-				(*this->parallelWorldMap).insert(a, coord);
-				a->second = tile;
-			}
-		}
-	}*/
+	(*this->parallelWorldMap).insert({ coord, tile });
 	this->replaceRandomTiles(coordinatesToConvert, clumpSize, tile);
 }
 
@@ -90,13 +75,11 @@ void ParallelIslandGenerator::replaceRandomTiles(std::vector<Coordinate> coordin
 	std::uniform_int_distribution<int> randomCoordinateSelector(0, coordinatesToConvert.size() - 1);
 	for (int i = 0; i < clumpSize; ++i) {
 		Coordinate coord = coordinatesToConvert[randomCoordinateSelector(rd)];
-		tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-		bool found = (*this->parallelWorldMap).find(a, coord);
+		bool found = (*this->parallelWorldMap).contains(coord);
 		if (found) {
-			char foundTile = a->second;
+			char foundTile = (*this->parallelWorldMap).at(coord);
 			if (foundTile != 'C' && foundTile != '~' && foundTile != 'R' && foundTile != 'M') {
-				(*this->parallelWorldMap).insert(a, coord);
-				a->second = tile;
+				(*this->parallelWorldMap).insert({ coord, tile });
 			}
 		}
 	}
@@ -106,10 +89,9 @@ void ParallelIslandGenerator::generateRiver(Coordinate startCoordinate, bool isG
 {
 	Coordinate currentCoordinate = startCoordinate;
 	while (true) {
-		tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-		(*this->parallelWorldMap).insert(a, currentCoordinate);
-		a->second = 'R';
-		a.release();
+		(*this->parallelWorldMap).insert({ currentCoordinate, 'R' });
+		
+		
 		if (this->isAdjacentTo(currentCoordinate, '~'))
 			break;
 		if (std::rand() % 2 == 0) {
@@ -136,10 +118,9 @@ bool ParallelIslandGenerator::isAdjacentTo(Coordinate coord, char tile)
 	std::vector<Coordinate> coordinatesToCheck = { leftAdjacentTile, rightAdjacentTile, upAdjacentTile, downAdjacentTile };
 	for (Coordinate coord : coordinatesToCheck)
 	{
-		tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::const_accessor a;
-		bool found = (*this->parallelWorldMap).find(a, coord);
+		bool found = (*this->parallelWorldMap).contains(coord);
 		if (found) {
-			char foundTile = a->second;
+			char foundTile = (*this->parallelWorldMap).at(coord);
 			if (foundTile == tile) {
 				return true;
 			}
@@ -150,11 +131,9 @@ bool ParallelIslandGenerator::isAdjacentTo(Coordinate coord, char tile)
 
 void ParallelIslandGenerator::generateSeaLine(int length)
 {
-	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
 	for (int i = startWidth; i < endWidth; ++i) {
 		Coordinate coord(i, length);
-		(*this->parallelWorldMap).insert(a, coord);
-		a->second = '~';
+		(*this->parallelWorldMap).insert({ coord , '~'});
 	}
 }
 
@@ -167,21 +146,17 @@ void ParallelIslandGenerator::generateIslandLine(int island_begin, int island_en
 			Coordinate coord(i, length);
 			int forest = forestChanceGenerator(rd);
 			if (forest == config.forestSpawnChance) {
-				tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-				(*this->parallelWorldMap).insert(a, coord);
-				a->second = 'T';
+
+				(*this->parallelWorldMap).insert({ coord, 'T'});
 			}
 			else {
-				tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-				(*this->parallelWorldMap).insert(a, coord);
-				a->second = 'O';
+				(*this->parallelWorldMap).insert({ coord, 'O' });
+				
 			}
 		}
 		else {
 			Coordinate coord(i, length);
-			tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-			(*this->parallelWorldMap).insert(a, coord);
-			a->second = '~';
+			(*this->parallelWorldMap).insert({ coord, '~' });
 			
 		}
 	}
@@ -198,36 +173,27 @@ void ParallelIslandGenerator::generateIslandLineWithMountain(int island_begin, i
 			if (i > mountain_begin && i <= mountain_end) {
 				int forest = mountainForestChanceGenerator(rd);
 				if (forest == config.forestSpawnChance) {
-					tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-					(*this->parallelWorldMap).insert(a, coord);
-					a->second = 'T';
+					(*this->parallelWorldMap).insert({ coord, 'T'});
 				}
 				else {
-					tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-					(*this->parallelWorldMap).insert(a, coord);
-					a->second = 'M';
+					(*this->parallelWorldMap).insert({ coord, 'M'});
 				}
 				continue;
 			}
 			else {
 				int forest = forestChanceGenerator(rd);
 				if (forest == config.forestSpawnChance) {
-					tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-					(*this->parallelWorldMap).insert(a, coord);
-					a->second = 'T';
+					(*this->parallelWorldMap).insert({ coord, 'T' });
 				}
 				else {
-					tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-					(*this->parallelWorldMap).insert(a, coord);
-					a->second = 'O';
+					(*this->parallelWorldMap).insert({ coord, 'O'});
 				}
 			}
 		}
 		else {
 			Coordinate coord(i, length);
-			tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-			(*this->parallelWorldMap).insert(a, coord);
-			a->second = '~';
+			(*this->parallelWorldMap).insert({ coord, '~'});
+			
 		}
 	}
 }

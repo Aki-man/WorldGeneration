@@ -9,10 +9,13 @@
 #include <random>
 #include <tbb/parallel_for.h>
 #include <tbb/blocked_range.h>
-#include <tbb/concurrent_hash_map.h>
+#include <tbb/concurrent_unordered_map.h>
+#include "MyHasher.h"
+#include "MyEquality.h"
 
 class ParallelIslandGenerator : public IslandGenerator {
-	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>* parallelWorldMap;
+	tbb::concurrent_unordered_map<Coordinate, char>* parallelWorldMap;
+
 	/*int startWidth;
 	int endWidth;
 	int startLength;
@@ -20,7 +23,7 @@ class ParallelIslandGenerator : public IslandGenerator {
 	std::random_device rd;
 	IslandGeneratorConfiguration config;*/
 public:
-	ParallelIslandGenerator(std::map<Coordinate, char>* worldMap, tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>* parallelWorldMap,int startWidth, int endWidth, int startLength, int endLength, IslandGeneratorConfiguration config) :
+	ParallelIslandGenerator(std::map<Coordinate, char>* worldMap, tbb::concurrent_unordered_map<Coordinate, char>* parallelWorldMap,int startWidth, int endWidth, int startLength, int endLength, IslandGeneratorConfiguration config) :
 		IslandGenerator(worldMap, startWidth, endWidth, startLength, endLength, config), parallelWorldMap(parallelWorldMap) {
 	};
 	~ParallelIslandGenerator();

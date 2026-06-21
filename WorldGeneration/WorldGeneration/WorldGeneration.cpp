@@ -105,7 +105,24 @@ void ParallelViewTest(int n) {
 
 }
 
+void SaveWorldToFile(int n, std::string fileName) {
+    std::cout << "Starting serial generation" << std::endl;
+    tbb::tick_count startTime = tbb::tick_count::now();
+    WorldMap map = WorldMap(n, n);
+    map.GenerateFourIslandMap();
+    tbb::tick_count endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Serial generation time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    std::cout << "Starting serial save" << std::endl;
+    startTime = tbb::tick_count::now();
+    map.save(fileName);
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Serial saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+}
+
 int main()
 {
-    PlayerMenu(100);
+    SaveWorldToFile(100, "testSave");
 }

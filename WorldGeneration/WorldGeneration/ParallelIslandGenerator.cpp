@@ -142,22 +142,25 @@ void ParallelIslandGenerator::generateSeaLine(int length)
 void ParallelIslandGenerator::generateIslandLine(int island_begin, int island_end, int length)
 {
 	std::uniform_int_distribution<int> forestChanceGenerator(0, config.forestSpawnChance);
-	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
+	
 	for (int i = startWidth; i < endWidth; ++i) {
 		if (i >= island_begin && i <= island_end) {
 			Coordinate coord(i, length);
 			int forest = forestChanceGenerator(rd);
 			if (forest == config.forestSpawnChance) {
+				tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
 				(*this->parallelWorldMap).insert(a, coord);
 				a->second = 'T';
 			}
 			else {
+				tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
 				(*this->parallelWorldMap).insert(a, coord);
 				a->second = 'O';
 			}
 		}
 		else {
 			Coordinate coord(i, length);
+			tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
 			(*this->parallelWorldMap).insert(a, coord);
 			a->second = '~';
 			

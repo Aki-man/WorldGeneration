@@ -45,10 +45,6 @@ void ParallelWorldMap::GenerateFourIslandMap()
 	g2.run([&] {generatorFour.secondPass(); });
 
 	g2.wait();
-	/*generatorOne.secondPass();
-	generatorTwo.secondPass();
-	generatorThree.secondPass();
-	generatorFour.secondPass();*/
 }
 
 
@@ -66,7 +62,7 @@ void ParallelWorldMap::save(std::string saveName)
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
 			std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
-			g.run([&] {this->saveMapChunk(fileName, i, l); });
+			g.run([=] {this->saveMapChunk(fileName, i, l); });
 			
 			fileNumber++;
 		}

@@ -27,6 +27,7 @@ void ParallelIslandGenerator::secondPass()
 				tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor writer;
 				(*this->parallelWorldMap).insert(writer, coord);
 				writer->second = 'C';
+				writer.release();
 			}
 			else if ((tile == 'O' ||tile == 'T') && lakeNumber > 0) {
 				std::uniform_int_distribution<int> randomLakesize(1, 8);

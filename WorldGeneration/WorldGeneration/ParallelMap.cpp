@@ -82,16 +82,16 @@ void ParallelWorldMap::saveMapChunk(std::string fileName, int i, int l) {
 bool ParallelWorldMap::load(std::string saveName)
 {
 	int fileNumber = 1;
-	task_group g;
+	//task_group g;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
 			std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
 			
-			g.run([&] {this->loadMapChunk(fileName, i, l); });
+			this->loadMapChunk(fileName, i, l);
 			fileNumber++;
 		}
 	}
-	g.wait();
+	//g.wait();
 	if (worldMap.size() != this->length * this->width)
 		return false;
 	return true;

@@ -84,8 +84,33 @@ void ParallelPlayerMenu(int n) {
     }
 }
 
+void mainMenu() {
+    std::cout << "Welcome to the random world generation app!" << std::endl;
+    std::cout << "Please pick one of the following:" << std::endl;
+    std::cout << "1: Generate a new island and start playing" << std::endl;
+    std::cout << "2: Load an already existing world" << std::endl;
+    std::cout << "3: Run some tests" << std::endl;
+
+    std::string userInput = "";
+    while (true) {
+        
+        std::cin >> userInput;
+
+        if (userInput == "1") {
+
+        }
+        else if (userInput == "2") {
+
+        }
+        else if (userInput == "3") {
+
+        }
+    }
+    
+    
+}
 
 int main()
 {
-    PlayerMenu(1000);
+    Tests::SaveWorldToFileTestSerial(2000,"fileTest");
 }

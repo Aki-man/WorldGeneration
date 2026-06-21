@@ -30,7 +30,7 @@ void PlayerMenu(int n) {
             break;
         else if (entry == "save") {
             std::cout << "saving..." << std::endl;
-            map.save("SerialSave");
+            map.parallelSave("SerialSave");
             newPlayer.save("SerialSave");
         }
         else if (entry == "l") {
@@ -87,5 +87,5 @@ void ParallelPlayerMenu(int n) {
 
 int main()
 {
-    Tests::SaveWorldToFileTestSerial(1000, "testFile");
+    PlayerMenu(1000);
 }

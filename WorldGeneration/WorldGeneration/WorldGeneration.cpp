@@ -3,6 +3,7 @@
 #include "Player.h"
 #include <tbb/tick_count.h>
 #include "ParallelPlayer.h"
+#include "Tests.h"
 
 void PlayerMenu(int n) {
     WorldMap map = WorldMap(n, n);
@@ -63,91 +64,8 @@ void ParallelPlayerMenu(int n) {
     }
 }
 
-void ParallelGenerationTest(int n) {
-    std::cout << "Starting serial generation" << std::endl;
-    tbb::tick_count startTime = tbb::tick_count::now();
-    WorldMap map = WorldMap(n, n);
-    map.GenerateFourIslandMap();
-    tbb::tick_count endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Serial time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-
-    std::cout << "Starting parallel generation" << std::endl;
-    startTime = tbb::tick_count::now();
-    ParallelWorldMap parallelMap = ParallelWorldMap(n, n);
-    map.GenerateFourIslandMap();
-    endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Parallel time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-}
-
-void ParallelViewTest(int n) {
-    
-    WorldMap map = WorldMap(100, 100);
-    map.GenerateFourIslandMap();
-    Player serialPlayer(Coordinate(50, 50), map, n);
-    std::cout << "Starting serial view" << std::endl;
-    tbb::tick_count startTime = tbb::tick_count::now();
-    serialPlayer.getViewWithShadows();
-    tbb::tick_count endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Serial time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-
-    ParallelWorldMap parallelMap = ParallelWorldMap(100, 100);
-    map.GenerateFourIslandMap();
-    ParallelPlayer parallelPlayer(Coordinate(50, 50), map, &parallelMap, n);
-    std::cout << "Starting parallel view" << std::endl;
-    startTime = tbb::tick_count::now();
-    parallelPlayer.getViewWithShadows();
-    endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Parallel time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-
-}
-
-void SaveWorldToFile(int n, std::string fileName) {
-    std::cout << "Starting serial generation" << std::endl;
-    tbb::tick_count startTime = tbb::tick_count::now();
-    WorldMap map = WorldMap(n, n);
-    map.GenerateFourIslandMap();
-    tbb::tick_count endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Serial generation time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-
-    if(n<=200)
-        std::cout << map;
-
-    std::cout << "Starting serial save" << std::endl;
-    startTime = tbb::tick_count::now();
-    map.save(fileName);
-    endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Serial saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-
-    map = WorldMap(n, n);
-    std::cout << "Starting serial load" << std::endl;
-    startTime = tbb::tick_count::now();
-    map.load(fileName);
-    endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Serial loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-
-    if (n <= 200)
-        std::cout << map;
-
-    Player serialPlayer(Coordinate(17, 23), map, n);
-    serialPlayer.save(fileName);
-
-    Player newPlayer(Coordinate(0, 0), map, n);
-    newPlayer.load(fileName);
-
-    if (serialPlayer.currentCoordinate.x != newPlayer.currentCoordinate.x || serialPlayer.currentCoordinate.y != newPlayer.currentCoordinate.y)
-        std::cout << "Player save failed";
-    else
-        std::cout << "Player save succeeded";
-}
 
 int main()
 {
-    SaveWorldToFile(100, "testSave");
+    Tests::BatchTests(1000, 100, "testSave");
 }

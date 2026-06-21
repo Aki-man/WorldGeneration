@@ -15,7 +15,7 @@ void PlayerMenu(int n) {
         newPlayer.cleanUpView();
 
         std::cout << newPlayer << std::endl;
-        std::cout << "please press a WASD button or l to leave" << std::endl;
+        std::cout << "please press a WASD button, q to quit, s to save or l to load" << std::endl;
         std::string entry;
         std::cin >> entry;
         if (entry == "w" || entry == "W")
@@ -26,8 +26,18 @@ void PlayerMenu(int n) {
             newPlayer.moveLeft();
         else if (entry == "d" || entry == "D")
             newPlayer.moveRight();
-        else if (entry == "l")
+        else if (entry == "q")
             break;
+        else if (entry == "save") {
+            std::cout << "saving..." << std::endl;
+            map.save("SerialSave");
+            newPlayer.save("SerialSave");
+        }
+        else if (entry == "l") {
+            std::cout << "loading..." << std::endl;
+            bool validSave = map.load("SerialSave");
+            newPlayer.load("SerialSave");
+        }
         else
             continue;
         system("cls");
@@ -45,7 +55,7 @@ void ParallelPlayerMenu(int n) {
         newPlayer.cleanUpView();
 
         std::cout << newPlayer << std::endl;
-        std::cout << "please press a WASD button or l to leave" << std::endl;
+        std::cout << "please press a WASD button, q to quit, s to save or l to load" << std::endl;
         std::string entry;
         std::cin >> entry;
         if (entry == "w" || entry == "W")
@@ -56,8 +66,12 @@ void ParallelPlayerMenu(int n) {
             newPlayer.moveLeft();
         else if (entry == "d" || entry == "D")
             newPlayer.moveRight();
-        else if (entry == "l")
+        else if (entry == "q")
             break;
+        else if (entry == "s")
+            std::cout << "Parallel save not implemented" << std::endl;
+        else if (entry == "l")
+            std::cout << "Parallel load not implemented" << std::endl;
         else
             continue;
         system("cls");
@@ -67,5 +81,5 @@ void ParallelPlayerMenu(int n) {
 
 int main()
 {
-    Tests::BatchTests(1000, 100, "testSave");
+    PlayerMenu(1000);
 }

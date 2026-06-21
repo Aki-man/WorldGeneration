@@ -16,6 +16,8 @@ public:
 	void moveLeft();
 	void moveRight();
 	void getView();
+	void save(std::string saveName);
+	void load(std::string saveName);
 	virtual void getViewWithShadows();
 	virtual bool checkAddingCurrentCoordinate(Coordinate coord, bool ranIntoBlock);
 	virtual void cleanUpView();

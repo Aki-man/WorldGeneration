@@ -3,6 +3,7 @@
 #include "Player.h"
 #include <tbb/tick_count.h>
 #include "ParallelPlayer.h"
+#include "Tests.h"
 
 void PlayerMenu(int n) {
     WorldMap map = WorldMap(n, n);
@@ -14,7 +15,7 @@ void PlayerMenu(int n) {
         newPlayer.cleanUpView();
 
         std::cout << newPlayer << std::endl;
-        std::cout << "please press a WASD button or l to leave" << std::endl;
+        std::cout << "please press a WASD button, q to quit, s to save or l to load" << std::endl;
         std::string entry;
         std::cin >> entry;
         if (entry == "w" || entry == "W")
@@ -25,8 +26,18 @@ void PlayerMenu(int n) {
             newPlayer.moveLeft();
         else if (entry == "d" || entry == "D")
             newPlayer.moveRight();
-        else if (entry == "l")
+        else if (entry == "q")
             break;
+        else if (entry == "save") {
+            std::cout << "saving..." << std::endl;
+            map.save("SerialSave");
+            newPlayer.save("SerialSave");
+        }
+        else if (entry == "l") {
+            std::cout << "loading..." << std::endl;
+            bool validSave = map.load("SerialSave");
+            newPlayer.load("SerialSave");
+        }
         else
             continue;
         system("cls");
@@ -44,7 +55,7 @@ void ParallelPlayerMenu(int n) {
         newPlayer.cleanUpView();
 
         std::cout << newPlayer << std::endl;
-        std::cout << "please press a WASD button or l to leave" << std::endl;
+        std::cout << "please press a WASD button, q to quit, s to save or l to load" << std::endl;
         std::string entry;
         std::cin >> entry;
         if (entry == "w" || entry == "W")
@@ -55,57 +66,20 @@ void ParallelPlayerMenu(int n) {
             newPlayer.moveLeft();
         else if (entry == "d" || entry == "D")
             newPlayer.moveRight();
-        else if (entry == "l")
+        else if (entry == "q")
             break;
+        else if (entry == "s")
+            std::cout << "Parallel save not implemented" << std::endl;
+        else if (entry == "l")
+            std::cout << "Parallel load not implemented" << std::endl;
         else
             continue;
         system("cls");
     }
 }
 
-void ParallelGenerationTest(int n) {
-    std::cout << "Starting serial generation" << std::endl;
-    tbb::tick_count startTime = tbb::tick_count::now();
-    WorldMap map = WorldMap(n, n);
-    map.GenerateFourIslandMap();
-    tbb::tick_count endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Serial time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-
-    std::cout << "Starting parallel generation" << std::endl;
-    startTime = tbb::tick_count::now();
-    ParallelWorldMap parallelMap = ParallelWorldMap(n, n);
-    map.GenerateFourIslandMap();
-    endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Parallel time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-}
-
-void ParallelViewTest(int n) {
-    
-    WorldMap map = WorldMap(100, 100);
-    map.GenerateFourIslandMap();
-    Player serialPlayer(Coordinate(50, 50), map, n);
-    std::cout << "Starting serial view" << std::endl;
-    tbb::tick_count startTime = tbb::tick_count::now();
-    serialPlayer.getViewWithShadows();
-    tbb::tick_count endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Serial time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-
-    ParallelWorldMap parallelMap = ParallelWorldMap(100, 100);
-    map.GenerateFourIslandMap();
-    ParallelPlayer parallelPlayer(Coordinate(50, 50), map, &parallelMap, n);
-    std::cout << "Starting parallel view" << std::endl;
-    startTime = tbb::tick_count::now();
-    parallelPlayer.getViewWithShadows();
-    endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Parallel time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-
-}
 
 int main()
 {
-    PlayerMenu(100);
+    PlayerMenu(1000);
 }

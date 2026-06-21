@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <iostream>
+#include <string>
 
 class WorldMap {
 protected:
@@ -16,6 +17,8 @@ public:
 	~WorldMap();
 	virtual void GenerateFourIslandMap();
 	virtual void print(std::ostream& out);
+	virtual void save(std::string saveName);
+	virtual bool load(std::string saveName);
 	friend std::ostream& operator<<(std::ostream& out, WorldMap& map);
 	
 };

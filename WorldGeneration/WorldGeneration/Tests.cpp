@@ -120,6 +120,9 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
     else
         std::cout << "File loading failed" << std::endl;
 
+    if (n <= 200)
+        std::cout << parallelMap;
+
     std::cout << "------------------------------------------------" << std::endl;
 
     Player serialPlayer(Coordinate(17, 23), map, n);

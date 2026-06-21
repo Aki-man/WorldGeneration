@@ -30,7 +30,7 @@ void PlayerMenu(int n) {
             break;
         else if (entry == "save") {
             std::cout << "saving..." << std::endl;
-            map.save("SerialSave");
+            map.parallelSave("SerialSave");
             newPlayer.save("SerialSave");
         }
         else if (entry == "l") {
@@ -68,10 +68,16 @@ void ParallelPlayerMenu(int n) {
             newPlayer.moveRight();
         else if (entry == "q")
             break;
-        else if (entry == "s")
-            std::cout << "Parallel save not implemented" << std::endl;
-        else if (entry == "l")
-            std::cout << "Parallel load not implemented" << std::endl;
+        else if (entry == "save") {
+            std::cout << "saving..." << std::endl;
+            map.save("ParallelSave");
+            newPlayer.save("ParallelSave");
+        }
+        else if (entry == "l") {
+            std::cout << "loading..." << std::endl;
+            bool validSave = map.load("ParallelSave");
+            newPlayer.load("ParallelSave");
+        }
         else
             continue;
         system("cls");

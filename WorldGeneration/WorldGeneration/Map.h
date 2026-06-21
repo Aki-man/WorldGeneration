@@ -18,6 +18,8 @@ public:
 	virtual void GenerateFourIslandMap();
 	virtual void print(std::ostream& out);
 	virtual void save(std::string saveName);
+	void parallelSave(std::string saveName);
+	void saveMapChunk(std::string fileName, int i, int l);
 	virtual bool load(std::string saveName);
 	friend std::ostream& operator<<(std::ostream& out, WorldMap& map);
 	

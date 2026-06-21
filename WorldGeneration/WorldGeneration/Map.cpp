@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <random>
 #include <tuple>
+#include <tbb/parallel_for.h>
 
 WorldMap::~WorldMap()
 {
@@ -88,6 +89,33 @@ void WorldMap::save(std::string saveName)
 	
 }
 
+void WorldMap::parallelSave(std::string saveName) {
+	int fileNumber = 1;
+	tbb::task_group g;
+	for (int i = 0; i < 2; ++i) {
+		for (int l = 0; l < 2; ++l) {
+			std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
+			 
+			g.run([=] {this->saveMapChunk(fileName, i, l) ; });
+
+			fileNumber++;
+		}
+	}
+	g.wait();
+}
+
+void WorldMap::saveMapChunk(std::string fileName, int i, int l) {
+
+	std::ofstream file(fileName, std::ios::out | std::ios::binary);
+	for (int j = i * (this->length / 2); j < (i + 1) * (this->length / 2); ++j) {
+		for (int k = l * (this->width / 2); k < (l + 1) * (this->length / 2); ++k) {
+			std::string savedData = std::to_string(j) + " " + std::to_string(k) + " " + this->worldMap[Coordinate(j, k)] + " ";
+			file << savedData;
+		}
+	}
+	file.close();
+}
+
 bool WorldMap::load(std::string saveName) {
 	int fileNumber = 1;
 	for (int i = 0; i < 2; ++i) {
@@ -103,6 +131,7 @@ bool WorldMap::load(std::string saveName) {
 				file >> tile;
 				worldMap[Coordinate(x, y)] = tile;
 			}
+			file.close();
 			fileNumber++;
 		}
 	}

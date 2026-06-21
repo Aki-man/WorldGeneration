@@ -6,6 +6,7 @@
 #include "ParallelMapHelper.h"
 #include "IslandGenerator.h"
 #include "ParallelIslandGenerator.h"
+#include <fstream>
 using namespace tbb;
 
 ParallelWorldMap::~ParallelWorldMap()
@@ -25,16 +26,25 @@ void ParallelWorldMap::GenerateFourIslandMap()
 	ParallelIslandGenerator generatorFour(nullptr, &this->parallelWorldMap, this->width / 2, this->width, this->length / 2, this->length, config);
 
 	task_group g;
-	g.run([&] {generatorOne.generateIsland(); });
+	/*g.run([&] {generatorOne.generateIsland(); });
 	g.run([&] {generatorTwo.generateIsland(); });
 	g.run([&] {generatorThree.generateIsland(); });
 	g.run([&] {generatorFour.generateIsland(); });
-	g.wait();
+	g.wait();*/
 
-	generatorOne.secondPass();
-	generatorTwo.secondPass();
-	generatorThree.secondPass();
-	generatorFour.secondPass();
+	g.run([&] {generatorOne.generateIsland();generatorTwo.generateIsland(); });
+
+	g.run([&] {generatorThree.generateIsland(); generatorFour.generateIsland(); });
+	g.wait();
+	
+	task_group g2;
+
+	g2.run([&] {generatorOne.secondPass(); });
+	g2.run([&] {generatorTwo.secondPass(); });
+	g2.run([&] {generatorThree.secondPass(); });
+	g2.run([&] {generatorFour.secondPass(); });
+
+	g2.wait();
 }
 
 
@@ -44,6 +54,74 @@ void ParallelWorldMap::print(std::ostream& out)
 	WorldMap::print(out);
 }
 
+void ParallelWorldMap::save(std::string saveName)
+{
+	int fileNumber = 1;
+	
+	task_group g;
+	for (int i = 0; i < 2; ++i) {
+		for (int l = 0; l < 2; ++l) {
+			std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
+			g.run([=] {this->saveMapChunk(fileName, i, l); });
+			
+			fileNumber++;
+		}
+	}
+	g.wait();
+}
+
+void ParallelWorldMap::saveMapChunk(std::string fileName, int i, int l) {
+	
+	std::ofstream file(fileName, std::ios::out | std::ios::binary);
+	for (int j = i * (this->length / 2); j < (i + 1) * (this->length / 2); ++j) {
+		for (int k = l * (this->width / 2); k < (l + 1) * (this->length / 2); ++k) {
+			tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::const_accessor a;
+			bool found = this->parallelWorldMap.find(a, Coordinate(j, k));
+			std::string savedData;
+			if (!found)
+				savedData = "=";
+			else
+				savedData = std::to_string(j) + " " + std::to_string(k) + " " + a->second + " ";
+			file << savedData;
+		}
+	}
+	file.close();
+}
+
+bool ParallelWorldMap::load(std::string saveName)
+{
+	int fileNumber = 1;
+	//task_group g;
+	for (int i = 0; i < 2; ++i) {
+		for (int l = 0; l < 2; ++l) {
+			std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
+			
+			this->loadMapChunk(fileName, i, l);
+			fileNumber++;
+		}
+	}
+	//g.wait();
+	if (worldMap.size() != this->length * this->width)
+		return false;
+	return true;
+}
+
+void ParallelWorldMap::loadMapChunk(std::string fileName, int i, int l) {
+	std::ifstream file(fileName, std::ios::out | std::ios::binary);
+	while (!file.eof()) {
+		int x;
+		int y;
+		char tile;
+		file >> x;
+		file >> y;
+		file >> tile;
+		tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
+		this->parallelWorldMap.insert(a, Coordinate(x, y));
+		a->second = tile;
+	}
+	file.close();
+}
+
 
 std::ostream& operator<<(std::ostream& out, ParallelWorldMap& map)
 {
@@ -51,7 +129,7 @@ std::ostream& operator<<(std::ostream& out, ParallelWorldMap& map)
 		for (int j = 0; j < map.width; ++j) {
 			Coordinate coord(j, i);
 
-			tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
+			tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::const_accessor a;
 			bool found = map.parallelWorldMap.find(a, coord);
 			char temp = '=';
 			if(found)

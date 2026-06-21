@@ -135,6 +135,8 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="ParallelIslandGenerator.cpp" />
     <ClCompile Include="ParallelMap.cpp" />
+    <ClCompile Include="ParallelPlayer.cpp" />
+    <ClCompile Include="ParallelPlayer.h" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="WorldGeneration.cpp" />
   </ItemGroup>

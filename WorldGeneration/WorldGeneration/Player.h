@@ -16,10 +16,10 @@ public:
 	void moveLeft();
 	void moveRight();
 	void getView();
-	void getViewWithShadows();
-	bool checkAddingCurrentCoordinate(Coordinate coord, bool ranIntoBlock);
-	void cleanUpView();
-	bool isAdjacent(Coordinate coord, char tile);
+	virtual void getViewWithShadows();
+	virtual bool checkAddingCurrentCoordinate(Coordinate coord, bool ranIntoBlock);
+	virtual void cleanUpView();
+	virtual bool isAdjacent(Coordinate coord, char tile);
 
 	friend std::ostream& operator<<(std::ostream& out, Player& player);
 	

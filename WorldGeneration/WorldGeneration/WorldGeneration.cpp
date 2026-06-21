@@ -124,6 +124,7 @@ void SaveWorldToFile(int n, std::string fileName) {
     std::cout << "done\n";
     std::cout << "Serial saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
 
+    map = WorldMap(n, n);
     std::cout << "Starting serial load" << std::endl;
     startTime = tbb::tick_count::now();
     map.load(fileName);
@@ -133,9 +134,20 @@ void SaveWorldToFile(int n, std::string fileName) {
 
     if (n <= 200)
         std::cout << map;
+
+    Player serialPlayer(Coordinate(17, 23), map, n);
+    serialPlayer.save(fileName);
+
+    Player newPlayer(Coordinate(0, 0), map, n);
+    newPlayer.load(fileName);
+
+    if (serialPlayer.currentCoordinate.x != newPlayer.currentCoordinate.x || serialPlayer.currentCoordinate.y != newPlayer.currentCoordinate.y)
+        std::cout << "Player save failed";
+    else
+        std::cout << "Player save succeeded";
 }
 
 int main()
 {
-    SaveWorldToFile(2000, "testSave");
+    SaveWorldToFile(100, "testSave");
 }

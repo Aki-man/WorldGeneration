@@ -1,4 +1,5 @@
 #include "Player.h"
+#include <fstream>
 #include <vector>
 
 void Player::moveUp()
@@ -36,6 +37,23 @@ void Player::getView()
 		}
 	}
 	this->currentView[this->currentCoordinate] = '*';
+}
+
+void Player::save(std::string saveName)
+{
+	std::string fileName = saveName + "Player.txt";
+	std::ofstream file(fileName, std::ios::out | std::ios::binary);
+	file << this->currentCoordinate.x << " " << this->currentCoordinate.y;
+}
+
+void Player::load(std::string saveName)
+{
+	std::string fileName = saveName + "Player.txt";
+	std::ifstream file(fileName, std::ios::out | std::ios::binary);
+	int x;
+	int y;
+	file >> x >> y;
+	this->currentCoordinate = Coordinate(x, y);
 }
 
 void Player::getViewWithShadows() {

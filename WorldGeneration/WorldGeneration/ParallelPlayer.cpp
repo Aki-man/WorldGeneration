@@ -131,11 +131,12 @@ bool ParallelPlayer::checkAddingCurrentCoordinate(Coordinate viewedCoordinate, b
 void ParallelPlayer::cleanUpView()
 {
 	Coordinate startingCoordinate = Coordinate(this->currentCoordinate.x - this->viewSize, this->currentCoordinate.y - this->viewSize);
+	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
 	for (int i = 0; i <= this->viewSize * 2; ++i) {
 		for (int j = 0; j <= this->viewSize * 2; ++j) {
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + j, startingCoordinate.y + i);
 			char temp;
-			tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
+			
 			bool found = this->parallelView.find(a, viewedCoordinate);
 			if (!found) {
 				if (this->isAdjacent(viewedCoordinate, '+')) {
@@ -143,9 +144,11 @@ void ParallelPlayer::cleanUpView()
 					a->second = '+';
 				}
 				else {
-					found = (*this->parallelWorld).parallelWorldMap.find(a, viewedCoordinate);
-					char temp = a->second;
+					bool found = (*this->parallelWorld).parallelWorldMap.find(a, viewedCoordinate);
+
+
 					if (found) {
+						char temp = a->second;
 						this->parallelView.insert(a, viewedCoordinate);
 						a->second = temp;
 					}

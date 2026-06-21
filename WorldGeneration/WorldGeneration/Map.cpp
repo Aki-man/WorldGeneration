@@ -88,7 +88,7 @@ void WorldMap::save(std::string saveName)
 	
 }
 
-void WorldMap::load(std::string saveName) {
+bool WorldMap::load(std::string saveName) {
 	int fileNumber = 1;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
@@ -107,10 +107,8 @@ void WorldMap::load(std::string saveName) {
 		}
 	}
 	if (worldMap.size() != this->length * this->width)
-	{
-		std::cout << "World map is of the wrong size!" << std::endl;
-		std::cout << worldMap.size() << std::endl;
-	}
+		return false;
+	return true;
 }
 
 

@@ -75,11 +75,15 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
     map = WorldMap(n, n);
     std::cout << "Starting serial load" << std::endl;
     startTime = tbb::tick_count::now();
-    map.load(fileName);
+    bool success = map.load(fileName);
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Serial loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
 
+    if (success)
+        std::cout << "File loading succeded" << std::endl;
+    else
+        std::cout << "File loading failed" << std::endl;
     if (n <= 200)
         std::cout << map;
 

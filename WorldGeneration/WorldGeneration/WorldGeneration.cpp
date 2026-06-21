@@ -38,7 +38,7 @@ void ParallelPlayerMenu(int n) {
     map.GenerateFourIslandMap();
 
     WorldMap worldmap = WorldMap();
-    ParallelPlayer newPlayer(Coordinate(n/2, 20), worldmap, &map, 20);
+    ParallelPlayer newPlayer(Coordinate(n/2, n/2), worldmap, &map, 20);
     while (true) {
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
@@ -107,5 +107,5 @@ void ParallelViewTest(int n) {
 
 int main()
 {
-    ParallelPlayerMenu(100);
+    PlayerMenu(100);
 }

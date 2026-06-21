@@ -103,6 +103,7 @@ bool WorldMap::load(std::string saveName) {
 				file >> tile;
 				worldMap[Coordinate(x, y)] = tile;
 			}
+			file.close();
 			fileNumber++;
 		}
 	}

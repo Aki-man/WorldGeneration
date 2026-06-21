@@ -19,7 +19,7 @@ void Tests::ParallelGenerationTest(int n) {
     std::cout << "Starting parallel generation" << std::endl;
     startTime = tbb::tick_count::now();
     ParallelWorldMap parallelMap = ParallelWorldMap(n, n);
-    map.GenerateFourIslandMap();
+    parallelMap.GenerateFourIslandMap();
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Parallel time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
@@ -40,7 +40,7 @@ void Tests::ParallelViewTest(int n) {
     std::cout << "Serial time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
     std::cout << "------------------------------------------------" << std::endl;
     ParallelWorldMap parallelMap = ParallelWorldMap(100, 100);
-    map.GenerateFourIslandMap();
+    parallelMap.GenerateFourIslandMap();
     ParallelPlayer parallelPlayer(Coordinate(50, 50), map, &parallelMap, n);
     std::cout << "Starting parallel view" << std::endl;
     startTime = tbb::tick_count::now();
@@ -65,6 +65,19 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
     if (n <= 200)
         std::cout << map;
 
+    std::cout << "Starting parallel generation" << std::endl;
+    startTime = tbb::tick_count::now();
+    ParallelWorldMap parallelMap = ParallelWorldMap(n, n);
+    parallelMap.GenerateFourIslandMap();
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Parallel time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    if (n <= 200)
+        std::cout << parallelMap;
+
+    std::cout << "------------------------------------------------" << std::endl;
+
     std::cout << "Starting serial save" << std::endl;
     startTime = tbb::tick_count::now();
     map.save(fileName);
@@ -88,17 +101,6 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
         std::cout << map;
 
     std::cout << "------------------------------------------------" << std::endl;
-
-    std::cout << "Starting parallel generation" << std::endl;
-    startTime = tbb::tick_count::now();
-    ParallelWorldMap parallelMap = ParallelWorldMap(n, n);
-    parallelMap.GenerateFourIslandMap();
-    endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Parallel time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-
-    if (n <= 200)
-        std::cout << parallelMap;
 
     std::cout << "Starting parallel save" << std::endl;
     startTime = tbb::tick_count::now();

@@ -71,9 +71,26 @@ void ParallelIslandGenerator::generateTileClump(Coordinate coord, int clumpSize,
 	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
 	(*this->parallelWorldMap).insert(a, coord);
 	a->second = tile;
+	/*std::uniform_int_distribution<int> randomCoordinateSelector(0, coordinatesToConvert.size() - 1);
+	for (int i = 0; i < clumpSize; ++i) {
+		Coordinate coord = coordinatesToConvert[randomCoordinateSelector(rd)];
+		bool found = (*this->parallelWorldMap).find(a, coord);
+		if (found) {
+			char foundTile = a->second;
+			if (foundTile != 'C' && foundTile != '~' && foundTile != 'R' && foundTile != 'M') {
+				(*this->parallelWorldMap).insert(a, coord);
+				a->second = tile;
+			}
+		}
+	}*/
+	this->replaceRandomTiles(coordinatesToConvert, clumpSize, tile);
+}
+
+void ParallelIslandGenerator::replaceRandomTiles(std::vector<Coordinate> coordinatesToConvert, int clumpSize, char tile) {
 	std::uniform_int_distribution<int> randomCoordinateSelector(0, coordinatesToConvert.size() - 1);
 	for (int i = 0; i < clumpSize; ++i) {
 		Coordinate coord = coordinatesToConvert[randomCoordinateSelector(rd)];
+		tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
 		bool found = (*this->parallelWorldMap).find(a, coord);
 		if (found) {
 			char foundTile = a->second;

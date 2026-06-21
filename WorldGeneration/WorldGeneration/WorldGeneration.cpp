@@ -87,5 +87,5 @@ void ParallelPlayerMenu(int n) {
 
 int main()
 {
-    Tests::ParallelGenerationTest(100);
+    Tests::ParallelGenerationTest(150);
 }

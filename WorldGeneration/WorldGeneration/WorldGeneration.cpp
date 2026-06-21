@@ -114,7 +114,8 @@ void SaveWorldToFile(int n, std::string fileName) {
     std::cout << "done\n";
     std::cout << "Serial generation time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
 
-    std::cout << map;
+    if(n<=200)
+        std::cout << map;
 
     std::cout << "Starting serial save" << std::endl;
     startTime = tbb::tick_count::now();
@@ -130,10 +131,11 @@ void SaveWorldToFile(int n, std::string fileName) {
     std::cout << "done\n";
     std::cout << "Serial loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
 
-    std::cout << map;
+    if (n <= 200)
+        std::cout << map;
 }
 
 int main()
 {
-    SaveWorldToFile(100, "testSave");
+    SaveWorldToFile(2000, "testSave");
 }

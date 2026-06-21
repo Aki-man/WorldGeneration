@@ -114,12 +114,23 @@ void SaveWorldToFile(int n, std::string fileName) {
     std::cout << "done\n";
     std::cout << "Serial generation time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
 
+    std::cout << map;
+
     std::cout << "Starting serial save" << std::endl;
     startTime = tbb::tick_count::now();
     map.save(fileName);
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Serial saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    std::cout << "Starting serial load" << std::endl;
+    startTime = tbb::tick_count::now();
+    map.load(fileName);
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Serial loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    std::cout << map;
 }
 
 int main()

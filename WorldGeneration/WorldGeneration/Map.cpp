@@ -77,14 +77,40 @@ void WorldMap::save(std::string saveName)
 			std::ofstream file(fileName, std::ios::out | std::ios::binary);
 			for (int j = i * (this->length / 2); j < (i + 1) * (this->length / 2); ++j) {
 				for (int k = l * (this->width / 2); k < (l + 1) * (this->length / 2); ++k) {
-					std::string savedData = std::to_string(j) + "," + std::to_string(k) + "," + this->worldMap[Coordinate(j, k)] + " ";
+					std::string savedData = std::to_string(j) + " " + std::to_string(k) + " " + this->worldMap[Coordinate(j, k)] + " ";
 					file << savedData;
 				}	
 			}
+			file.close();
 			fileNumber++;
 		}
 	}
 	
+}
+
+void WorldMap::load(std::string saveName) {
+	int fileNumber = 1;
+	for (int i = 0; i < 2; ++i) {
+		for (int l = 0; l < 2; ++l) {
+			std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
+			std::ifstream file(fileName, std::ios::out | std::ios::binary);
+			while (!file.eof()) {
+				int x;
+				int y;
+				char tile;
+				file >> x;
+				file >> y;
+				file >> tile;
+				worldMap[Coordinate(x, y)] = tile;
+			}
+			fileNumber++;
+		}
+	}
+	if (worldMap.size() != this->length * this->width)
+	{
+		std::cout << "World map is of the wrong size!" << std::endl;
+		std::cout << worldMap.size() << std::endl;
+	}
 }
 
 

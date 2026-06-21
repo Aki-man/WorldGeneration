@@ -75,7 +75,7 @@ void ParallelGenerationTest(int n) {
     std::cout << "Starting parallel generation" << std::endl;
     startTime = tbb::tick_count::now();
     ParallelWorldMap parallelMap = ParallelWorldMap(n, n);
-    map.GenerateFourIslandMap();
+    parallelMap.GenerateFourIslandMap();
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Parallel time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
@@ -107,5 +107,5 @@ void ParallelViewTest(int n) {
 
 int main()
 {
-    PlayerMenu(100);
+    ParallelGenerationTest(1000);
 }

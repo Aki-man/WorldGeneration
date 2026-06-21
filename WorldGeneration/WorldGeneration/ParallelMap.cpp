@@ -26,16 +26,16 @@ void ParallelWorldMap::GenerateFourIslandMap()
 	ParallelIslandGenerator generatorFour(nullptr, &this->parallelWorldMap, this->width / 2, this->width, this->length / 2, this->length, config);
 
 	task_group g;
-	/*g.run([&] {generatorOne.generateIsland(); });
+	g.run([&] {generatorOne.generateIsland(); });
 	g.run([&] {generatorTwo.generateIsland(); });
 	g.run([&] {generatorThree.generateIsland(); });
 	g.run([&] {generatorFour.generateIsland(); });
-	g.wait();*/
+	g.wait();
 
-	g.run([&] {generatorOne.generateIsland();generatorTwo.generateIsland(); });
+	/*g.run([&] {generatorOne.generateIsland(); generatorTwo.generateIsland(); });
 
 	g.run([&] {generatorThree.generateIsland(); generatorFour.generateIsland(); });
-	g.wait();
+	g.wait();*/
 	
 	task_group g2;
 

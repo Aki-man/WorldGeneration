@@ -112,5 +112,5 @@ void mainMenu() {
 
 int main()
 {
-    Tests::SaveWorldToFileTestSerial(2000,"fileTest");
+    Tests::ParallelGenerationTest(200);
 }

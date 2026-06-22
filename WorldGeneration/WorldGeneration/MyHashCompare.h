@@ -1,6 +1,7 @@
 #pragma once
 #include "coordinate.h"
 #include <cmath>
+#include <string>
 
 template<>
 struct std::hash<Coordinate>
@@ -8,7 +9,10 @@ struct std::hash<Coordinate>
 	std::size_t operator()(const Coordinate& key) const noexcept
 	{
 		size_t h = 0;
-		h += key.x * 3 + key.y * 2 + std::pow(key.x, key.y);
+		//h += key.x * 3 + key.y * 2 + std::pow(key.x, key.y);
+		//std::string hash = std::to_string(key.x) + std::to_string(key.y);
+		/*std::hash<string> string_hasher; */
+		h += key.x * 100000 + key.y;
 		return h;
 	}
 };

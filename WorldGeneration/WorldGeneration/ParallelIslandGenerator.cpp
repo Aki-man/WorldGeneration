@@ -25,7 +25,7 @@ void ParallelIslandGenerator::secondPass()
 				tile = (*this->parallelWorldMap).at(coord);
 			if (this->isAdjacentTo(coord, '~') && tile != '~' && tile != 'R' && tile != 'M') {
 				
-				(*this->parallelWorldMap).insert({ coord, 'C' });
+				(*this->parallelWorldMap)[coord] = 'C';
 				
 			}
 			else if ((tile == 'O' ||tile == 'T') && lakeNumber > 0) {
@@ -67,7 +67,7 @@ void ParallelIslandGenerator::generateTileClump(Coordinate coord, int clumpSize,
 	Coordinate(coord.x - 1, coord.y + 1),
 	Coordinate(coord.x + 1, coord.y - 1),
 	Coordinate(coord.x + 1, coord.y + 1) };
-	(*this->parallelWorldMap).insert({ coord, tile });
+	(*this->parallelWorldMap)[coord] = tile;
 	this->replaceRandomTiles(coordinatesToConvert, clumpSize, tile);
 }
 
@@ -79,7 +79,7 @@ void ParallelIslandGenerator::replaceRandomTiles(std::vector<Coordinate> coordin
 		if (found) {
 			char foundTile = (*this->parallelWorldMap).at(coord);
 			if (foundTile != 'C' && foundTile != '~' && foundTile != 'R' && foundTile != 'M') {
-				(*this->parallelWorldMap).insert({ coord, tile });
+				(*this->parallelWorldMap)[coord] = tile;
 			}
 		}
 	}
@@ -89,7 +89,7 @@ void ParallelIslandGenerator::generateRiver(Coordinate startCoordinate, bool isG
 {
 	Coordinate currentCoordinate = startCoordinate;
 	while (true) {
-		(*this->parallelWorldMap).insert({ currentCoordinate, 'R' });
+		(*this->parallelWorldMap)[currentCoordinate] = 'R';
 		
 		
 		if (this->isAdjacentTo(currentCoordinate, '~'))
@@ -133,7 +133,7 @@ void ParallelIslandGenerator::generateSeaLine(int length)
 {
 	for (int i = startWidth; i < endWidth; ++i) {
 		Coordinate coord(i, length);
-		(*this->parallelWorldMap).insert({ coord , '~'});
+		(*this->parallelWorldMap)[coord] = '~';
 	}
 }
 

@@ -32,6 +32,11 @@ void ParallelWorldMap::GenerateFourIslandMap()
 	g.run([&] {generatorFour.generateIsland(); });
 	g.wait();
 
+	/*generatorOne.generateIsland();
+	generatorTwo.generateIsland();
+	generatorThree.generateIsland();
+	generatorFour.generateIsland();*/
+
 	/*g.run([&] {generatorOne.generateIsland(); generatorTwo.generateIsland(); });
 
 	g.run([&] {generatorThree.generateIsland(); generatorFour.generateIsland(); });
@@ -43,7 +48,6 @@ void ParallelWorldMap::GenerateFourIslandMap()
 	g2.run([&] {generatorTwo.secondPass(); });
 	g2.run([&] {generatorThree.secondPass(); });
 	g2.run([&] {generatorFour.secondPass(); });
-
 	g2.wait();
 }
 

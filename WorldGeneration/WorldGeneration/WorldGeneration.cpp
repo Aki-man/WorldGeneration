@@ -190,7 +190,7 @@ void testsMenu() {
 
             system("cls");
             Tests::ParallelGenerationTest(sizeInput);
-            std::cout << "Press enter to continue" << std::endl;
+            std::cout << "Enter any key to continue" << std::endl;
             std::cin >> userInput;
         }
         else if (userInput == "2") {
@@ -200,7 +200,7 @@ void testsMenu() {
 
             system("cls");
             Tests::ParallelViewTest(sizeInput);
-            std::cout << "Press enter to continue" << std::endl;
+            std::cout << "Enter any key to continue" << std::endl;
             std::cin >> userInput;
         }
         if (userInput == "3") {
@@ -210,7 +210,7 @@ void testsMenu() {
 
             system("cls");
             Tests::SaveWorldToFileTest(sizeInput, "testFile");
-            std::cout << "Press enter to continue" << std::endl;
+            std::cout << "Enter any key to continue" << std::endl;
             std::cin >> userInput;
         }
         else if (userInput == "4") {
@@ -224,7 +224,7 @@ void testsMenu() {
 
             system("cls");
             Tests::BatchTests(islandSizeInput, viewSizeInput, "testFile");
-            std::cout << "Press enter to continue" << std::endl;
+            std::cout << "Enter any key to continue" << std::endl;
             std::cin >> userInput;
         }
         else if (userInput == "q") {

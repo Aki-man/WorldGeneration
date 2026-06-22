@@ -5,17 +5,27 @@
 #include "ParallelPlayer.h"
 #include "Tests.h"
 
-void PlayerMenu(int n) {
+void PlayerMenu(int n, bool fourIsland, bool load) {
     WorldMap map = WorldMap(n, n);
-    map.GenerateFourIslandMap();
+    if (load) {
+        map.load("SerialSave");
+        if (map.worldMap.size() == 0)
+            return;
+    }
+    else if (fourIsland)
+        map.GenerateFourIslandMap();
+    else
+        map.GenerateOneIslandMap();
    
     Player newPlayer(Coordinate(n/2, n/2), map, 20);
+    if (load)
+        newPlayer.load("SerialSave");
     while (true) {
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
 
         std::cout << newPlayer << std::endl;
-        std::cout << "please press a WASD button, q to quit, s to save or l to load" << std::endl;
+        std::cout << "please press a WASD button, q to quit, save to save" << std::endl;
         std::string entry;
         std::cin >> entry;
         if (entry == "w" || entry == "W")
@@ -33,29 +43,36 @@ void PlayerMenu(int n) {
             map.parallelSave("SerialSave");
             newPlayer.save("SerialSave");
         }
-        else if (entry == "l") {
-            std::cout << "loading..." << std::endl;
-            bool validSave = map.load("SerialSave");
-            newPlayer.load("SerialSave");
-        }
         else
             continue;
         system("cls");
     }
 }
 
-void ParallelPlayerMenu(int n) {
+void ParallelPlayerMenu(int n, bool fourIsland, bool load) {
     ParallelWorldMap map = ParallelWorldMap(n, n);
-    map.GenerateFourIslandMap();
+    if (load) {
+        map.load("ParallelSave");
+        if (map.parallelWorldMap.size() == 0) {
+            return;
+        }
+            
+    }
+    else if (fourIsland)
+        map.GenerateFourIslandMap();
+    else
+        map.GenerateOneIslandMap();
 
     WorldMap worldmap = WorldMap();
     ParallelPlayer newPlayer(Coordinate(n/2, n/2), worldmap, &map, 20);
+    if(load)
+        newPlayer.load("ParallelSave");
     while (true) {
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
 
         std::cout << newPlayer << std::endl;
-        std::cout << "please press a WASD button, q to quit, s to save or l to load" << std::endl;
+        std::cout << "please press a WASD button, q to quit, save to save" << std::endl;
         std::string entry;
         std::cin >> entry;
         if (entry == "w" || entry == "W")
@@ -72,11 +89,6 @@ void ParallelPlayerMenu(int n) {
             std::cout << "saving..." << std::endl;
             map.save("ParallelSave");
             newPlayer.save("ParallelSave");
-        }
-        else if (entry == "l") {
-            std::cout << "loading..." << std::endl;
-            bool validSave = map.load("ParallelSave");
-            newPlayer.load("ParallelSave");
         }
         else
             continue;
@@ -95,20 +107,36 @@ void generateNewIslandMenu() {
         std::cout << "4: Generate a parallel one island map" << std::endl;
 
         std::string userInput = "";
-
         std::cin >> userInput;
 
-        if (userInput == "1") {
+        std::cout << "Please pick a size for the generated map:" << std::endl;
+        std::string sizeInput;
+        std::cin >> sizeInput;
+        int size = 0;
+        try {
+            size = std::stoi(sizeInput);
+        }
+        catch (const std::invalid_argument) {
+            std::cout << "Invalid size parameter." << std::endl;
+            std::cin >> sizeInput;
+            if(userInput != "q")
+                continue;
+        }
 
+        if (size < 50)
+            size = 50;
+
+        if (userInput == "1") {
+            PlayerMenu(size, true, false);
         }
         else if (userInput == "2") {
-
+            PlayerMenu(size, false, false);
         }
         if (userInput == "3") {
-
+            ParallelPlayerMenu(size, true, false);
         }
         else if (userInput == "4") {
-
+            ParallelPlayerMenu(size, false, false);
         }
         else if (userInput == "q") {
             break;
@@ -128,10 +156,10 @@ void loadIslandMenu() {
         std::cin >> userInput;
 
         if (userInput == "1") {
-            
+            PlayerMenu(100, false, true);
         }
         else if (userInput == "2") {
-
+            ParallelPlayerMenu(100, false, true);
         }
         else if (userInput == "q") {
             break;

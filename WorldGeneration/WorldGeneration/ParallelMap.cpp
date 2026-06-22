@@ -7,6 +7,7 @@
 #include "IslandGenerator.h"
 #include "ParallelIslandGenerator.h"
 #include <fstream>
+#include <filesystem>
 using namespace tbb;
 
 ParallelWorldMap::~ParallelWorldMap()
@@ -20,7 +21,7 @@ ParallelWorldMap::~ParallelWorldMap()
 void ParallelWorldMap::GenerateOneIslandMap()
 {
 	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);
-	IslandGenerator generator(&worldMap, 0, this->width, 0, this->length, config);
+	ParallelIslandGenerator generator(nullptr, &this->parallelWorldMap,0, this->width, 0, this->length, config);
 
 	generator.generateIsland();
 
@@ -106,8 +107,8 @@ bool ParallelWorldMap::load(std::string saveName)
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
 			std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
-			
-			g.run([=]{this->loadMapChunk(fileName, i, l); });
+			if(std::filesystem::exists(fileName))
+				g.run([=]{this->loadMapChunk(fileName, i, l); });
 			fileNumber++;
 		}
 	}

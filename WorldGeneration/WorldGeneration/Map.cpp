@@ -132,17 +132,19 @@ bool WorldMap::load(std::string saveName) {
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
 			std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
-			std::ifstream file(fileName, std::ios::out | std::ios::binary);
-			while (!file.eof()) {
-				int x;
-				int y;
-				char tile;
-				file >> x;
-				file >> y;
-				file >> tile;
-				worldMap[Coordinate(x, y)] = tile;
+			if (std::filesystem::exists(fileName)) {
+				std::ifstream file(fileName, std::ios::out | std::ios::binary);
+				while (!file.eof()) {
+					int x;
+					int y;
+					char tile;
+					file >> x;
+					file >> y;
+					file >> tile;
+					worldMap[Coordinate(x, y)] = tile;
+				}
+				file.close();
 			}
-			file.close();
 			fileNumber++;
 		}
 	}

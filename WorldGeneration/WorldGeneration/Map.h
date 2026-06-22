@@ -15,6 +15,7 @@ public:
 	WorldMap() : width(0), length(0), worldMap(std::map<Coordinate, char>()) {};
 	WorldMap(int width, int length) : width(width), length(length), worldMap(std::map<Coordinate, char>()) {};
 	~WorldMap();
+	virtual void GenerateOneIslandMap();
 	virtual void GenerateFourIslandMap();
 	virtual void print(std::ostream& out);
 	virtual void save(std::string saveName);

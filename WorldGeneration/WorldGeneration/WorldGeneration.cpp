@@ -84,16 +84,18 @@ void ParallelPlayerMenu(int n) {
     }
 }
 
-void mainMenu() {
-    std::cout << "Welcome to the random world generation app!" << std::endl;
-    std::cout << "Please pick one of the following:" << std::endl;
-    std::cout << "1: Generate a new island and start playing" << std::endl;
-    std::cout << "2: Load an already existing world" << std::endl;
-    std::cout << "3: Run some tests" << std::endl;
-
-    std::string userInput = "";
+void generateNewIslandMenu() {
+   
     while (true) {
-        
+        system("cls");
+        std::cout << "Please pick one of the following:" << std::endl;
+        std::cout << "1: Generate a serial four island map" << std::endl;
+        std::cout << "2: Generate a serial one island map" << std::endl;
+        std::cout << "3: Generate a parallel four island map" << std::endl;
+        std::cout << "4: Generate a parallel one island map" << std::endl;
+
+        std::string userInput = "";
+
         std::cin >> userInput;
 
         if (userInput == "1") {
@@ -102,9 +104,129 @@ void mainMenu() {
         else if (userInput == "2") {
 
         }
-        else if (userInput == "3") {
+        if (userInput == "3") {
 
         }
+        else if (userInput == "4") {
+
+        }
+        else if (userInput == "q") {
+            break;
+        }
+    }
+}
+
+void loadIslandMenu() {
+   
+    while (true) {
+        system("cls");
+        std::cout << "Please pick one of the following:" << std::endl;
+        std::cout << "1: Load a serial map" << std::endl;
+        std::cout << "2: Load a parallel map" << std::endl;
+        std::string userInput = "";
+
+        std::cin >> userInput;
+
+        if (userInput == "1") {
+            
+        }
+        else if (userInput == "2") {
+
+        }
+        else if (userInput == "q") {
+            break;
+        }
+    }
+
+}
+
+void testsMenu() {
+    
+    while (true) {
+        system("cls");
+        std::cout << "Please pick one of the following:" << std::endl;
+        std::cout << "1: Run generation tests" << std::endl;
+        std::cout << "2: Run view tests" << std::endl;
+        std::cout << "3: Run save tests" << std::endl;
+        std::cout << "4: Run all tests" << std::endl;
+        
+        std::string userInput = "";
+        std::cin >> userInput;
+
+        if (userInput == "1") {
+            int sizeInput = 0;
+            std::cout << "Input island size for generation test:" << std::endl;
+            std::cin >> sizeInput;
+
+            Tests::ParallelGenerationTest(sizeInput);
+            std::cout << "Press enter to continue" << std::endl;
+            std::cin >> userInput;
+        }
+        else if (userInput == "2") {
+            int sizeInput = 0;
+            std::cout << "Input view size for view test:" << std::endl;
+            std::cin >> sizeInput;
+
+            Tests::ParallelViewTest(sizeInput);
+            std::cout << "Press enter to continue" << std::endl;
+            std::cin >> userInput;
+        }
+        if (userInput == "3") {
+            int sizeInput = 0;
+            std::cout << "Input island size for save test:" << std::endl;
+            std::cin >> sizeInput;
+
+            Tests::SaveWorldToFileTest(sizeInput, "testFile");
+            std::cout << "Press enter to continue" << std::endl;
+            std::cin >> userInput;
+        }
+        else if (userInput == "4") {
+            int islandSizeInput = 0;
+            std::cout << "Input island size for batch test:" << std::endl;
+            std::cin >> islandSizeInput;
+
+            int viewSizeInput = 0;
+            std::cout << "Input view size for batch test:" << std::endl;
+            std::cin >> viewSizeInput;
+
+            Tests::BatchTests(islandSizeInput, viewSizeInput, "testFile");
+            std::cout << "Press enter to continue" << std::endl;
+            std::cin >> userInput;
+        }
+        else if (userInput == "q") {
+            break;
+        }
+    }
+}
+
+void mainMenu() {
+   
+
+    
+    while (true) {
+        system("cls");
+        std::cout << "Welcome to the random world generation app!" << std::endl;
+        std::cout << "Please pick one of the following:" << std::endl;
+        std::cout << "1: Generate a new island and start playing" << std::endl;
+        std::cout << "2: Load an already existing world" << std::endl;
+        std::cout << "3: Run some tests" << std::endl;
+
+        std::string userInput = "";
+        std::cin >> userInput;
+
+        if (userInput == "1") {
+            generateNewIslandMenu();
+        }
+        else if (userInput == "2") {
+            loadIslandMenu();
+        }
+        else if (userInput == "3") {
+            testsMenu();
+        }
+        else if (userInput == "q") {
+            break;
+        }
+       
     }
     
     
@@ -112,5 +234,5 @@ void mainMenu() {
 
 int main()
 {
-    ParallelPlayerMenu(200);
+    mainMenu();
 }

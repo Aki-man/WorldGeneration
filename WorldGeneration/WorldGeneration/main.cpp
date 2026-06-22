@@ -61,7 +61,7 @@ void ParallelPlayerMenu(int n, bool fourIsland, bool load) {
     else if (fourIsland)
         map.GenerateFourIslandMap();
     else
-        map.GenerateOneIslandMap();
+        map.GenerateOneIslandMapParallel();
 
     WorldMap worldmap = WorldMap();
     ParallelPlayer newPlayer(Coordinate(n/2, n/2), worldmap, &map, 20);

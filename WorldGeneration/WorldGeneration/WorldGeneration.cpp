@@ -112,5 +112,5 @@ void mainMenu() {
 
 int main()
 {
-    Tests::ParallelGenerationTest(200);
+    ParallelPlayerMenu(200);
 }

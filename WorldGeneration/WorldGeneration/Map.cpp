@@ -15,6 +15,17 @@ WorldMap::~WorldMap()
 
 }
 
+void WorldMap::GenerateOneIslandMap()
+{
+	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);
+	IslandGenerator generator(&worldMap, 0, this->width, 0, this->length, config);
+
+	generator.generateIsland();
+
+	generator.secondPass();
+
+}
+
 void WorldMap::GenerateFourIslandMap()
 {
 	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length/2, this->width/2);
@@ -71,7 +82,13 @@ void WorldMap::print(std::ostream& out)
 
 void WorldMap::save(std::string saveName)
 {
-	int fileNumber = 1;
+	int fileNumber = 0;
+	std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
+	std::ofstream file(fileName, std::ios::out | std::ios::binary);
+	file << std::to_string(this->width) << " " << std::to_string(this->length);
+	file.close();
+
+	fileNumber++;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
 			std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
@@ -90,7 +107,13 @@ void WorldMap::save(std::string saveName)
 }
 
 void WorldMap::parallelSave(std::string saveName) {
-	int fileNumber = 1;
+	int fileNumber = 0;
+	std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
+	std::ofstream file(fileName, std::ios::out | std::ios::binary);
+	file << std::to_string(this->width) << " " << std::to_string(this->length);
+	file.close();
+
+	fileNumber++;
 	tbb::task_group g;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
@@ -117,21 +140,32 @@ void WorldMap::saveMapChunk(std::string fileName, int i, int l) {
 }
 
 bool WorldMap::load(std::string saveName) {
-	int fileNumber = 1;
+	int fileNumber = 0;
+	std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
+	if (std::filesystem::exists(fileName)) {
+		std::ifstream file(fileName, std::ios::out | std::ios::binary);
+		file >> this->length;
+		file >> this->width;
+		file.close();
+	}
+
+	fileNumber++;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
 			std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
-			std::ifstream file(fileName, std::ios::out | std::ios::binary);
-			while (!file.eof()) {
-				int x;
-				int y;
-				char tile;
-				file >> x;
-				file >> y;
-				file >> tile;
-				worldMap[Coordinate(x, y)] = tile;
+			if (std::filesystem::exists(fileName)) {
+				std::ifstream file(fileName, std::ios::out | std::ios::binary);
+				while (!file.eof()) {
+					int x;
+					int y;
+					char tile;
+					file >> x;
+					file >> y;
+					file >> tile;
+					worldMap[Coordinate(x, y)] = tile;
+				}
+				file.close();
 			}
-			file.close();
 			fileNumber++;
 		}
 	}

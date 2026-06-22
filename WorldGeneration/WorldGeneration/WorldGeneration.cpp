@@ -5,17 +5,27 @@
 #include "ParallelPlayer.h"
 #include "Tests.h"
 
-void PlayerMenu(int n) {
+void PlayerMenu(int n, bool fourIsland, bool load) {
     WorldMap map = WorldMap(n, n);
-    map.GenerateFourIslandMap();
+    if (load) {
+        map.load("SerialSave");
+        if (map.worldMap.size() == 0)
+            return;
+    }
+    else if (fourIsland)
+        map.GenerateFourIslandMap();
+    else
+        map.GenerateOneIslandMap();
    
     Player newPlayer(Coordinate(n/2, n/2), map, 20);
+    if (load)
+        newPlayer.load("SerialSave");
     while (true) {
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
 
         std::cout << newPlayer << std::endl;
-        std::cout << "please press a WASD button, q to quit, s to save or l to load" << std::endl;
+        std::cout << "please press a WASD button, q to quit, save to save" << std::endl;
         std::string entry;
         std::cin >> entry;
         if (entry == "w" || entry == "W")
@@ -33,29 +43,36 @@ void PlayerMenu(int n) {
             map.parallelSave("SerialSave");
             newPlayer.save("SerialSave");
         }
-        else if (entry == "l") {
-            std::cout << "loading..." << std::endl;
-            bool validSave = map.load("SerialSave");
-            newPlayer.load("SerialSave");
-        }
         else
             continue;
         system("cls");
     }
 }
 
-void ParallelPlayerMenu(int n) {
+void ParallelPlayerMenu(int n, bool fourIsland, bool load) {
     ParallelWorldMap map = ParallelWorldMap(n, n);
-    map.GenerateFourIslandMap();
+    if (load) {
+        map.load("ParallelSave");
+        if (map.parallelWorldMap.size() == 0) {
+            return;
+        }
+            
+    }
+    else if (fourIsland)
+        map.GenerateFourIslandMap();
+    else
+        map.GenerateOneIslandMap();
 
     WorldMap worldmap = WorldMap();
     ParallelPlayer newPlayer(Coordinate(n/2, n/2), worldmap, &map, 20);
+    if(load)
+        newPlayer.load("ParallelSave");
     while (true) {
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
 
         std::cout << newPlayer << std::endl;
-        std::cout << "please press a WASD button, q to quit, s to save or l to load" << std::endl;
+        std::cout << "please press a WASD button, q to quit, save to save" << std::endl;
         std::string entry;
         std::cin >> entry;
         if (entry == "w" || entry == "W")
@@ -73,19 +90,183 @@ void ParallelPlayerMenu(int n) {
             map.save("ParallelSave");
             newPlayer.save("ParallelSave");
         }
-        else if (entry == "l") {
-            std::cout << "loading..." << std::endl;
-            bool validSave = map.load("ParallelSave");
-            newPlayer.load("ParallelSave");
-        }
         else
             continue;
         system("cls");
     }
 }
 
+void generateNewIslandMenu() {
+   
+    while (true) {
+        system("cls");
+        std::cout << "Please pick one of the following:" << std::endl;
+        std::cout << "1: Generate a serial four island map" << std::endl;
+        std::cout << "2: Generate a serial one island map" << std::endl;
+        std::cout << "3: Generate a parallel four island map" << std::endl;
+        std::cout << "4: Generate a parallel one island map" << std::endl;
+
+        std::string userInput = "";
+        std::cin >> userInput;
+
+        if (userInput == "q") {
+            break;
+        }
+
+        std::cout << "Please pick a size for the generated map:" << std::endl;
+        std::string sizeInput;
+        std::cin >> sizeInput;
+        int size = 0;
+        try {
+            size = std::stoi(sizeInput);
+        }
+        catch (const std::invalid_argument) {
+            std::cout << "Invalid size parameter." << std::endl;
+            std::cin >> sizeInput;
+            if(userInput != "q")
+                continue;
+        }
+
+        if (size < 50)
+            size = 50;
+
+        if (userInput == "1") {
+            PlayerMenu(size, true, false);
+        }
+        else if (userInput == "2") {
+            PlayerMenu(size, false, false);
+        }
+        if (userInput == "3") {
+            ParallelPlayerMenu(size, true, false);
+        }
+        else if (userInput == "4") {
+            ParallelPlayerMenu(size, false, false);
+        }
+        
+    }
+}
+
+void loadIslandMenu() {
+   
+    while (true) {
+        system("cls");
+        std::cout << "Please pick one of the following:" << std::endl;
+        std::cout << "1: Load a serial map" << std::endl;
+        std::cout << "2: Load a parallel map" << std::endl;
+        std::string userInput = "";
+
+        std::cin >> userInput;
+
+        if (userInput == "1") {
+            PlayerMenu(100, false, true);
+        }
+        else if (userInput == "2") {
+            ParallelPlayerMenu(100, false, true);
+        }
+        else if (userInput == "q") {
+            break;
+        }
+    }
+
+}
+
+void testsMenu() {
+    
+    while (true) {
+        system("cls");
+        std::cout << "Please pick one of the following:" << std::endl;
+        std::cout << "1: Run generation tests" << std::endl;
+        std::cout << "2: Run view tests" << std::endl;
+        std::cout << "3: Run save tests" << std::endl;
+        std::cout << "4: Run all tests" << std::endl;
+        
+        std::string userInput = "";
+        std::cin >> userInput;
+
+        if (userInput == "1") {
+            int sizeInput = 0;
+            std::cout << "Input island size for generation test:" << std::endl;
+            std::cin >> sizeInput;
+
+            system("cls");
+            Tests::ParallelGenerationTest(sizeInput);
+            std::cout << "Enter any key to continue" << std::endl;
+            std::cin >> userInput;
+        }
+        else if (userInput == "2") {
+            int sizeInput = 0;
+            std::cout << "Input view size for view test:" << std::endl;
+            std::cin >> sizeInput;
+
+            system("cls");
+            Tests::ParallelViewTest(sizeInput);
+            std::cout << "Enter any key to continue" << std::endl;
+            std::cin >> userInput;
+        }
+        if (userInput == "3") {
+            int sizeInput = 0;
+            std::cout << "Input island size for save test:" << std::endl;
+            std::cin >> sizeInput;
+
+            system("cls");
+            Tests::SaveWorldToFileTest(sizeInput, "testFile");
+            std::cout << "Enter any key to continue" << std::endl;
+            std::cin >> userInput;
+        }
+        else if (userInput == "4") {
+            int islandSizeInput = 0;
+            std::cout << "Input island size for batch test:" << std::endl;
+            std::cin >> islandSizeInput;
+
+            int viewSizeInput = 0;
+            std::cout << "Input view size for batch test:" << std::endl;
+            std::cin >> viewSizeInput;
+
+            system("cls");
+            Tests::BatchTests(islandSizeInput, viewSizeInput, "testFile");
+            std::cout << "Enter any key to continue" << std::endl;
+            std::cin >> userInput;
+        }
+        else if (userInput == "q") {
+            break;
+        }
+    }
+}
+
+void mainMenu() {
+   
+
+    
+    while (true) {
+        system("cls");
+        std::cout << "Welcome to the random world generation app!" << std::endl;
+        std::cout << "Please pick one of the following:" << std::endl;
+        std::cout << "1: Generate a new island and start playing" << std::endl;
+        std::cout << "2: Load an already existing world" << std::endl;
+        std::cout << "3: Run some tests" << std::endl;
+
+        std::string userInput = "";
+        std::cin >> userInput;
+
+        if (userInput == "1") {
+            generateNewIslandMenu();
+        }
+        else if (userInput == "2") {
+            loadIslandMenu();
+        }
+        else if (userInput == "3") {
+            testsMenu();
+        }
+        else if (userInput == "q") {
+            break;
+        }
+       
+    }
+    
+    
+}
 
 int main()
 {
-    PlayerMenu(1000);
+    mainMenu();
 }

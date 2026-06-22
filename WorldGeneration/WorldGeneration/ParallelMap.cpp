@@ -129,6 +129,7 @@ void ParallelWorldMap::loadMapChunk(std::string fileName, int i, int l) {
 		tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
 		this->parallelWorldMap.insert(a, Coordinate(x, y));
 		a->second = tile;
+		a.release();
 	}
 	file.close();
 }

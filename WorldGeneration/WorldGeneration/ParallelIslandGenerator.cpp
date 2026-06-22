@@ -64,7 +64,7 @@ void ParallelIslandGenerator::parallelSecondPass()
 	int lakeNumber = config.lakeNumber;
 	bool riverGenerated = false;
 	tbb::parallel_for(tbb::blocked_range<size_t>(startLength, endLength),
-		ParallelSecondPassHelper(this, this->parallelWorldMap, lakeNumber, &riverGenerated, this->startLength, this->endLength),
+		ParallelSecondPassHelper(this, this->parallelWorldMap, &lakeNumber, &riverGenerated, this->startLength, this->endLength),
 		tbb::auto_partitioner());
 }
 

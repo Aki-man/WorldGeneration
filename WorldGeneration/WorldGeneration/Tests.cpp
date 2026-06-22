@@ -47,7 +47,7 @@ void Tests::ParallelOneIslandGenerationTest(int n) {
     std::cout << "Starting parallel generation" << std::endl;
     startTime = tbb::tick_count::now();
     ParallelWorldMap trueParallelMap = ParallelWorldMap(n, n);
-    trueParallelMap.GenerateOneIslandMap();
+    trueParallelMap.GenerateOneIslandMapParallel();
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Parallel time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";

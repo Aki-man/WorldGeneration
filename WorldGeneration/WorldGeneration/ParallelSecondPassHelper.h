@@ -10,7 +10,7 @@
 class ParallelSecondPassHelper {
 	ParallelIslandGenerator* output;
 	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>* parallelWorldMap;
-	int lakeNumber;
+	int* lakeNumber;
 	bool* riverGenerated;
 	int startWidth;
 	int endWidth;
@@ -18,7 +18,7 @@ public:
 	ParallelSecondPassHelper() : output(nullptr), parallelWorldMap(nullptr), lakeNumber(0), riverGenerated(nullptr),
 	startWidth(0), endWidth(0){};
 	ParallelSecondPassHelper(ParallelIslandGenerator* output, tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>* parallelMap,
-		int lakeNumber, bool* river, int start, int end) :
+		int* lakeNumber, bool* river, int start, int end) :
 		output(output), parallelWorldMap(parallelMap), lakeNumber(lakeNumber), riverGenerated(river), startWidth(start), endWidth(end) { };
 	~ParallelSecondPassHelper() { output = nullptr; lakeNumber = 0; };
 	void operator()(tbb::blocked_range<size_t> range) const {
@@ -39,11 +39,11 @@ public:
 					writer->second = 'C';
 					writer.release();
 				}
-				else if ((tile == 'O' || tile == 'T') && lakeNumber > 0) {
+				else if ((tile == 'O' || tile == 'T') && (*lakeNumber) > 0) {
 					std::uniform_int_distribution<int> randomLakesize(1, 8);
-					if (std::rand() % (80/lakeNumber) == 0) {
+					if (std::rand() % 20 == 0) {
 						(*this->output).generateTileClump(coord, randomLakesize(rd), 'L');
-						
+						--(*lakeNumber);
 					}
 				}
 				if (tile == 'T') {

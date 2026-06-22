@@ -64,6 +64,9 @@ void Tests::ParallelViewTest(int n) {
 
 void Tests::SaveWorldToFileTest(int n, std::string fileName) {
 
+    std::cout << "Generated island size " << n << "*" << n << std::endl;
+    std::cout << "------------------------------------------------" << std::endl;
+
     std::cout << "Starting parallel generation" << std::endl;
     tbb::tick_count startTime = tbb::tick_count::now();
     ParallelWorldMap parallelMap = ParallelWorldMap(n, n);
@@ -100,8 +103,6 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
 
     std::cout << "------------------------------------------------" << std::endl;
 
-    std::cout << "Generated island size " << n << "*" << n << std::endl;
-    std::cout << "------------------------------------------------" << std::endl;
     std::cout << "Starting serial generation" << std::endl;
     startTime = tbb::tick_count::now();
     WorldMap map = WorldMap(n, n);

@@ -178,7 +178,8 @@ void testsMenu() {
         std::cout << "1: Run generation tests" << std::endl;
         std::cout << "2: Run view tests" << std::endl;
         std::cout << "3: Run save tests" << std::endl;
-        std::cout << "4: Run all tests" << std::endl;
+        std::cout << "4: Run one island generation tests" << std::endl;
+        std::cout << "5: Run all tests" << std::endl;
         
         std::string userInput = "";
         std::cin >> userInput;
@@ -203,7 +204,7 @@ void testsMenu() {
             std::cout << "Enter any key to continue" << std::endl;
             std::cin >> userInput;
         }
-        if (userInput == "3") {
+        else if (userInput == "3") {
             int sizeInput = 0;
             std::cout << "Input island size for save test:" << std::endl;
             std::cin >> sizeInput;
@@ -214,6 +215,16 @@ void testsMenu() {
             std::cin >> userInput;
         }
         else if (userInput == "4") {
+            int sizeInput = 0;
+            std::cout << "Input island size for generation test:" << std::endl;
+            std::cin >> sizeInput;
+
+            system("cls");
+            Tests::ParallelOneIslandGenerationTest(sizeInput);
+            std::cout << "Enter any key to continue" << std::endl;
+            std::cin >> userInput;
+        }
+        else if (userInput == "5") {
             int islandSizeInput = 0;
             std::cout << "Input island size for batch test:" << std::endl;
             std::cin >> islandSizeInput;

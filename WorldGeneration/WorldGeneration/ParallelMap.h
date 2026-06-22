@@ -17,6 +17,7 @@ public:
 	ParallelWorldMap(int width, int length) : WorldMap(width, length) {};
 	~ParallelWorldMap();
 	void GenerateOneIslandMap() override;
+	void GenerateOneIslandMapParallel();
 	void GenerateFourIslandMap() override;
 	//using WorldMap::print;
 	void print(std::ostream& out) override;

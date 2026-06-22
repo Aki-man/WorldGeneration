@@ -156,6 +156,7 @@
     <ClInclude Include="ParallelIslandGenerator.h" />
     <ClInclude Include="ParallelMap.h" />
     <ClInclude Include="ParallelMapHelper.h" />
+    <ClInclude Include="ParallelSecondPassHelper.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Tests.h" />
   </ItemGroup>

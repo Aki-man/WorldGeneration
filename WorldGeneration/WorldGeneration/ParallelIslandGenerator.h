@@ -28,6 +28,7 @@ public:
 	//std::tuple<int, int> generateMountainLengthAndStart(std::tuple<int, int> islandLengthAndStart, int mountainLength, int mountainStart);
 	
 	virtual  void secondPass() override;
+	void parallelSecondPass();
 	virtual void generateTileClump(Coordinate coord, int clumpSize, char tile) override;
 	void replaceRandomTiles(std::vector<Coordinate> coordinatesToConvert, int clumpSize, char tile);
 	virtual void generateRiver(Coordinate startCoord, bool isGoingLeft, bool isGoingUp) override;

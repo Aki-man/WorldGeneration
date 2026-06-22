@@ -22,7 +22,7 @@ void WorldMap::GenerateOneIslandMap()
 
 	generator.generateIsland();
 
-	generator.secondPass();
+	//generator.secondPass();
 
 }
 

@@ -109,6 +109,10 @@ void generateNewIslandMenu() {
         std::string userInput = "";
         std::cin >> userInput;
 
+        if (userInput == "q") {
+            break;
+        }
+
         std::cout << "Please pick a size for the generated map:" << std::endl;
         std::string sizeInput;
         std::cin >> sizeInput;
@@ -138,9 +142,7 @@ void generateNewIslandMenu() {
         else if (userInput == "4") {
             ParallelPlayerMenu(size, false, false);
         }
-        else if (userInput == "q") {
-            break;
-        }
+        
     }
 }
 
@@ -186,6 +188,7 @@ void testsMenu() {
             std::cout << "Input island size for generation test:" << std::endl;
             std::cin >> sizeInput;
 
+            system("cls");
             Tests::ParallelGenerationTest(sizeInput);
             std::cout << "Press enter to continue" << std::endl;
             std::cin >> userInput;
@@ -195,6 +198,7 @@ void testsMenu() {
             std::cout << "Input view size for view test:" << std::endl;
             std::cin >> sizeInput;
 
+            system("cls");
             Tests::ParallelViewTest(sizeInput);
             std::cout << "Press enter to continue" << std::endl;
             std::cin >> userInput;
@@ -204,6 +208,7 @@ void testsMenu() {
             std::cout << "Input island size for save test:" << std::endl;
             std::cin >> sizeInput;
 
+            system("cls");
             Tests::SaveWorldToFileTest(sizeInput, "testFile");
             std::cout << "Press enter to continue" << std::endl;
             std::cin >> userInput;
@@ -217,6 +222,7 @@ void testsMenu() {
             std::cout << "Input view size for batch test:" << std::endl;
             std::cin >> viewSizeInput;
 
+            system("cls");
             Tests::BatchTests(islandSizeInput, viewSizeInput, "testFile");
             std::cout << "Press enter to continue" << std::endl;
             std::cin >> userInput;

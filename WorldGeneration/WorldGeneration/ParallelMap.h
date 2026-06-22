@@ -16,6 +16,7 @@ public:
 	ParallelWorldMap() : WorldMap(), parallelWorldMap(tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>()) {};
 	ParallelWorldMap(int width, int length) : WorldMap(width, length) {};
 	~ParallelWorldMap();
+	void GenerateOneIslandMap() override;
 	void GenerateFourIslandMap() override;
 	//using WorldMap::print;
 	void print(std::ostream& out) override;

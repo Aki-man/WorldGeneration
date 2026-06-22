@@ -17,6 +17,17 @@ ParallelWorldMap::~ParallelWorldMap()
 
 }
 
+void ParallelWorldMap::GenerateOneIslandMap()
+{
+	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);
+	IslandGenerator generator(&worldMap, 0, this->width, 0, this->length, config);
+
+	generator.generateIsland();
+
+	generator.secondPass();
+
+}
+
 void ParallelWorldMap::GenerateFourIslandMap()
 {
 	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);
@@ -91,17 +102,17 @@ void ParallelWorldMap::saveMapChunk(std::string fileName, int i, int l) {
 bool ParallelWorldMap::load(std::string saveName)
 {
 	int fileNumber = 1;
-	//task_group g;
+	task_group g;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
 			std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
 			
-			this->loadMapChunk(fileName, i, l);
+			g.run([=]{this->loadMapChunk(fileName, i, l); });
 			fileNumber++;
 		}
 	}
-	//g.wait();
-	if (worldMap.size() != this->length * this->width)
+	g.wait();
+	if (parallelWorldMap.size() != this->length * this->width)
 		return false;
 	return true;
 }
@@ -118,6 +129,7 @@ void ParallelWorldMap::loadMapChunk(std::string fileName, int i, int l) {
 		tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
 		this->parallelWorldMap.insert(a, Coordinate(x, y));
 		a->second = tile;
+		a.release();
 	}
 	file.close();
 }

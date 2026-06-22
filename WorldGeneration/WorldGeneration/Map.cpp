@@ -15,6 +15,17 @@ WorldMap::~WorldMap()
 
 }
 
+void WorldMap::GenerateOneIslandMap()
+{
+	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);
+	IslandGenerator generator(&worldMap, 0, this->width, 0, this->length, config);
+
+	generator.generateIsland();
+
+	generator.secondPass();
+
+}
+
 void WorldMap::GenerateFourIslandMap()
 {
 	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length/2, this->width/2);

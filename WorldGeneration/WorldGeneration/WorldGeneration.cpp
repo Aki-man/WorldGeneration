@@ -49,7 +49,7 @@ void ParallelPlayerMenu(int n) {
     map.GenerateFourIslandMap();
 
     WorldMap worldmap = WorldMap();
-    ParallelPlayer newPlayer(Coordinate(n/2, n/2), worldmap, &map, 20);
+    ParallelPlayer newPlayer(Coordinate(n/2, n/2), worldmap, &map, 40);
     while (true) {
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
@@ -112,5 +112,5 @@ void mainMenu() {
 
 int main()
 {
-   Tests::SaveWorldToFileTest(200, "testFile");
+   ParallelPlayerMenu(200);
 }

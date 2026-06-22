@@ -1,16 +1,17 @@
 #pragma once
 #include "Coordinate.h"
+#include "HashInjection.h"
 #include <map>
 #include "Map.h"
 class Player {
 public:
 	
 	Coordinate currentCoordinate;
-	std::map<Coordinate, char> currentView;
+	std::unordered_map<Coordinate, char> currentView;
 	WorldMap& world;
 	int viewSize;
 
-	Player(Coordinate start, WorldMap& world, int view): currentCoordinate(start), currentView(std::map<Coordinate, char>()), world(world), viewSize(view) {};
+	Player(Coordinate start, WorldMap& world, int view): currentCoordinate(start), currentView(std::unordered_map<Coordinate, char>()), world(world), viewSize(view) {};
 	void moveUp();
 	void moveDown();
 	void moveLeft();

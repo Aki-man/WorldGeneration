@@ -20,7 +20,7 @@ class ParallelIslandGenerator : public IslandGenerator {
 	std::random_device rd;
 	IslandGeneratorConfiguration config;*/
 public:
-	ParallelIslandGenerator(std::map<Coordinate, char>* worldMap, tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>* parallelWorldMap,int startWidth, int endWidth, int startLength, int endLength, IslandGeneratorConfiguration config) :
+	ParallelIslandGenerator(std::unordered_map<Coordinate, char>* worldMap, tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>* parallelWorldMap,int startWidth, int endWidth, int startLength, int endLength, IslandGeneratorConfiguration config) :
 		IslandGenerator(worldMap, startWidth, endWidth, startLength, endLength, config), parallelWorldMap(parallelWorldMap) {
 	};
 	~ParallelIslandGenerator();

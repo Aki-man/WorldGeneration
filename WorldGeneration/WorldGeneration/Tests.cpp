@@ -29,6 +29,47 @@ void Tests::ParallelGenerationTest(int n) {
     
 }
 
+void Tests::ParallelOneIslandGenerationTest(int n) {
+
+    std::cout << "Generated island size " << n << "*" << n << std::endl;
+    std::cout << "------------------------------------------------" << std::endl;
+    std::cout << "Starting serialized parallel generation" << std::endl;
+    tbb::tick_count startTime = tbb::tick_count::now();
+    ParallelWorldMap parallelMap = ParallelWorldMap(n, n);
+    parallelMap.GenerateOneIslandMap();
+    tbb::tick_count endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Parallel time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+    if (n <= 200)
+        std::cout << parallelMap << std::endl;
+
+    std::cout << "------------------------------------------------" << std::endl;
+    std::cout << "Starting parallel generation" << std::endl;
+    startTime = tbb::tick_count::now();
+    ParallelWorldMap trueParallelMap = ParallelWorldMap(n, n);
+    trueParallelMap.GenerateOneIslandMapParallel();
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Parallel time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+    if (n <= 200)
+        std::cout << trueParallelMap << std::endl;
+
+
+
+    std::cout << "------------------------------------------------" << std::endl;
+    std::cout << "Starting serial generation" << std::endl;
+    startTime = tbb::tick_count::now();
+    WorldMap map = WorldMap(n, n);
+    map.GenerateOneIslandMap();
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Serial time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+    if (n <= 200)
+        std::cout << map << std::endl;
+
+
+}
+
 void Tests::ParallelViewTest(int n) {
 
     std::cout << "Setting up..." << std::endl;

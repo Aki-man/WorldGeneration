@@ -29,6 +29,17 @@ void ParallelWorldMap::GenerateOneIslandMap()
 
 }
 
+void ParallelWorldMap::GenerateOneIslandMapParallel()
+{
+	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);
+	ParallelIslandGenerator generator(nullptr, &this->parallelWorldMap, 0, this->width, 0, this->length, config);
+
+	generator.generateIsland();
+
+	generator.parallelSecondPass();
+
+}
+
 void ParallelWorldMap::GenerateFourIslandMap()
 {
 	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);

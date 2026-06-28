@@ -121,7 +121,7 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
 
     std::cout << "Starting parallel save" << std::endl;
     startTime = tbb::tick_count::now();
-    parallelMap.save(fileName + "Parallel");
+    parallelMap.save(fileName + "ParallelSave");
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Parallel saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
@@ -129,7 +129,7 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
     parallelMap = ParallelWorldMap(n, n);
     std::cout << "Starting serial load" << std::endl;
     startTime = tbb::tick_count::now();
-    bool success = parallelMap.load(fileName + "Parallel");
+    bool success = parallelMap.load(fileName + "ParallelSave");
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Parallel loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
@@ -159,7 +159,7 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
 
     std::cout << "Starting serial save" << std::endl;
     startTime = tbb::tick_count::now();
-    map.save(fileName);
+    map.save(fileName + "SerialSave");
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Serial saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
@@ -167,7 +167,7 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
     map = WorldMap(n, n);
     std::cout << "Starting serial load" << std::endl;
     startTime = tbb::tick_count::now();
-    success = map.load(fileName);
+    success = map.load(fileName + "SerialSave");
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Serial loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
@@ -182,10 +182,10 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
     std::cout << "------------------------------------------------" << std::endl;
 
     Player serialPlayer(Coordinate(17, 23), map, n);
-    serialPlayer.save(fileName);
+    serialPlayer.save(fileName + "PlayerSave");
 
     Player newPlayer(Coordinate(0, 0), map, n);
-    newPlayer.load(fileName);
+    newPlayer.load(fileName + "PlayerSave");
 
     if (serialPlayer.currentCoordinate.x != newPlayer.currentCoordinate.x || serialPlayer.currentCoordinate.y != newPlayer.currentCoordinate.y)
         std::cout << "Player save failed\n";

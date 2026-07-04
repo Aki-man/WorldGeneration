@@ -6,6 +6,7 @@
 #include <random>
 #include <tuple>
 #include <tbb/parallel_for.h>
+#include <filesystem>
 
 WorldMap::~WorldMap()
 {
@@ -78,8 +79,11 @@ void WorldMap::print(std::ostream& out)
 
 void WorldMap::save(std::string saveName)
 {
+	std::filesystem::path path = saveName;
+	if (!std::filesystem::is_directory(path))
+		std::filesystem::create_directory(path);
 	int fileNumber = 0;
-	std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
+	std::string fileName = saveName + "/save" + std::to_string(fileNumber) + ".txt";
 	std::ofstream file(fileName, std::ios::out | std::ios::binary);
 	file << std::to_string(this->width) << " " << std::to_string(this->length);
 	file.close();
@@ -87,7 +91,7 @@ void WorldMap::save(std::string saveName)
 	fileNumber++;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
-			std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
+			std::string fileName = saveName + "/save" + std::to_string(fileNumber) + ".txt";
 			std::ofstream file(fileName, std::ios::out | std::ios::binary);
 			for (int j = i * (this->length / 2); j < (i + 1) * (this->length / 2); ++j) {
 				for (int k = l * (this->width / 2); k < (l + 1) * (this->length / 2); ++k) {
@@ -103,8 +107,11 @@ void WorldMap::save(std::string saveName)
 }
 
 void WorldMap::parallelSave(std::string saveName) {
+	std::filesystem::path path = saveName;
+	if (!std::filesystem::is_directory(path))
+		std::filesystem::create_directory(path);
 	int fileNumber = 0;
-	std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
+	std::string fileName = saveName + "/save" + std::to_string(fileNumber) + ".txt";
 	std::ofstream file(fileName, std::ios::out | std::ios::binary);
 	file << std::to_string(this->width) << " " << std::to_string(this->length);
 	file.close();
@@ -113,7 +120,7 @@ void WorldMap::parallelSave(std::string saveName) {
 	tbb::task_group g;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
-			std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
+			std::string fileName = saveName + "/save" + std::to_string(fileNumber) + ".txt";
 			 
 			g.run([=] {this->saveMapChunk(fileName, i, l) ; });
 
@@ -137,7 +144,7 @@ void WorldMap::saveMapChunk(std::string fileName, int i, int l) {
 
 bool WorldMap::load(std::string saveName) {
 	int fileNumber = 0;
-	std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
+	std::string fileName = saveName + "/save" + std::to_string(fileNumber) + ".txt";
 	if (std::filesystem::exists(fileName)) {
 		std::ifstream file(fileName, std::ios::out | std::ios::binary);
 		file >> this->length;
@@ -148,7 +155,7 @@ bool WorldMap::load(std::string saveName) {
 	fileNumber++;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
-			std::string fileName = saveName + "Island" + std::to_string(fileNumber) + ".txt";
+			std::string fileName = saveName + "/save" + std::to_string(fileNumber) + ".txt";
 			if (std::filesystem::exists(fileName)) {
 				std::ifstream file(fileName, std::ios::out | std::ios::binary);
 				while (!file.eof()) {

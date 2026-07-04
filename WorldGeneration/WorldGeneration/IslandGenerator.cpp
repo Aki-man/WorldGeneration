@@ -205,7 +205,7 @@ void IslandGenerator::generateSeaLine(int length)
 {
 	for (int i = startWidth; i < endWidth; ++i) {
 		Coordinate coord(i, length);
-		(*this->worldMap)[coord] = '~';
+		(*this->worldMap).insert({ coord, '~' });
 	}
 }
 
@@ -217,13 +217,13 @@ void IslandGenerator::generateIslandLine(int island_begin, int island_end, int l
 			Coordinate coord(i, length);
 			int forest = forestChanceGenerator(rd);
 			if (forest == config.forestSpawnChance)
-				(*this->worldMap)[coord] = 'T';
+				(*this->worldMap).insert({ coord,'T' });
 			else
-				(*this->worldMap)[coord] = 'O';
+				(*this->worldMap).emplace( coord, 'O' );
 		}
 		else {
 			Coordinate coord(i, length);
-			(*this->worldMap)[coord] = '~';
+			(*this->worldMap).insert({ coord,'~' });
 		}
 	}
 }
@@ -238,20 +238,20 @@ void IslandGenerator::generateIslandLineWithMountain(int island_begin, int islan
 			if (i > mountain_begin && i <= mountain_end) {
 				int forest = mountainForestChanceGenerator(rd);
 				if (forest == config.forestSpawnChance)
-					(*this->worldMap)[coord] = 'T';
+					(*this->worldMap).insert({ coord, 'T' });
 				else 
-					(*this->worldMap)[coord] = 'M';
+					(*this->worldMap).insert({ coord, 'M' });
 				continue;
 			}
 			int forest = forestChanceGenerator(rd);
 			if (forest == config.forestSpawnChance)
-				(*this->worldMap)[coord] = 'T';
+				(*this->worldMap).insert({ coord,'T' });
 			else
-				(*this->worldMap)[coord] = 'O';
+				(*this->worldMap).insert({ coord,'O' });
 		}
 		else {
 			Coordinate coord(i, length);
-			(*this->worldMap)[coord] = '~';
+			(*this->worldMap).insert({ coord,'~' });
 		}
 	}
 }

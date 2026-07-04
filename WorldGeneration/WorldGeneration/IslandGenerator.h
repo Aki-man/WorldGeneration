@@ -1,13 +1,14 @@
 #pragma once
 #include "coordinate.h"
 #include "IslandGeneratorConfiguration.h"
-#include <map>
+#include "HashInjection.h"
+#include <unordered_map>
 #include <string>
 #include <iostream>
 #include <random>
 
 class IslandGenerator {
-	std::map<Coordinate, char> *worldMap;
+	std::unordered_map<Coordinate, char> *worldMap;
 protected:
 	
 	int startWidth;
@@ -17,7 +18,7 @@ protected:
 	std::random_device rd;
 	IslandGeneratorConfiguration config;
 public:
-	IslandGenerator(std::map<Coordinate, char>* worldMap, int startWidth, int endWidth, int startLength, int endLength, IslandGeneratorConfiguration config) :
+	IslandGenerator(std::unordered_map<Coordinate, char>* worldMap, int startWidth, int endWidth, int startLength, int endLength, IslandGeneratorConfiguration config) :
 		worldMap(worldMap), startWidth(startWidth), endWidth(endWidth), startLength(startLength), endLength(endLength), config(config), rd(std::random_device()){};
 	~IslandGenerator();
 	//std::tuple<int, int> generateIslandLengthAndStart(int islandLength, int islandStart, int currentLength, bool getWider);

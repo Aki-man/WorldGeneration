@@ -42,10 +42,6 @@ void WorldMap::GenerateFourIslandMap()
 	generatorTwo.secondPass();
 	generatorThree.secondPass();
 	generatorFour.secondPass();
-	//map.generateIsland(0, 50, 0, 50);
-	//map.generateIsland(50, 100, 0, 50);
-	//map.generateIsland(0, 50, 50, 100);
-	//map.generateIsland(50, 100, 50, 100);
 }
 
 void WorldMap::print(std::ostream& out)

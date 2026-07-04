@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coordinate.h" />
+    <ClInclude Include="HashInjection.h" />
     <ClInclude Include="IslandGenerator.h" />
     <ClInclude Include="IslandGeneratorConfiguration.h" />
     <ClInclude Include="LengthAndStartGenerator.h" />

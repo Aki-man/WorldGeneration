@@ -144,7 +144,7 @@
     <ClCompile Include="ParallelPlayer.h" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Tests.cpp" />
-    <ClCompile Include="WorldGeneration.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coordinate.h" />

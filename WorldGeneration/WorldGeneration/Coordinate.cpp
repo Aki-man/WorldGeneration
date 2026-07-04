@@ -6,11 +6,12 @@ Coordinate::~Coordinate()
 	this->y = 0;
 }
 
-bool Coordinate::operator==(const Coordinate coord) const
+bool Coordinate::operator==(const Coordinate& coord) const
 {
 	if (this->y == coord.y && this->x == coord.x) {
 		return true;
 	}
+	return false;
 }
 
 bool Coordinate::operator<(const Coordinate coord) const

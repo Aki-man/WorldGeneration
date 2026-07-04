@@ -112,5 +112,5 @@ void mainMenu() {
 
 int main()
 {
-    ParallelPlayerMenu(200);
+    Tests::SaveWorldToFileTest(2000, "saveFile");
 }

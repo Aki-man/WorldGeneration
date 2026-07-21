@@ -7,20 +7,6 @@
 #include "SaveSystemHelper.h"
 
 void PlayerMenu(WorldMap& map, Player& newPlayer) {
-    /*WorldMap map = WorldMap(n, n);
-    if (load) {
-        map.load("SerialSave");
-        if (map.worldMap.size() == 0)
-            return;
-    }
-    else if (fourIsland)
-        map.GenerateFourIslandMap();
-    else
-        map.GenerateOneIslandMap();*/
-   
-    //Player newPlayer(Coordinate(n/2, n/2), map, 20);
-    /*if (load)
-        newPlayer.load("SerialSave");*/
     while (true) {
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
@@ -51,23 +37,6 @@ void PlayerMenu(WorldMap& map, Player& newPlayer) {
 }
 
 void ParallelPlayerMenu(ParallelWorldMap map, ParallelPlayer newPlayer) {
-   /*ParallelWorldMap map = ParallelWorldMap(n, n);
-    if (load) {
-        map.load("ParallelSave");
-        if (map.parallelWorldMap.size() == 0) {
-            return;
-        }
-            
-    }
-    else if (fourIsland)
-        map.GenerateFourIslandMap();
-    else
-        map.GenerateOneIslandMapParallel();
-
-    WorldMap worldmap = WorldMap();
-    ParallelPlayer newPlayer(Coordinate(n/2, n/2), worldmap, &map, 20);
-    if(load)
-        newPlayer.load("ParallelSave");*/
     while (true) {
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
@@ -169,13 +138,37 @@ void loadIslandMenu() {
     while (true) {
         system("cls");
         std::cout << "Please pick one of the following:" << std::endl;
-        std::cout << "1: Load a serial map" << std::endl;
-        std::cout << "2: Load a parallel map" << std::endl;
+        std::vector<std::string> saves = SaveSystemHelper::GetSaves();
+        for (int i = 0; i < saves.size(); ++i) {
+            std::cout << i + 1 << ":" << saves[i] << std::endl;
+        }
+        
         std::string userInput = "";
 
         std::cin >> userInput;
 
-        if (userInput == "1") {
+        if (userInput == "q") {
+            break;
+        }
+        int convertedInput = 0;
+        try{
+            convertedInput = std::stoi(userInput);
+        }
+        catch (std::exception e) {
+            continue;
+        }
+
+        if (convertedInput > saves.size()) {
+            continue;
+        }
+
+        ParallelWorldMap map;
+        map.load(saves[convertedInput - 1]);
+        WorldMap smap;
+        ParallelPlayer newPlayer(Coordinate(0, 0), smap, &map, 20);
+        newPlayer.load(saves[convertedInput - 1]);
+        ParallelPlayerMenu(map, newPlayer);
+        /*if (userInput == "1") {
             WorldMap map;
             map.load("SerialSave");
             Player newPlayer = Player(Coordinate(0, 0), map, 20);
@@ -189,10 +182,8 @@ void loadIslandMenu() {
             ParallelPlayer newPlayer(Coordinate(0, 0), smap, &map, 20);
             newPlayer.load("ParallelSave");
             ParallelPlayerMenu(map, newPlayer);
-        }
-        else if (userInput == "q") {
-            break;
-        }
+        }*/
+        
     }
 
 }

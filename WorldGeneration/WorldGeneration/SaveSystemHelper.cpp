@@ -14,5 +14,5 @@ std::vector<std::string> SaveSystemHelper::GetSaves()
 	for (const auto& entry : std::filesystem::directory_iterator("data/saves")) {
 		saveDirectories.push_back(entry.path().filename().string());
 	}
-	saveDirectories;
+	return saveDirectories;
 }

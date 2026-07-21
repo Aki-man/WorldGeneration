@@ -6,8 +6,8 @@
 #include "Tests.h"
 #include "SaveSystemHelper.h"
 
-void PlayerMenu(int n, bool fourIsland, bool load) {
-    WorldMap map = WorldMap(n, n);
+void PlayerMenu(WorldMap& map, Player& newPlayer) {
+    /*WorldMap map = WorldMap(n, n);
     if (load) {
         map.load("SerialSave");
         if (map.worldMap.size() == 0)
@@ -16,11 +16,11 @@ void PlayerMenu(int n, bool fourIsland, bool load) {
     else if (fourIsland)
         map.GenerateFourIslandMap();
     else
-        map.GenerateOneIslandMap();
+        map.GenerateOneIslandMap();*/
    
-    Player newPlayer(Coordinate(n/2, n/2), map, 20);
-    if (load)
-        newPlayer.load("SerialSave");
+    //Player newPlayer(Coordinate(n/2, n/2), map, 20);
+    /*if (load)
+        newPlayer.load("SerialSave");*/
     while (true) {
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
@@ -131,11 +131,20 @@ void generateNewIslandMenu() {
         if (size < 50)
             size = 50;
 
+        //WorldMap map = WorldMap(size, size);
+       // Player newPlayer(Coordinate(size / 2, size / 2), map, 20);
+
         if (userInput == "1") {
-            PlayerMenu(size, true, false);
+            WorldMap map = WorldMap(size, size);
+            Player newPlayer(Coordinate(size / 2, size / 2), map, 20);
+            map.GenerateFourIslandMap();
+            PlayerMenu(map, newPlayer);
         }
         else if (userInput == "2") {
-            PlayerMenu(size, false, false);
+            WorldMap map = WorldMap(size, size);
+            Player newPlayer(Coordinate(size / 2, size / 2), map, 20);
+            map.GenerateOneIslandMap();
+            PlayerMenu(map, newPlayer);
         }
         if (userInput == "3") {
             ParallelPlayerMenu(size, true, false);
@@ -159,7 +168,11 @@ void loadIslandMenu() {
         std::cin >> userInput;
 
         if (userInput == "1") {
-            PlayerMenu(100, false, true);
+            WorldMap map;
+            map.load("SerialSave");
+            Player newPlayer = Player(Coordinate(0, 0), map, 20);
+            newPlayer.load("SerialSave");
+            PlayerMenu(map, newPlayer);
         }
         else if (userInput == "2") {
             ParallelPlayerMenu(100, false, true);

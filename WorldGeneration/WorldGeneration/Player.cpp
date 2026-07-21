@@ -42,17 +42,17 @@ void Player::getView()
 
 void Player::save(std::string saveName)
 {
-	std::filesystem::path path = saveName;
+	std::filesystem::path path = "data/saves/" + saveName;
 	if (!std::filesystem::is_directory(path))
 		std::filesystem::create_directory(path);
-	std::string fileName = saveName + "/savePlayer.txt";
+	std::string fileName = "data/saves/" + saveName + "/savePlayer.txt";
 	std::ofstream file(fileName, std::ios::out | std::ios::binary);
 	file << this->currentCoordinate.x << " " << this->currentCoordinate.y;
 }
 
 void Player::load(std::string saveName)
 {
-	std::string fileName = saveName + "/savePlayer.txt";
+	std::string fileName = "data/saves/" + saveName + "/savePlayer.txt";
 	std::ifstream file(fileName, std::ios::out | std::ios::binary);
 	int x;
 	int y;

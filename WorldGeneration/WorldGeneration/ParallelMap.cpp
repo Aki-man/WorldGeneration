@@ -79,11 +79,11 @@ void ParallelWorldMap::print(std::ostream& out)
 
 void ParallelWorldMap::save(std::string saveName)
 {
-	std::filesystem::path path = saveName;
+	std::filesystem::path path = "data/saves/" + saveName;
 	if (!std::filesystem::is_directory(path))
 		std::filesystem::create_directory(path);
 	int fileNumber = 0;
-	std::string fileName = saveName + "/save" + std::to_string(fileNumber) + ".txt";
+	std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
 	std::ofstream file(fileName, std::ios::out | std::ios::binary);
 	file << std::to_string(this->width) << " " << std::to_string(this->length);
 	file.close();
@@ -93,7 +93,7 @@ void ParallelWorldMap::save(std::string saveName)
 	task_group g;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
-			std::string fileName = saveName + "/save" + std::to_string(fileNumber) + ".txt";
+			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
 			g.run([=] {this->saveMapChunk(fileName, i, l); });
 			
 			fileNumber++;
@@ -123,7 +123,7 @@ void ParallelWorldMap::saveMapChunk(std::string fileName, int i, int l) {
 bool ParallelWorldMap::load(std::string saveName)
 {
 	int fileNumber = 0;
-	std::string fileName = saveName + "/save" + std::to_string(fileNumber) + ".txt";
+	std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
 	if (std::filesystem::exists(fileName)) {
 		std::ifstream file(fileName, std::ios::out | std::ios::binary);
 		file >> this->length;
@@ -135,7 +135,7 @@ bool ParallelWorldMap::load(std::string saveName)
 	task_group g;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
-			std::string fileName = saveName + "/save" + std::to_string(fileNumber) + ".txt";
+			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
 			if(std::filesystem::exists(fileName))
 				g.run([=]{this->loadMapChunk(fileName, i, l); });
 			fileNumber++;

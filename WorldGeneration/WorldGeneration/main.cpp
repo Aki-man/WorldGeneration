@@ -4,6 +4,7 @@
 #include <tbb/tick_count.h>
 #include "ParallelPlayer.h"
 #include "Tests.h"
+#include "SaveSystemHelper.h"
 
 void PlayerMenu(int n, bool fourIsland, bool load) {
     WorldMap map = WorldMap(n, n);
@@ -279,5 +280,6 @@ void mainMenu() {
 
 int main()
 {
+    SaveSystemHelper::CheckSaveDirectory();
     mainMenu();
 }

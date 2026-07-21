@@ -50,8 +50,8 @@ void PlayerMenu(WorldMap& map, Player& newPlayer) {
     }
 }
 
-void ParallelPlayerMenu(int n, bool fourIsland, bool load) {
-    ParallelWorldMap map = ParallelWorldMap(n, n);
+void ParallelPlayerMenu(ParallelWorldMap map, ParallelPlayer newPlayer) {
+   /*ParallelWorldMap map = ParallelWorldMap(n, n);
     if (load) {
         map.load("ParallelSave");
         if (map.parallelWorldMap.size() == 0) {
@@ -67,7 +67,7 @@ void ParallelPlayerMenu(int n, bool fourIsland, bool load) {
     WorldMap worldmap = WorldMap();
     ParallelPlayer newPlayer(Coordinate(n/2, n/2), worldmap, &map, 20);
     if(load)
-        newPlayer.load("ParallelSave");
+        newPlayer.load("ParallelSave");*/
     while (true) {
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
@@ -147,10 +147,18 @@ void generateNewIslandMenu() {
             PlayerMenu(map, newPlayer);
         }
         if (userInput == "3") {
-            ParallelPlayerMenu(size, true, false);
+            ParallelWorldMap map = ParallelWorldMap(size, size);
+            WorldMap smap = WorldMap(size, size);
+            ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), smap, &map, 20);
+            map.GenerateFourIslandMap();
+            ParallelPlayerMenu(map, newPlayer);
         }
         else if (userInput == "4") {
-            ParallelPlayerMenu(size, false, false);
+            ParallelWorldMap map = ParallelWorldMap(size, size);
+            WorldMap smap = WorldMap(size, size);
+            ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), smap, &map, 20);
+            map.GenerateOneIslandMap();
+            ParallelPlayerMenu(map, newPlayer);
         }
         
     }
@@ -175,7 +183,12 @@ void loadIslandMenu() {
             PlayerMenu(map, newPlayer);
         }
         else if (userInput == "2") {
-            ParallelPlayerMenu(100, false, true);
+            ParallelWorldMap map;
+            map.load("ParallelSave");
+            WorldMap smap;
+            ParallelPlayer newPlayer(Coordinate(0, 0), smap, &map, 20);
+            newPlayer.load("ParallelSave");
+            ParallelPlayerMenu(map, newPlayer);
         }
         else if (userInput == "q") {
             break;

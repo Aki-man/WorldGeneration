@@ -12,10 +12,12 @@ protected:
 	
 	int width;
 	int length;
+	
 public:
+	std::string name;
 	std::unordered_map<Coordinate, char> worldMap;
-	WorldMap() : width(0), length(0), worldMap(std::unordered_map<Coordinate, char>()) {};
-	WorldMap(int width, int length) : width(width), length(length), worldMap(std::unordered_map<Coordinate, char>()) {};
+	WorldMap() : width(0), length(0), name(""), worldMap(std::unordered_map<Coordinate, char>()) {};
+	WorldMap(int width, int length) : width(width), length(length), name(""),worldMap(std::unordered_map<Coordinate, char>()) {};
 	~WorldMap();
 	virtual void GenerateOneIslandMap();
 	virtual void GenerateFourIslandMap();

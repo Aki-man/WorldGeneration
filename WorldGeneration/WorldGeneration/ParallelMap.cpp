@@ -122,6 +122,7 @@ void ParallelWorldMap::saveMapChunk(std::string fileName, int i, int l) {
 
 bool ParallelWorldMap::load(std::string saveName)
 {
+	this->name = saveName;
 	int fileNumber = 0;
 	std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
 	if (std::filesystem::exists(fileName)) {

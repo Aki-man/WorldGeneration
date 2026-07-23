@@ -36,6 +36,35 @@ void PlayerMenu(WorldMap& map, Player& newPlayer) {
     }
 }
 
+static void saveMapMenu(ParallelWorldMap& map, ParallelPlayer& player) {
+    if (map.name == "") {
+        std::vector<std::string> currentSaves = SaveSystemHelper::GetSaves();
+        std::unordered_map<std::string, int> saveMap = SaveSystemHelper::GetSaveMap();
+        std::string userInput;
+        while (true) {
+            std::cout << "These are the currently existing saves:\n";
+            for (int i = 0; i < currentSaves.size(); ++i) {
+                std::cout << i + 1 << ":" << currentSaves[i] << std::endl;
+            }
+            std::cout << "What would you like to call the new save?\n";
+
+            std::cin >> userInput;
+
+            if (saveMap.find(userInput) != saveMap.end()) {
+                system("cls");
+                std::cout << "That save already exists!\n";
+            }
+            else {
+                break;
+            }
+        }
+        map.name = userInput;
+    }
+    std::cout << "saving..." << std::endl;
+    map.save(map.name);
+    player.save(map.name);
+}
+
 void ParallelPlayerMenu(ParallelWorldMap map, ParallelPlayer newPlayer) {
     while (true) {
         newPlayer.getViewWithShadows();
@@ -56,43 +85,15 @@ void ParallelPlayerMenu(ParallelWorldMap map, ParallelPlayer newPlayer) {
         else if (entry == "q")
             break;
         else if (entry == "save") {
-            std::cout << "saving..." << std::endl;
+            /*std::cout << "saving..." << std::endl;
             map.save("ParallelSave");
-            newPlayer.save("ParallelSave");
+            newPlayer.save("ParallelSave");*/
+            saveMapMenu(map, newPlayer);
         }
         else
             continue;
         system("cls");
     }
-}
-
-void saveMenu(ParallelWorldMap map, ParallelPlayer player) {
-    if (map.name == "") {
-        std::vector<std::string> currentSaves = SaveSystemHelper::GetSaves();
-        std::unordered_map<std::string, int> saveMap = SaveSystemHelper::GetSaveMap();
-        std::string userInput;
-        while (true) {
-            std::cout << "These are the currently existing saves:\n";
-            for (int i = 0; i < currentSaves.size(); ++i) {
-                std::cout << i + 1 << ":" << currentSaves[i] << std::endl;
-            }
-            std::cout << "What would you like to call the new save?\n";
-            
-            std::cin >> userInput;
-
-            if (saveMap.find(userInput) != saveMap.end()) {
-                system("cls");
-                std::cout << "That save already exists!\n";
-            }
-            else {
-                break;
-            }
-        }
-        map.name = userInput;
-    }
-    std::cout << "saving..." << std::endl;
-    map.save(map.name);
-    player.save(map.name);
 }
 
 void generateNewIslandMenu() {

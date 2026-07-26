@@ -6,37 +6,7 @@
 #include "Tests.h"
 #include "SaveSystemHelper.h"
 
-void PlayerMenu(WorldMap& map, Player& newPlayer) {
-    while (true) {
-        newPlayer.getViewWithShadows();
-        newPlayer.cleanUpView();
-
-        std::cout << newPlayer << std::endl;
-        std::cout << "please press a WASD button, q to quit, save to save" << std::endl;
-        std::string entry;
-        std::cin >> entry;
-        if (entry == "w" || entry == "W")
-            newPlayer.moveUp();
-        else if (entry == "s" || entry == "S")
-            newPlayer.moveDown();
-        else if (entry == "a" || entry == "A")
-            newPlayer.moveLeft();
-        else if (entry == "d" || entry == "D")
-            newPlayer.moveRight();
-        else if (entry == "q")
-            break;
-        else if (entry == "save") {
-            std::cout << "saving..." << std::endl;
-            map.parallelSave("SerialSave");
-            newPlayer.save("SerialSave");
-        }
-        else
-            continue;
-        system("cls");
-    }
-}
-
-static void saveMapMenu(ParallelWorldMap& map, ParallelPlayer& player) {
+static void saveMapMenu(WorldMap& map, Player& player) {
     if (map.name == "") {
         std::vector<std::string> currentSaves = SaveSystemHelper::GetSaves();
         std::unordered_map<std::string, int> saveMap = SaveSystemHelper::GetSaveMap();
@@ -63,6 +33,34 @@ static void saveMapMenu(ParallelWorldMap& map, ParallelPlayer& player) {
     std::cout << "saving..." << std::endl;
     map.save(map.name);
     player.save(map.name);
+}
+
+void PlayerMenu(WorldMap& map, Player& newPlayer) {
+    while (true) {
+        newPlayer.getViewWithShadows();
+        newPlayer.cleanUpView();
+
+        std::cout << newPlayer << std::endl;
+        std::cout << "please press a WASD button, q to quit, save to save" << std::endl;
+        std::string entry;
+        std::cin >> entry;
+        if (entry == "w" || entry == "W")
+            newPlayer.moveUp();
+        else if (entry == "s" || entry == "S")
+            newPlayer.moveDown();
+        else if (entry == "a" || entry == "A")
+            newPlayer.moveLeft();
+        else if (entry == "d" || entry == "D")
+            newPlayer.moveRight();
+        else if (entry == "q")
+            break;
+        else if (entry == "save") {
+            saveMapMenu(map, newPlayer);
+        }
+        else
+            continue;
+        system("cls");
+    }
 }
 
 void ParallelPlayerMenu(ParallelWorldMap map, ParallelPlayer newPlayer) {

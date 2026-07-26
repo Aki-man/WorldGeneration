@@ -138,11 +138,13 @@
     <ClCompile Include="IslandGeneratorConfiguration.cpp" />
     <ClCompile Include="LengthAndStartGenerator.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="ParallelIslandGenerator.cpp" />
     <ClCompile Include="ParallelMap.cpp" />
     <ClCompile Include="ParallelPlayer.cpp" />
     <ClCompile Include="ParallelPlayer.h" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="SaveSystemHelper.cpp" />
     <ClCompile Include="Tests.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -153,12 +155,14 @@
     <ClInclude Include="IslandGeneratorConfiguration.h" />
     <ClInclude Include="LengthAndStartGenerator.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="MyHashCompare.h" />
     <ClInclude Include="ParallelIslandGenerator.h" />
     <ClInclude Include="ParallelMap.h" />
     <ClInclude Include="ParallelMapHelper.h" />
     <ClInclude Include="ParallelSecondPassHelper.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="SaveSystemHelper.h" />
     <ClInclude Include="Tests.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

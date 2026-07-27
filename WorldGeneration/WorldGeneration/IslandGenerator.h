@@ -33,7 +33,7 @@ public:
 	void secondPass();
 	void generateTileClump(Coordinate coord, int clumpSize, char tile);
 	void generateRiver(Coordinate startCoord, bool isGoingLeft, bool isGoingUp);
-	virtual bool isAdjacentTo(Coordinate coord, char tile);
+	bool isAdjacentTo(Coordinate coord, char tile);
 	virtual void generateSeaLine(int length);
 	virtual void generateIslandLine(int islandLength, int islandOffset, int length);
 	virtual void generateIslandLineWithMountain(int island_begin, int island_end, int length, int mountain_begin, int mountain_end);

@@ -50,51 +50,6 @@ void ParallelIslandGenerator::parallelSecondPass()
 		tbb::auto_partitioner());
 }
 
-/*void ParallelIslandGenerator::generateRiver(Coordinate startCoordinate, bool isGoingLeft, bool isGoingUp)
-{
-	Coordinate currentCoordinate = startCoordinate;
-	while (true) {
-		
-		this->insert(currentCoordinate, 'R');
-		if (this->isAdjacentTo(currentCoordinate, '~'))
-			break;
-		if (std::rand() % 2 == 0) {
-			if (isGoingLeft)
-				currentCoordinate = Coordinate(currentCoordinate.x - 1, currentCoordinate.y);
-			else
-				currentCoordinate = Coordinate(currentCoordinate.x + 1, currentCoordinate.y);
-		}
-		else {
-			if (isGoingUp)
-				currentCoordinate = Coordinate(currentCoordinate.x, currentCoordinate.y - 1);
-			else
-				currentCoordinate = Coordinate(currentCoordinate.x, currentCoordinate.y + 1);
-		}
-	}
-}*/
-
-bool ParallelIslandGenerator::isAdjacentTo(Coordinate coord, char tile)
-{
-	Coordinate leftAdjacentTile = Coordinate(coord.x - 1, coord.y);
-	Coordinate rightAdjacentTile = Coordinate(coord.x + 1, coord.y);
-	Coordinate upAdjacentTile = Coordinate(coord.x, coord.y + 1);
-	Coordinate downAdjacentTile = Coordinate(coord.x, coord.y - 1);
-	std::vector<Coordinate> coordinatesToCheck = { leftAdjacentTile, rightAdjacentTile, upAdjacentTile, downAdjacentTile };
-	for (Coordinate coord : coordinatesToCheck)
-	{
-		/*tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::const_accessor a;
-		bool found = (*this->parallelWorldMap).find(a, coord);
-		if (found) {*/
-			//char foundTile = a->second;
-		char foundTile = this->get(coord);
-		if (foundTile == tile) {
-			return true;
-		}
-		//}
-	}
-	return false;
-}
-
 void ParallelIslandGenerator::generateSeaLine(int length)
 {
 	//tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;

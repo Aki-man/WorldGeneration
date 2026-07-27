@@ -129,6 +129,7 @@ void IslandGenerator::secondPass() {
 			if (this->isAdjacentTo(coord, '~') && tile != '~' && tile != 'R' && tile != 'M') {
 				//(*this->worldMap)[coord] = 'C';
 				this->replace(coord, 'C');
+				tile = 'C';
 			}
 			else if ((tile == 'O' || tile == 'T') && lakeNumber > 0) {
 				std::uniform_int_distribution<int> randomLakesize(1, 8);
@@ -217,7 +218,7 @@ bool IslandGenerator::isAdjacentTo(Coordinate coord, char tile) {
 	std::vector<Coordinate> coordinatesToCheck = { leftAdjacentTile, rightAdjacentTile, upAdjacentTile, downAdjacentTile };
 	for (Coordinate coord : coordinatesToCheck)
 	{
-		if ((*this->worldMap).contains(coord)) {
+		if (this->contains(coord)) {
 			//char foundTile = (*worldMap)[coord];
 			char foundTile = this->get(coord);
 			if (foundTile == tile) {

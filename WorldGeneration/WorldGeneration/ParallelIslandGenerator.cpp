@@ -50,38 +50,11 @@ void ParallelIslandGenerator::parallelSecondPass()
 		tbb::auto_partitioner());
 }
 
-/*void ParallelIslandGenerator::generateTileClump(Coordinate coord, int clumpSize, char tile)
-{
-	std::vector<Coordinate> coordinatesToConvert = { Coordinate(coord.x, coord.y - 1),
-	Coordinate(coord.x, coord.y + 1),
-	Coordinate(coord.x - 1, coord.y),
-	Coordinate(coord.x + 1, coord.y - 1),
-	Coordinate(coord.x - 1, coord.y - 1),
-	Coordinate(coord.x - 1, coord.y + 1),
-	Coordinate(coord.x + 1, coord.y - 1),
-	Coordinate(coord.x + 1, coord.y + 1) };
-	this->insert(coord, tile);
-	
-	std::uniform_int_distribution<int> randomCoordinateSelector(0, coordinatesToConvert.size() - 1);
-	for (int i = 0; i < clumpSize; ++i) {
-		Coordinate coord = coordinatesToConvert[randomCoordinateSelector(rd)];
-		char foundTile = this->get(coord);
-		if (foundTile != 'C' && foundTile != '~' && foundTile != 'R' && foundTile != 'M') {
-			
-			this->insert(coord, tile);
-		}
-	}
-
-}*/
-
-void ParallelIslandGenerator::generateRiver(Coordinate startCoordinate, bool isGoingLeft, bool isGoingUp)
+/*void ParallelIslandGenerator::generateRiver(Coordinate startCoordinate, bool isGoingLeft, bool isGoingUp)
 {
 	Coordinate currentCoordinate = startCoordinate;
 	while (true) {
-		/*tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-		(*this->parallelWorldMap).insert(a, currentCoordinate);
-		a->second = 'R';
-		a.release();*/
+		
 		this->insert(currentCoordinate, 'R');
 		if (this->isAdjacentTo(currentCoordinate, '~'))
 			break;
@@ -98,7 +71,7 @@ void ParallelIslandGenerator::generateRiver(Coordinate startCoordinate, bool isG
 				currentCoordinate = Coordinate(currentCoordinate.x, currentCoordinate.y + 1);
 		}
 	}
-}
+}*/
 
 bool ParallelIslandGenerator::isAdjacentTo(Coordinate coord, char tile)
 {

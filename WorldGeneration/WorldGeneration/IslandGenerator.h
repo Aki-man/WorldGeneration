@@ -32,7 +32,7 @@ public:
 	virtual bool contains(Coordinate coord);
 	void secondPass();
 	void generateTileClump(Coordinate coord, int clumpSize, char tile);
-	virtual void generateRiver(Coordinate startCoord, bool isGoingLeft, bool isGoingUp);
+	void generateRiver(Coordinate startCoord, bool isGoingLeft, bool isGoingUp);
 	virtual bool isAdjacentTo(Coordinate coord, char tile);
 	virtual void generateSeaLine(int length);
 	virtual void generateIslandLine(int islandLength, int islandOffset, int length);

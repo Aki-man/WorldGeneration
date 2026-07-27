@@ -127,7 +127,7 @@ void IslandGenerator::secondPass() {
 			Coordinate coord(i, j);
 			char tile = this->get(coord);
 			if (this->isAdjacentTo(coord, '~') && tile != '~' && tile != 'R' && tile != 'M') {
-				//(*this->worldMap)[coord] = 'C';
+				
 				this->replace(coord, 'C');
 				tile = 'C';
 			}
@@ -170,16 +170,16 @@ void IslandGenerator::generateTileClump(Coordinate coord, int clumpSize, char ti
 	Coordinate(coord.x - 1, coord.y + 1),
 	Coordinate(coord.x + 1, coord.y - 1),
 	Coordinate(coord.x + 1, coord.y + 1) };
-	//(*this->worldMap)[coord] = tile;
+	
 	this->replace(coord, tile);
 	std::uniform_int_distribution<int> randomCoordinateSelector(0, coordinatesToConvert.size()-1);
 	for (int i = 0; i < clumpSize; ++i) {
 		Coordinate coord = coordinatesToConvert[randomCoordinateSelector(rd)];
 		if (this->contains(coord)) {
-			//char foundTile = (*worldMap)[coord];
+			
 			char foundTile = this->get(coord);
 			if (foundTile != 'C' && foundTile != '~' && foundTile != 'R' && foundTile != 'M') {
-				//(*this->worldMap)[coord] = tile;
+				
 				this->replace(coord, tile);
 			}
 		}
@@ -190,7 +190,7 @@ void IslandGenerator::generateRiver(Coordinate startCoordinate, bool isGoingLeft
 {
 	Coordinate currentCoordinate = startCoordinate;
 	while (true) {
-		//(*this->worldMap)[currentCoordinate] = 'R';
+		
 		this->replace(currentCoordinate, 'R');
 		if (this->isAdjacentTo(currentCoordinate, '~'))
 			break;
@@ -219,7 +219,7 @@ bool IslandGenerator::isAdjacentTo(Coordinate coord, char tile) {
 	for (Coordinate coord : coordinatesToCheck)
 	{
 		if (this->contains(coord)) {
-			//char foundTile = (*worldMap)[coord];
+			
 			char foundTile = this->get(coord);
 			if (foundTile == tile) {
 				return true;
@@ -233,7 +233,7 @@ void IslandGenerator::generateSeaLine(int length)
 {
 	for (int i = startWidth; i < endWidth; ++i) {
 		Coordinate coord(i, length);
-		//(*this->worldMap).insert({ coord, '~' });
+		
 		this->insert(coord, '~');
 	}
 }
@@ -246,15 +246,15 @@ void IslandGenerator::generateIslandLine(int island_begin, int island_end, int l
 			Coordinate coord(i, length);
 			int forest = forestChanceGenerator(rd);
 			if (forest == config.forestSpawnChance)
-				//(*this->worldMap).insert({ coord,'T' });
+				
 				this->insert(coord, 'T');
 			else
-				//(*this->worldMap).emplace( coord, 'O' );
+			
 				this->insert(coord, 'O');
 		}
 		else {
 			Coordinate coord(i, length);
-			//(*this->worldMap).insert({ coord,'~' });
+			
 			this->insert(coord, '~');
 		}
 	}
@@ -270,24 +270,24 @@ void IslandGenerator::generateIslandLineWithMountain(int island_begin, int islan
 			if (i > mountain_begin && i <= mountain_end) {
 				int forest = mountainForestChanceGenerator(rd);
 				if (forest == config.forestSpawnChance)
-					//(*this->worldMap).insert({ coord, 'T' });
+					
 					this->insert(coord, 'T');
 				else
-					//(*this->worldMap).insert({ coord, 'M' });
+					
 					this->insert(coord, 'M');
 				continue;
 			}
 			int forest = forestChanceGenerator(rd);
 			if (forest == config.forestSpawnChance)
-				//(*this->worldMap).insert({ coord,'T' });
+				
 				this->insert(coord, 'T');
 			else
-				//(*this->worldMap).insert({ coord,'O' });
+				
 				this->insert(coord, 'O');
 		}
 		else {
 			Coordinate coord(i, length);
-			//(*this->worldMap).insert({ coord,'~' });
+		
 			this->insert(coord, '~');
 		}
 	}

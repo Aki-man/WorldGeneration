@@ -26,7 +26,9 @@ public:
 	~ParallelIslandGenerator();
 	//std::tuple<int, int> generateIslandLengthAndStart(int islandLength, int islandStart, int currentLength, bool getWider);
 	//std::tuple<int, int> generateMountainLengthAndStart(std::tuple<int, int> islandLengthAndStart, int mountainLength, int mountainStart);
-	
+	virtual void insert(Coordinate coord, char tile) override;
+	virtual void replace(Coordinate coord, char tile) override;
+	virtual char get(Coordinate coord) override;
 	virtual  void secondPass() override;
 	void parallelSecondPass();
 	virtual void generateTileClump(Coordinate coord, int clumpSize, char tile) override;

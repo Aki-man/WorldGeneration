@@ -26,6 +26,9 @@ public:
 	void generateIsland();
 	void generateIslandOrIslandWithMountain(int i, int islandLength, int islandStart, int mountainLength, int mountainStart, bool generateIsland, bool generateMountain, bool mountainEndOfGeneration);
 	bool shouldIslandGenerate(int length, bool generateIsland, int islandEnd);
+	virtual void insert(Coordinate coord, char tile);
+	virtual void replace(Coordinate coord, char tile);
+	virtual char get(Coordinate coord);
 	virtual void secondPass();
 	virtual void generateTileClump(Coordinate coord, int clumpSize, char tile);
 	virtual void generateRiver(Coordinate startCoord, bool isGoingLeft, bool isGoingUp);

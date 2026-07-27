@@ -10,6 +10,19 @@ ParallelIslandGenerator::~ParallelIslandGenerator()
 	this->endLength = 0;
 }
 
+void ParallelIslandGenerator::insert(Coordinate coord, char tile)
+{
+}
+
+void ParallelIslandGenerator::replace(Coordinate coord, char tile)
+{
+}
+
+char ParallelIslandGenerator::get(Coordinate coord)
+{
+	return 0;
+}
+
 void ParallelIslandGenerator::secondPass()
 {
 	int lakeNumber = config.lakeNumber;

@@ -120,18 +120,19 @@ void IslandGenerator::secondPass() {
 	for (int i = startLength; i < endLength; ++i) {
 		for (int j = startWidth; j < endWidth; ++j) {
 			Coordinate coord(i, j);
-			if (this->isAdjacentTo(coord, '~') && (*this->worldMap)[coord] != '~' && (*this->worldMap)[coord] != 'R' && (*this->worldMap)[coord] != 'M') {
+			char tile = this->get(coord);
+			if (this->isAdjacentTo(coord, '~') && tile != '~' && tile != 'R' && tile != 'M') {
 				//(*this->worldMap)[coord] = 'C';
 				this->replace(coord, 'C');
 			}
-			else if (((*this->worldMap)[coord] == 'O' || (*this->worldMap)[coord] == 'T') && lakeNumber > 0) {
+			else if ((tile == 'O' || tile == 'T') && lakeNumber > 0) {
 				std::uniform_int_distribution<int> randomLakesize(1, 8);
 				if (std::rand() % 20 == 0) {
 					this->generateTileClump(coord, randomLakesize(rd), 'L');
 					--lakeNumber;
 				}
 			}
-			if ((*this->worldMap)[coord] == 'T') {
+			if (tile == 'T') {
 				if (std::rand() % 3 == 0) {
 					std::uniform_int_distribution<int> randomForestSize(0, 4);
 					this->generateTileClump(coord, randomForestSize(rd), 'T');

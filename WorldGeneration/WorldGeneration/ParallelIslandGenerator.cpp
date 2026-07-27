@@ -12,6 +12,9 @@ ParallelIslandGenerator::~ParallelIslandGenerator()
 
 void ParallelIslandGenerator::insert(Coordinate coord, char tile)
 {
+	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
+	(*this->parallelWorldMap).insert(a, coord);
+	a->second = tile;
 }
 
 void ParallelIslandGenerator::replace(Coordinate coord, char tile)
@@ -20,7 +23,13 @@ void ParallelIslandGenerator::replace(Coordinate coord, char tile)
 
 char ParallelIslandGenerator::get(Coordinate coord)
 {
-	return 0;
+	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::const_accessor a;
+	bool found = (*this->parallelWorldMap).find(a, coord);
+
+	char tile = '=';
+	if (found)
+		tile = a->second;
+	return tile;
 }
 
 void ParallelIslandGenerator::secondPass()

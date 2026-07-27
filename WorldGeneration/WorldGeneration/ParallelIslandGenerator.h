@@ -29,7 +29,7 @@ public:
 	virtual void insert(Coordinate coord, char tile) override;
 	virtual void replace(Coordinate coord, char tile) override;
 	virtual char get(Coordinate coord) override;
-	virtual  void secondPass() override;
+	//virtual  void secondPass() override;
 	void parallelSecondPass();
 	virtual void generateTileClump(Coordinate coord, int clumpSize, char tile) override;
 	void replaceRandomTiles(std::vector<Coordinate> coordinatesToConvert, int clumpSize, char tile);

@@ -35,7 +35,7 @@ char ParallelIslandGenerator::get(Coordinate coord)
 	return tile;
 }
 
-void ParallelIslandGenerator::secondPass()
+/*void ParallelIslandGenerator::secondPass()
 {
 	int lakeNumber = config.lakeNumber;
 	bool riverGenerated = false;
@@ -77,7 +77,7 @@ void ParallelIslandGenerator::secondPass()
 			}
 		}
 	}
-}
+}*/
 
 void ParallelIslandGenerator::parallelSecondPass()
 {

@@ -114,6 +114,11 @@ char IslandGenerator::get(Coordinate coord)
 	return (*this->worldMap)[coord];
 }
 
+bool IslandGenerator::contains(Coordinate coord)
+{
+	return (*this->worldMap).contains(coord);
+}
+
 void IslandGenerator::secondPass() {
 	int lakeNumber = config.lakeNumber;
 	bool riverGenerated = false;
@@ -169,7 +174,7 @@ void IslandGenerator::generateTileClump(Coordinate coord, int clumpSize, char ti
 	std::uniform_int_distribution<int> randomCoordinateSelector(0, coordinatesToConvert.size()-1);
 	for (int i = 0; i < clumpSize; ++i) {
 		Coordinate coord = coordinatesToConvert[randomCoordinateSelector(rd)];
-		if ((*this->worldMap).contains(coord)) {
+		if (this->contains(coord)) {
 			//char foundTile = (*worldMap)[coord];
 			char foundTile = this->get(coord);
 			if (foundTile != 'C' && foundTile != '~' && foundTile != 'R' && foundTile != 'M') {

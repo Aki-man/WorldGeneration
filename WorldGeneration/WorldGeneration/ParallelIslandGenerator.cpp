@@ -35,49 +35,11 @@ char ParallelIslandGenerator::get(Coordinate coord)
 	return tile;
 }
 
-/*void ParallelIslandGenerator::secondPass()
+bool ParallelIslandGenerator::contains(Coordinate coord)
 {
-	int lakeNumber = config.lakeNumber;
-	bool riverGenerated = false;
-	for (int i = startLength; i < endLength; ++i) {
-		for (int j = startWidth; j < endWidth; ++j) {
-			Coordinate coord(i, j);
-			char tile = this->get(coord);
-			if (this->isAdjacentTo(coord, '~') && tile != '~' && tile != 'R' && tile != 'M') {
-				//tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor writer;
-				//(*this->parallelWorldMap).insert(writer, coord);
-				//writer->second = 'C';
-				//writer.release();
-				this->insert(coord, 'C');
-			}
-			else if ((tile == 'O' ||tile == 'T') && lakeNumber > 0) {
-				std::uniform_int_distribution<int> randomLakesize(1, 8);
-				if (std::rand() % 20 == 0) {
-					this->generateTileClump(coord, randomLakesize(rd), 'L');
-					--lakeNumber;
-				}
-			}
-			if (tile == 'T') {
-				if (std::rand() % 3 == 0) {
-					std::uniform_int_distribution<int> randomForestSize(0, 4);
-					this->generateTileClump(coord, randomForestSize(rd), 'T');
-				}
-			}
-			if (this->isAdjacentTo(coord, 'M') && !riverGenerated) {
-				bool goingLeft = true;
-				if (std::rand() % 2 == 0)
-					goingLeft = false;
-				bool goingUp = true;
-				if (std::rand() % 2 == 0)
-					goingUp = false;
-				if (std::rand() % 10 == 0) {
-					this->generateRiver(coord, goingLeft, goingUp);
-					riverGenerated = true;
-				}
-			}
-		}
-	}
-}*/
+	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::const_accessor a;
+	return (*this->parallelWorldMap).find(a, coord);
+}
 
 void ParallelIslandGenerator::parallelSecondPass()
 {
@@ -88,7 +50,7 @@ void ParallelIslandGenerator::parallelSecondPass()
 		tbb::auto_partitioner());
 }
 
-void ParallelIslandGenerator::generateTileClump(Coordinate coord, int clumpSize, char tile)
+/*void ParallelIslandGenerator::generateTileClump(Coordinate coord, int clumpSize, char tile)
 {
 	std::vector<Coordinate> coordinatesToConvert = { Coordinate(coord.x, coord.y - 1),
 	Coordinate(coord.x, coord.y + 1),
@@ -98,43 +60,19 @@ void ParallelIslandGenerator::generateTileClump(Coordinate coord, int clumpSize,
 	Coordinate(coord.x - 1, coord.y + 1),
 	Coordinate(coord.x + 1, coord.y - 1),
 	Coordinate(coord.x + 1, coord.y + 1) };
-	//tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-	//(*this->parallelWorldMap).insert(a, coord);
-	//a->second = tile;
 	this->insert(coord, tile);
-
-	/*std::uniform_int_distribution<int> randomCoordinateSelector(0, coordinatesToConvert.size() - 1);
-	for (int i = 0; i < clumpSize; ++i) {
-		Coordinate coord = coordinatesToConvert[randomCoordinateSelector(rd)];
-		bool found = (*this->parallelWorldMap).find(a, coord);
-		if (found) {
-			char foundTile = a->second;
-			if (foundTile != 'C' && foundTile != '~' && foundTile != 'R' && foundTile != 'M') {
-				(*this->parallelWorldMap).insert(a, coord);
-				a->second = tile;
-			}
-		}
-	}*/
-	this->replaceRandomTiles(coordinatesToConvert, clumpSize, tile);
-}
-
-void ParallelIslandGenerator::replaceRandomTiles(std::vector<Coordinate> coordinatesToConvert, int clumpSize, char tile) {
+	
 	std::uniform_int_distribution<int> randomCoordinateSelector(0, coordinatesToConvert.size() - 1);
 	for (int i = 0; i < clumpSize; ++i) {
 		Coordinate coord = coordinatesToConvert[randomCoordinateSelector(rd)];
-		//tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-		//bool found = (*this->parallelWorldMap).find(a, coord);
-		//if (found) {
-			//char foundTile = a->second;
 		char foundTile = this->get(coord);
-			if (foundTile != 'C' && foundTile != '~' && foundTile != 'R' && foundTile != 'M') {
-				//(*this->parallelWorldMap).insert(a, coord);
-				//a->second = tile;
-				this->insert(coord, tile);
-			}
-		//}
+		if (foundTile != 'C' && foundTile != '~' && foundTile != 'R' && foundTile != 'M') {
+			
+			this->insert(coord, tile);
+		}
 	}
-}
+
+}*/
 
 void ParallelIslandGenerator::generateRiver(Coordinate startCoordinate, bool isGoingLeft, bool isGoingUp)
 {

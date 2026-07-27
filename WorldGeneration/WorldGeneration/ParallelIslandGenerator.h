@@ -29,10 +29,11 @@ public:
 	virtual void insert(Coordinate coord, char tile) override;
 	virtual void replace(Coordinate coord, char tile) override;
 	virtual char get(Coordinate coord) override;
+	virtual bool contains(Coordinate coord) override;
 	//virtual  void secondPass() override;
 	void parallelSecondPass();
-	virtual void generateTileClump(Coordinate coord, int clumpSize, char tile) override;
-	void replaceRandomTiles(std::vector<Coordinate> coordinatesToConvert, int clumpSize, char tile);
+	//virtual void generateTileClump(Coordinate coord, int clumpSize, char tile) override;
+	//void replaceRandomTiles(std::vector<Coordinate> coordinatesToConvert, int clumpSize, char tile);
 	virtual void generateRiver(Coordinate startCoord, bool isGoingLeft, bool isGoingUp) override;
 	virtual bool isAdjacentTo(Coordinate coord, char tile) override;
 	virtual void generateSeaLine(int length) override;

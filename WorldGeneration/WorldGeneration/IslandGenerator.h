@@ -29,8 +29,9 @@ public:
 	virtual void insert(Coordinate coord, char tile);
 	virtual void replace(Coordinate coord, char tile);
 	virtual char get(Coordinate coord);
+	virtual bool contains(Coordinate coord);
 	void secondPass();
-	virtual void generateTileClump(Coordinate coord, int clumpSize, char tile);
+	void generateTileClump(Coordinate coord, int clumpSize, char tile);
 	virtual void generateRiver(Coordinate startCoord, bool isGoingLeft, bool isGoingUp);
 	virtual bool isAdjacentTo(Coordinate coord, char tile);
 	virtual void generateSeaLine(int length);

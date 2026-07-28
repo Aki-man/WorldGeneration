@@ -18,6 +18,16 @@ ParallelWorldMap::~ParallelWorldMap()
 
 }
 
+char ParallelWorldMap::get(Coordinate coord)
+{
+	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::const_accessor a;
+	bool found = this->parallelWorldMap.find(a, coord);
+	char temp = '=';
+	if (found)
+		temp = a->second;
+	return temp;
+}
+
 void ParallelWorldMap::GenerateOneIslandMap()
 {
 	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);
@@ -72,10 +82,10 @@ void ParallelWorldMap::GenerateFourIslandMap()
 
 
 
-void ParallelWorldMap::print(std::ostream& out)
+/*void ParallelWorldMap::print(std::ostream& out)
 {
 	WorldMap::print(out);
-}
+}*/
 
 void ParallelWorldMap::save(std::string saveName)
 {
@@ -168,37 +178,6 @@ void ParallelWorldMap::loadMapChunk(std::string fileName, int i, int l) {
 
 std::ostream& operator<<(std::ostream& out, ParallelWorldMap& map)
 {
-	for (int i = 0; i < map.length; ++i) {
-		for (int j = 0; j < map.width; ++j) {
-			Coordinate coord(j, i);
-
-			tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::const_accessor a;
-			bool found = map.parallelWorldMap.find(a, coord);
-			char temp = '=';
-			if(found)
-				temp = a->second;
-			if (temp == 'O') {
-				out << "\033[32m";
-			}
-			else if (temp == 'T') {
-				out << "\033[38;5;22m";
-			}
-			else if (temp == '~' || temp == 'L' || temp == 'R') {
-				out << "\033[34m";
-			}
-			else if (temp == 'C') {
-				out << "\033[33m";
-			}
-			else {
-				out << "\x1b[0m";
-			}
-			out << temp;
-		}
-		out << std::endl;
-	}
-	for (int i = 0; i < map.length; ++i) {
-		out << '=';
-	}
-	out << std::endl;
+	map.print(out);
 	return out;
 }

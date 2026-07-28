@@ -16,6 +16,11 @@ WorldMap::~WorldMap()
 
 }
 
+char WorldMap::get(Coordinate coord)
+{
+	return worldMap[coord];
+}
+
 void WorldMap::GenerateOneIslandMap()
 {
 	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);
@@ -50,7 +55,7 @@ void WorldMap::print(std::ostream& out)
 	for (int i = 0; i < length; ++i) {
 		for (int j = 0; j < width; ++j) {
 			Coordinate coord(j, i);
-			char temp = worldMap[coord];
+			char temp = this->get(coord);
 			if (temp == 'O') {
 				out << "\033[32m";
 			}

@@ -16,15 +16,15 @@ public:
 	ParallelWorldMap() : WorldMap(), parallelWorldMap(tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>()) {};
 	ParallelWorldMap(int width, int length) : WorldMap(width, length) {};
 	~ParallelWorldMap();
+	char get(Coordinate coord) override;
 	void GenerateOneIslandMap() override;
 	void GenerateOneIslandMapParallel();
 	void GenerateFourIslandMap() override;
-	//using WorldMap::print;
-	void print(std::ostream& out) override;
+	
+	
 	void save(std::string saveName) override;
 	void saveMapChunk(std::string fileName, int i, int l);
 	bool load(std::string saveName) override;
 	void loadMapChunk(std::string fileName, int i, int l);
-	friend std::ostream& operator<<(std::ostream& out, ParallelWorldMap& map);
 
 };

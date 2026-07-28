@@ -221,6 +221,7 @@ void Menu::testsMenu() {
         std::cout << "3: Run save tests" << std::endl;
         std::cout << "4: Run one island generation tests" << std::endl;
         std::cout << "5: Run all tests" << std::endl;
+        std::cout << "6: Run serial save tests" << std::endl;
 
         std::string userInput = "";
         std::cin >> userInput;
@@ -276,6 +277,16 @@ void Menu::testsMenu() {
 
             system("cls");
             Tests::BatchTests(islandSizeInput, viewSizeInput, "testFile");
+            std::cout << "Enter any key to continue" << std::endl;
+            std::cin >> userInput;
+        }
+        else if (userInput == "6") {
+            int sizeInput = 0;
+            std::cout << "Input island size for save test:" << std::endl;
+            std::cin >> sizeInput;
+
+            system("cls");
+            Tests::SaveWorldToFileTestSerial(sizeInput, "testFile");
             std::cout << "Enter any key to continue" << std::endl;
             std::cin >> userInput;
         }

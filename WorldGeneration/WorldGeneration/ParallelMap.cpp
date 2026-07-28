@@ -80,39 +80,7 @@ void ParallelWorldMap::GenerateFourIslandMap()
 	g2.wait();
 }
 
-
-
-/*void ParallelWorldMap::print(std::ostream& out)
-{
-	WorldMap::print(out);
-}*/
-
-void ParallelWorldMap::save(std::string saveName)
-{
-	std::filesystem::path path = "data/saves/" + saveName;
-	if (!std::filesystem::is_directory(path))
-		std::filesystem::create_directory(path);
-	int fileNumber = 0;
-	std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
-	std::ofstream file(fileName, std::ios::out | std::ios::binary);
-	file << std::to_string(this->width) << " " << std::to_string(this->length);
-	file.close();
-
-	fileNumber++;
-	
-	task_group g;
-	for (int i = 0; i < 2; ++i) {
-		for (int l = 0; l < 2; ++l) {
-			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
-			g.run([=] {this->saveMapChunk(fileName, i, l); });
-			
-			fileNumber++;
-		}
-	}
-	g.wait();
-}
-
-void ParallelWorldMap::saveMapChunk(std::string fileName, int i, int l) {
+/*void ParallelWorldMap::saveMapChunk(std::string fileName, int i, int l) {
 	
 	std::ofstream file(fileName, std::ios::out | std::ios::binary);
 	for (int j = i * (this->length / 2); j < (i + 1) * (this->length / 2); ++j) {
@@ -128,7 +96,7 @@ void ParallelWorldMap::saveMapChunk(std::string fileName, int i, int l) {
 		}
 	}
 	file.close();
-}
+}*/
 
 bool ParallelWorldMap::load(std::string saveName)
 {

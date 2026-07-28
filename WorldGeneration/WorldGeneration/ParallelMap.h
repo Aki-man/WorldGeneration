@@ -22,8 +22,8 @@ public:
 	void GenerateFourIslandMap() override;
 	
 	
-	void save(std::string saveName) override;
-	void saveMapChunk(std::string fileName, int i, int l);
+	//void save(std::string saveName) override;
+	//void saveMapChunk(std::string fileName, int i, int l);
 	bool load(std::string saveName) override;
 	void loadMapChunk(std::string fileName, int i, int l);
 

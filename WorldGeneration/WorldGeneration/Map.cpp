@@ -94,21 +94,17 @@ void WorldMap::save(std::string saveName)
 	file.close();
 
 	fileNumber++;
+	tbb::task_group g;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
 			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
-			std::ofstream file(fileName, std::ios::out | std::ios::binary);
-			for (int j = i * (this->length / 2); j < (i + 1) * (this->length / 2); ++j) {
-				for (int k = l * (this->width / 2); k < (l + 1) * (this->length / 2); ++k) {
-					std::string savedData = std::to_string(j) + " " + std::to_string(k) + " " + this->worldMap[Coordinate(j, k)] + " ";
-					file << savedData;
-				}	
-			}
-			file.close();
+
+			g.run([=] {this->saveMapChunk(fileName, i, l); });
+
 			fileNumber++;
 		}
 	}
-	
+	g.wait();
 }
 
 void WorldMap::parallelSave(std::string saveName) {
@@ -140,7 +136,7 @@ void WorldMap::saveMapChunk(std::string fileName, int i, int l) {
 	std::ofstream file(fileName, std::ios::out | std::ios::binary);
 	for (int j = i * (this->length / 2); j < (i + 1) * (this->length / 2); ++j) {
 		for (int k = l * (this->width / 2); k < (l + 1) * (this->length / 2); ++k) {
-			std::string savedData = std::to_string(j) + " " + std::to_string(k) + " " + this->worldMap[Coordinate(j, k)] + " ";
+			std::string savedData = std::to_string(j) + " " + std::to_string(k) + " " + this->get(Coordinate(j,k)) + " ";
 			file << savedData;
 		}
 	}

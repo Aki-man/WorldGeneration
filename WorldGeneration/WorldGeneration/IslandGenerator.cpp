@@ -175,14 +175,10 @@ void IslandGenerator::generateTileClump(Coordinate coord, int clumpSize, char ti
 	std::uniform_int_distribution<int> randomCoordinateSelector(0, coordinatesToConvert.size()-1);
 	for (int i = 0; i < clumpSize; ++i) {
 		Coordinate coord = coordinatesToConvert[randomCoordinateSelector(rd)];
-		if (this->contains(coord)) {
-			
 			char foundTile = this->get(coord);
 			if (foundTile != 'C' && foundTile != '~' && foundTile != 'R' && foundTile != 'M') {
-				
 				this->replace(coord, tile);
 			}
-		}
 	}
 }
 
@@ -218,13 +214,13 @@ bool IslandGenerator::isAdjacentTo(Coordinate coord, char tile) {
 	std::vector<Coordinate> coordinatesToCheck = { leftAdjacentTile, rightAdjacentTile, upAdjacentTile, downAdjacentTile };
 	for (Coordinate coord : coordinatesToCheck)
 	{
-		if (this->contains(coord)) {
+		//if (this->contains(coord)) {
 			
 			char foundTile = this->get(coord);
 			if (foundTile == tile) {
 				return true;
 			}
-		}
+		//}
 	}
 	return false;
 }

@@ -158,17 +158,6 @@ bool WorldMap::load(std::string saveName) {
 		file >> this->width;
 		file.close();
 	}
-
-	/*fileNumber++;
-	for (int i = 0; i < 2; ++i) {
-		for (int l = 0; l < 2; ++l) {
-			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
-			if (std::filesystem::exists(fileName))
-				this->loadMapChunk(fileName, i, l);
-			
-			fileNumber++;
-		}
-	}*/
 	this->loadMap(fileNumber, saveName);
 	if (worldMap.size() != this->length * this->width)
 		return false;

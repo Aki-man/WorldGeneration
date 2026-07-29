@@ -78,9 +78,6 @@ void Menu::ParallelPlayerMenu(ParallelWorldMap map, ParallelPlayer newPlayer) {
         else if (entry == "q")
             break;
         else if (entry == "save") {
-            /*std::cout << "saving..." << std::endl;
-            map.save("ParallelSave");
-            newPlayer.save("ParallelSave");*/
             saveMapMenu(map, newPlayer);
         }
         else
@@ -122,9 +119,6 @@ void Menu::generateNewIslandMenu() {
 
         if (size < 50)
             size = 50;
-
-        //WorldMap map = WorldMap(size, size);
-       // Player newPlayer(Coordinate(size / 2, size / 2), map, 20);
 
         if (userInput == "1") {
             WorldMap map = WorldMap(size, size);
@@ -191,22 +185,6 @@ void Menu::loadIslandMenu() {
         ParallelPlayer newPlayer(Coordinate(0, 0), smap, &map, 20);
         newPlayer.load(saves[convertedInput - 1]);
         ParallelPlayerMenu(map, newPlayer);
-        /*if (userInput == "1") {
-            WorldMap map;
-            map.load("SerialSave");
-            Player newPlayer = Player(Coordinate(0, 0), map, 20);
-            newPlayer.load("SerialSave");
-            PlayerMenu(map, newPlayer);
-        }
-        else if (userInput == "2") {
-            ParallelWorldMap map;
-            map.load("ParallelSave");
-            WorldMap smap;
-            ParallelPlayer newPlayer(Coordinate(0, 0), smap, &map, 20);
-            newPlayer.load("ParallelSave");
-            ParallelPlayerMenu(map, newPlayer);
-        }*/
-
     }
 
 }

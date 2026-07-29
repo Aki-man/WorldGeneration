@@ -16,6 +16,16 @@ WorldMap::~WorldMap()
 
 }
 
+void WorldMap::insert(Coordinate coord, char tile)
+{
+	this->worldMap[coord] = tile;
+}
+
+char WorldMap::get(Coordinate coord)
+{
+	return worldMap[coord];
+}
+
 void WorldMap::GenerateOneIslandMap()
 {
 	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);
@@ -50,7 +60,7 @@ void WorldMap::print(std::ostream& out)
 	for (int i = 0; i < length; ++i) {
 		for (int j = 0; j < width; ++j) {
 			Coordinate coord(j, i);
-			char temp = worldMap[coord];
+			char temp = this->get(coord);
 			if (temp == 'O') {
 				out << "\033[32m";
 			}
@@ -89,21 +99,17 @@ void WorldMap::save(std::string saveName)
 	file.close();
 
 	fileNumber++;
+	tbb::task_group g;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
 			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
-			std::ofstream file(fileName, std::ios::out | std::ios::binary);
-			for (int j = i * (this->length / 2); j < (i + 1) * (this->length / 2); ++j) {
-				for (int k = l * (this->width / 2); k < (l + 1) * (this->length / 2); ++k) {
-					std::string savedData = std::to_string(j) + " " + std::to_string(k) + " " + this->worldMap[Coordinate(j, k)] + " ";
-					file << savedData;
-				}	
-			}
-			file.close();
+
+			g.run([=] {this->saveMapChunk(fileName, i, l); });
+
 			fileNumber++;
 		}
 	}
-	
+	g.wait();
 }
 
 void WorldMap::parallelSave(std::string saveName) {
@@ -135,7 +141,7 @@ void WorldMap::saveMapChunk(std::string fileName, int i, int l) {
 	std::ofstream file(fileName, std::ios::out | std::ios::binary);
 	for (int j = i * (this->length / 2); j < (i + 1) * (this->length / 2); ++j) {
 		for (int k = l * (this->width / 2); k < (l + 1) * (this->length / 2); ++k) {
-			std::string savedData = std::to_string(j) + " " + std::to_string(k) + " " + this->worldMap[Coordinate(j, k)] + " ";
+			std::string savedData = std::to_string(j) + " " + std::to_string(k) + " " + this->get(Coordinate(j,k)) + " ";
 			file << savedData;
 		}
 	}
@@ -152,30 +158,39 @@ bool WorldMap::load(std::string saveName) {
 		file >> this->width;
 		file.close();
 	}
+	this->loadMap(fileNumber, saveName);
+	if (worldMap.size() != this->length * this->width)
+		return false;
+	return true;
+}
 
+void WorldMap::loadMap(int fileNumber, std::string saveName)
+{
 	fileNumber++;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
 			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
-			if (std::filesystem::exists(fileName)) {
-				std::ifstream file(fileName, std::ios::out | std::ios::binary);
-				while (!file.eof()) {
-					int x;
-					int y;
-					char tile;
-					file >> x;
-					file >> y;
-					file >> tile;
-					worldMap[Coordinate(x, y)] = tile;
-				}
-				file.close();
-			}
+			if (std::filesystem::exists(fileName))
+				this->loadMapChunk(fileName, i, l);
+
 			fileNumber++;
 		}
 	}
-	if (worldMap.size() != this->length * this->width)
-		return false;
-	return true;
+}
+
+void WorldMap::loadMapChunk(std::string fileName, int i, int l)
+{
+	std::ifstream file(fileName, std::ios::out | std::ios::binary);
+	while (!file.eof()) {
+		int x;
+		int y;
+		char tile;
+		file >> x;
+		file >> y;
+		file >> tile;
+		this->insert(Coordinate(x, y), tile);
+	}
+	file.close();
 }
 
 

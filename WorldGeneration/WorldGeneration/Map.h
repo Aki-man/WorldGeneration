@@ -19,6 +19,7 @@ public:
 	WorldMap() : width(0), length(0), name(""), worldMap(std::unordered_map<Coordinate, char>()) {};
 	WorldMap(int width, int length) : width(width), length(length), name(""),worldMap(std::unordered_map<Coordinate, char>()) {};
 	~WorldMap();
+	virtual void insert(Coordinate coord, char tile);
 	virtual char get(Coordinate coord);
 	virtual void GenerateOneIslandMap();
 	virtual void GenerateFourIslandMap();
@@ -26,7 +27,9 @@ public:
 	void save(std::string saveName);
 	void parallelSave(std::string saveName);
 	void saveMapChunk(std::string fileName, int i, int l);
-	virtual bool load(std::string saveName);
+	bool load(std::string saveName);
+	virtual void loadMap(int fileNumber, std::string saveName);
+	void loadMapChunk(std::string fileName, int i, int l);
 	friend std::ostream& operator<<(std::ostream& out, WorldMap& map);
 	
 };

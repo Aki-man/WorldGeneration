@@ -10,20 +10,27 @@ VectorIslandGenerator::~VectorIslandGenerator()
 
 void VectorIslandGenerator::insert(Coordinate coord, char tile)
 {
-	(*this->vectorWorldMap)[coord.y * this->totalWidth + coord.x] = tile;
+	long address = coord.y * this->totalWidth + coord.x;
+	(*this->vectorWorldMap)[address] = tile;
 }
 
 void VectorIslandGenerator::replace(Coordinate coord, char tile)
 {
-	(*this->vectorWorldMap)[coord.y * this->totalWidth + coord.x] = tile;
+	long address = coord.y * this->totalWidth + coord.x;
+	(*this->vectorWorldMap)[address] = tile;
 }
 
 char VectorIslandGenerator::get(Coordinate coord)
 {
-	return (*this->vectorWorldMap)[coord.y * this->totalWidth + coord.x];
+	long address = coord.y * this->totalWidth + coord.x;
+	if (address > (*this->vectorWorldMap).size())
+		return '=';
+	return (*this->vectorWorldMap)[address];
 }
 
 bool VectorIslandGenerator::contains(Coordinate coord)
 {
+	//if (coord.y * this->totalWidth + coord.x > (*this->vectorWorldMap).size())
+	//	return false;
 	return this->get(coord) != '\0';
 }

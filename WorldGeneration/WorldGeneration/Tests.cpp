@@ -48,8 +48,11 @@ void Tests::VectorGenerationTest(int n) {
     if (n <= 200)
         std::cout << parallelMap << std::endl;
 
+
     std::cout << "------------------------------------------------" << std::endl;
     std::cout << "Starting vector generation" << std::endl;
+    std::vector<char> checkVector;
+    std::cout << checkVector.max_size() << "\n";
     startTime = tbb::tick_count::now();
     VectorMap vectorMap = VectorMap(n, n);
     vectorMap.GenerateFourIslandMap();

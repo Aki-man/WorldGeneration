@@ -164,6 +164,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="SaveSystemHelper.h" />
     <ClInclude Include="Tests.h" />
+    <ClInclude Include="TileData.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

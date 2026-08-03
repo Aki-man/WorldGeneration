@@ -7,6 +7,7 @@
 #include <tuple>
 #include <tbb/parallel_for.h>
 #include <filesystem>
+#include "TileData.h"
 
 WorldMap::~WorldMap()
 {
@@ -149,8 +150,11 @@ void WorldMap::saveMapChunk(std::string fileName, int i, int l) {
 				currentTile = newTile;
 				currentCount = 0;
 				file << savedData;*/
-				file.write(reinterpret_cast<const char*>(&currentCount), sizeof(int));
-				file.write(reinterpret_cast<const char*>(&currentTile), sizeof(char));
+				TileData newData;
+				newData.count = currentCount;
+				newData.tile = currentTile;
+				file.write(reinterpret_cast<const char*>(&newData), sizeof(TileData));
+				
 				currentTile = newTile;
 				currentCount = 0;
 				
@@ -160,8 +164,10 @@ void WorldMap::saveMapChunk(std::string fileName, int i, int l) {
 	}
 	//std::string savedData = std::to_string(currentCount) + " " + currentTile + " ";
 	//file << savedData;
-	file.write(reinterpret_cast<const char*>(&currentCount), sizeof(int));
-	file.write(reinterpret_cast<const char*>(&currentTile), sizeof(char));
+	TileData newData;
+	newData.count = currentCount;
+	newData.tile = currentTile;
+	file.write(reinterpret_cast<const char*>(&newData), sizeof(TileData));
 	file.close();
 }
 
@@ -202,8 +208,12 @@ void WorldMap::loadMapChunk(std::string fileName, int i, int l)
 	int currentCount = 0;
 	//file >> currentCount;
 	//file >> currentTile;
-	file.read(reinterpret_cast<char*>(&currentCount), sizeof(int));
-	file.read(reinterpret_cast<char*>(&currentTile), sizeof(char));
+	TileData newData;
+	file.read(reinterpret_cast<char*>(&newData), sizeof(TileData));
+	currentTile = newData.tile;
+	currentCount = newData.count;
+	//file.read(reinterpret_cast<char*>(&currentCount), sizeof(int));
+	//file.read(reinterpret_cast<char*>(&currentTile), sizeof(char));
 	for (int j = i * (this->length / 2); j < (i + 1) * (this->length / 2); ++j) {
 		for (int k = l * (this->width / 2); k < (l + 1) * (this->length / 2); ++k) {
 			if (currentCount != 0) {
@@ -213,8 +223,12 @@ void WorldMap::loadMapChunk(std::string fileName, int i, int l)
 			else {
 				/*file >> currentCount;
 				file >> currentTile;*/
-				file.read(reinterpret_cast<char*>(&currentCount), sizeof(int));
-				file.read(reinterpret_cast<char*>(&currentTile), sizeof(char));
+				//file.read(reinterpret_cast<char*>(&currentCount), sizeof(int));
+				//file.read(reinterpret_cast<char*>(&currentTile), sizeof(char));
+				TileData newData;
+				file.read(reinterpret_cast<char*>(&newData), sizeof(TileData));
+				currentTile = newData.tile;
+				currentCount = newData.count;
 				this->insert(Coordinate(k, j), currentTile);
 				currentCount--;
 			}

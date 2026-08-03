@@ -210,7 +210,7 @@ void Menu::testsMenu() {
             std::cin >> sizeInput;
 
             system("cls");
-            Tests::ParallelGenerationTest(sizeInput);
+            Tests::VectorGenerationTest(sizeInput);
             std::cout << "Enter any key to continue" << std::endl;
             std::cin >> userInput;
         }

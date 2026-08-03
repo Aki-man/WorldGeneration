@@ -147,6 +147,8 @@
     <ClCompile Include="SaveSystemHelper.cpp" />
     <ClCompile Include="Tests.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="VectorIslandGenerator.cpp" />
+    <ClCompile Include="VectorMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coordinate.h" />
@@ -164,6 +166,8 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="SaveSystemHelper.h" />
     <ClInclude Include="Tests.h" />
+    <ClInclude Include="VectorIslandGenerator.h" />
+    <ClInclude Include="VectorMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

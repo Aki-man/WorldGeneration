@@ -4,6 +4,7 @@
 #include "Player.h"
 #include <tbb/tick_count.h>
 #include "ParallelPlayer.h"
+#include "VectorMap.h"
 
 void Tests::ParallelGenerationTest(int n) {
 
@@ -31,6 +32,44 @@ void Tests::ParallelGenerationTest(int n) {
     if (n <= 200)
         std::cout << map << std::endl;
     
+}
+
+void Tests::VectorGenerationTest(int n) {
+
+    std::cout << "Generated island size " << n << "*" << n << std::endl;
+    std::cout << "------------------------------------------------" << std::endl;
+    std::cout << "Starting parallel generation" << std::endl;
+    tbb::tick_count startTime = tbb::tick_count::now();
+    ParallelWorldMap parallelMap = ParallelWorldMap(n, n);
+    parallelMap.GenerateFourIslandMap();
+    tbb::tick_count endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Parallel time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+    if (n <= 200)
+        std::cout << parallelMap << std::endl;
+
+    std::cout << "------------------------------------------------" << std::endl;
+    std::cout << "Starting vector generation" << std::endl;
+    startTime = tbb::tick_count::now();
+    VectorMap vectorMap = VectorMap(n, n);
+    vectorMap.GenerateFourIslandMap();
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Vector time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+    if (n <= 200)
+        std::cout << vectorMap << std::endl;
+
+    std::cout << "------------------------------------------------" << std::endl;
+    std::cout << "Starting serial generation" << std::endl;
+    startTime = tbb::tick_count::now();
+    WorldMap map = WorldMap(n, n);
+    map.GenerateFourIslandMap();
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Serial time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+    if (n <= 200)
+        std::cout << map << std::endl;
+
 }
 
 void Tests::ParallelOneIslandGenerationTest(int n) {

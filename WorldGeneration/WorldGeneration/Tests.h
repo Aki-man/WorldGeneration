@@ -3,6 +3,7 @@
 class Tests {
 public:
 	static void ParallelGenerationTest(int n);
+	static void VectorGenerationTest(int n);
 	static void ParallelOneIslandGenerationTest(int n);
 	static void ParallelViewTest(int n);
 	static void SaveWorldToFileTest(int n, std::string fileName);

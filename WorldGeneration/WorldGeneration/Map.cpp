@@ -139,12 +139,22 @@ void WorldMap::parallelSave(std::string saveName) {
 void WorldMap::saveMapChunk(std::string fileName, int i, int l) {
 
 	std::ofstream file(fileName, std::ios::out | std::ios::binary);
+	char currentTile = this->get(Coordinate(i * (this->length / 2), l * (this->width / 2)));
+	int currentCount = 0;
 	for (int j = i * (this->length / 2); j < (i + 1) * (this->length / 2); ++j) {
 		for (int k = l * (this->width / 2); k < (l + 1) * (this->length / 2); ++k) {
-			std::string savedData = std::to_string(j) + " " + std::to_string(k) + " " + this->get(Coordinate(j,k)) + " ";
-			file << savedData;
+			char newTile = this->get(Coordinate(k, j));
+			if (newTile != currentTile) {
+				std::string savedData = std::to_string(currentCount) + " " + currentTile + " ";
+				currentTile = newTile;
+				currentCount = 0;
+				file << savedData;
+			}
+			currentCount++;
 		}
 	}
+	std::string savedData = std::to_string(currentCount) + " " + currentTile + " ";
+	file << savedData;
 	file.close();
 }
 
@@ -181,6 +191,27 @@ void WorldMap::loadMap(int fileNumber, std::string saveName)
 void WorldMap::loadMapChunk(std::string fileName, int i, int l)
 {
 	std::ifstream file(fileName, std::ios::out | std::ios::binary);
+	char currentTile = '=';
+	int currentCount = 0;
+	file >> currentCount;
+	file >> currentTile;
+	for (int j = i * (this->length / 2); j < (i + 1) * (this->length / 2); ++j) {
+		for (int k = l * (this->width / 2); k < (l + 1) * (this->length / 2); ++k) {
+			if (currentCount != 0) {
+				this->insert(Coordinate(k, j), currentTile);
+				currentCount--;
+			}
+			else {
+				file >> currentCount;
+				file >> currentTile;
+				this->insert(Coordinate(k, j), currentTile);
+				currentCount--;
+			}
+			
+		}
+	}
+	file.close();
+	/*std::ifstream file(fileName, std::ios::out | std::ios::binary);
 	while (!file.eof()) {
 		int x;
 		int y;
@@ -190,7 +221,7 @@ void WorldMap::loadMapChunk(std::string fileName, int i, int l)
 		file >> tile;
 		this->insert(Coordinate(x, y), tile);
 	}
-	file.close();
+	file.close();*/
 }
 
 

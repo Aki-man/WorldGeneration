@@ -172,7 +172,7 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
     std::cout << "Parallel saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
 
     parallelMap = ParallelWorldMap(n, n);
-    std::cout << "Starting serial load" << std::endl;
+    std::cout << "Starting parallel load" << std::endl;
     startTime = tbb::tick_count::now();
     bool success = parallelMap.load(fileName + "ParallelSave");
     endTime = tbb::tick_count::now();
@@ -186,6 +186,43 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
 
     if (n <= 200)
         std::cout << parallelMap;
+
+    std::cout << "------------------------------------------------" << std::endl;
+
+    std::cout << "Starting vector generation" << std::endl;
+    startTime = tbb::tick_count::now();
+    VectorMap vectorMap = VectorMap(n, n);
+    vectorMap.GenerateFourIslandMap();
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Vector generation time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    if (n <= 200)
+        std::cout << vectorMap;
+
+    std::cout << "------------------------------------------------" << std::endl;
+
+    std::cout << "Starting vector save" << std::endl;
+    startTime = tbb::tick_count::now();
+    vectorMap.save(fileName + "VectorSave");
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Vector saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    vectorMap = VectorMap(n, n);
+    std::cout << "Starting vector load" << std::endl;
+    startTime = tbb::tick_count::now();
+    success = vectorMap.load(fileName + "VectorSave");
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Vector loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    if (success)
+        std::cout << "File loading succeded" << std::endl;
+    else
+        std::cout << "File loading failed" << std::endl;
+    if (n <= 200)
+        std::cout << vectorMap;
 
     std::cout << "------------------------------------------------" << std::endl;
 

@@ -116,7 +116,7 @@ void ParallelWorldMap::loadMap(int fileNumber, std::string saveName)
 	task_group g;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
-			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
+			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".bin";
 			if (std::filesystem::exists(fileName))
 				g.run([=] {this->loadMapChunk(fileName, i, l); });
 			fileNumber++;

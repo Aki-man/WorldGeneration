@@ -5,6 +5,7 @@
 #include <tbb/tick_count.h>
 #include "ParallelPlayer.h"
 #include "VectorMap.h"
+#include "ArrayMap.h"
 
 void Tests::ParallelGenerationTest(int n) {
 
@@ -50,9 +51,18 @@ void Tests::VectorGenerationTest(int n) {
 
 
     std::cout << "------------------------------------------------" << std::endl;
+    std::cout << "Starting array generation" << std::endl;
+    startTime = tbb::tick_count::now();
+    ArrayMap arrayMap = ArrayMap(n, n);
+    arrayMap.GenerateFourIslandMap();
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Array time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+    if (n <= 200)
+        std::cout << arrayMap << std::endl;
+
+    std::cout << "------------------------------------------------" << std::endl;
     std::cout << "Starting vector generation" << std::endl;
-    std::vector<char> checkVector;
-    std::cout << checkVector.max_size() << "\n";
     startTime = tbb::tick_count::now();
     VectorMap vectorMap = VectorMap(n, n);
     vectorMap.GenerateFourIslandMap();

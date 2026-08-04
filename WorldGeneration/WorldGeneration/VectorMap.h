@@ -1,5 +1,8 @@
 #pragma once
 #include "Map.h"
+#include <tbb/parallel_for.h>
+#include <tbb/blocked_range.h>
+#include <tbb/concurrent_hash_map.h>
 class VectorMap : public WorldMap{
 public:
 	std::vector<char> vectorWorldMap;

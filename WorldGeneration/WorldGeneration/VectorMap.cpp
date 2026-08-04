@@ -1,6 +1,7 @@
 #include "VectorMap.h"
 #include "IslandGeneratorConfiguration.h"
 #include "VectorIslandGenerator.h"
+#include <tbb/parallel_for.h>
 
 VectorMap::~VectorMap()
 {
@@ -36,16 +37,31 @@ void VectorMap::GenerateFourIslandMap()
 {
 	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);
 	VectorIslandGenerator generatorOne(nullptr, &this->vectorWorldMap,0, this->width / 2, 0, this->length / 2, this->width,config);
-	generatorOne.generateIsland();
+	//generatorOne.generateIsland();
 	VectorIslandGenerator generatorTwo(nullptr, &this->vectorWorldMap, this->width / 2, this->width, 0, this->length / 2, this->width,config);
-	generatorTwo.generateIsland();
+	//generatorTwo.generateIsland();
 	VectorIslandGenerator generatorThree(nullptr, &this->vectorWorldMap,0, this->width / 2, this->length / 2, this->length, this->width, config);
-	generatorThree.generateIsland();
+	//generatorThree.generateIsland();
 	VectorIslandGenerator generatorFour(nullptr, &this->vectorWorldMap,this->width / 2, this->width, this->length / 2, this->length, this->width,config);
-	generatorFour.generateIsland();
+	//generatorFour.generateIsland();
 
-	generatorOne.secondPass();
+	/*generatorOne.secondPass();
 	generatorTwo.secondPass();
 	generatorThree.secondPass();
-	generatorFour.secondPass();
+	generatorFour.secondPass();*/
+	tbb::task_group g;
+	g.run([&] {generatorOne.generateIsland(); });
+	g.run([&] {generatorTwo.generateIsland(); });
+	g.run([&] {generatorThree.generateIsland(); });
+	g.run([&] {generatorFour.generateIsland(); });
+	g.wait();
+
+	tbb::task_group g2;
+
+	g2.run([&] {generatorOne.secondPass(); });
+	g2.run([&] {generatorTwo.secondPass(); });
+	g2.run([&] {generatorThree.secondPass(); });
+	g2.run([&] {generatorFour.secondPass(); });
+
+	g2.wait();
 }

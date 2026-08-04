@@ -49,7 +49,6 @@ void Tests::VectorGenerationTest(int n) {
     if (n <= 200)
         std::cout << parallelMap << std::endl;
 
-
     std::cout << "------------------------------------------------" << std::endl;
     std::cout << "Starting array generation" << std::endl;
     startTime = tbb::tick_count::now();

@@ -24,7 +24,7 @@ void ArrayIslandGenerator::replace(Coordinate coord, char tile)
 char ArrayIslandGenerator::get(Coordinate coord)
 {
 	long address = coord.y * this->totalWidth + coord.x;
-	if (address > this->totalSize)
+	if (address > this->totalSize || address < 0)
 		return '/0';
 	return this->arrayWorldMap[address];
 }

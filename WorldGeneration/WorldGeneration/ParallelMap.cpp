@@ -43,7 +43,7 @@ void ParallelWorldMap::GenerateOneIslandMap()
 	generator.generateIsland();
 
 	generator.secondPass();
-
+	this->isChanged = true;
 }
 
 void ParallelWorldMap::GenerateOneIslandMapParallel()
@@ -54,7 +54,7 @@ void ParallelWorldMap::GenerateOneIslandMapParallel()
 	generator.generateIsland();
 
 	generator.parallelSecondPass();
-
+	this->isChanged = true;
 }
 
 void ParallelWorldMap::GenerateFourIslandMap()
@@ -80,6 +80,7 @@ void ParallelWorldMap::GenerateFourIslandMap()
 	g2.run([&] {generatorFour.secondPass(); });
 
 	g2.wait();
+	this->isChanged = true;
 }
 
 /*bool ParallelWorldMap::load(std::string saveName)

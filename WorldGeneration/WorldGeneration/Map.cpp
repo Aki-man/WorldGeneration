@@ -34,6 +34,7 @@ void WorldMap::GenerateOneIslandMap()
 	generator.generateIsland();
 
 	generator.secondPass();
+	this->isChanged = true;
 
 }
 
@@ -53,6 +54,7 @@ void WorldMap::GenerateFourIslandMap()
 	generatorTwo.secondPass();
 	generatorThree.secondPass();
 	generatorFour.secondPass();
+	this->isChanged = true;
 }
 
 void WorldMap::print(std::ostream& out)
@@ -110,6 +112,7 @@ void WorldMap::save(std::string saveName)
 		}
 	}
 	g.wait();
+	this->isChanged = false;
 }
 
 void WorldMap::parallelSave(std::string saveName) {

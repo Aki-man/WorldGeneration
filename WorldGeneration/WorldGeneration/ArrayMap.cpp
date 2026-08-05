@@ -8,7 +8,6 @@ ArrayMap::~ArrayMap()
 	this->width = 0;
 	this->length = 0;
 	this->worldMap.clear();
-	//delete[] arrayWorldMap;
 }
 
 char ArrayMap::get(Coordinate coord)

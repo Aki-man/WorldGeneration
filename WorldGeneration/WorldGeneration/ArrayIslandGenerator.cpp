@@ -6,7 +6,7 @@ ArrayIslandGenerator::~ArrayIslandGenerator()
 	this->endWidth = 0;
 	this->startLength = 0;
 	this->endLength = 0;
-	this->arrayWorldMap = nullptr;
+	//this->arrayWorldMap = nullptr;
 }
 
 void ArrayIslandGenerator::insert(Coordinate coord, char tile)

@@ -238,6 +238,44 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
 
     std::cout << "------------------------------------------------" << std::endl;
 
+    std::cout << "Starting array generation" << std::endl;
+    startTime = tbb::tick_count::now();
+    ArrayMap arrayMap = ArrayMap(n, n);
+    arrayMap.GenerateFourIslandMap();
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Array generation time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    if (n <= 200)
+        std::cout << arrayMap;
+
+    std::cout << "------------------------------------------------" << std::endl;
+
+    std::cout << "Starting array save" << std::endl;
+    startTime = tbb::tick_count::now();
+    arrayMap.save(fileName + "ArraySave");
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Array saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    arrayMap = ArrayMap(n, n);
+    std::cout << "Starting array load" << std::endl;
+    startTime = tbb::tick_count::now();
+    success = arrayMap.load(fileName + "ArraySave");
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Array loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    if (success)
+        std::cout << "File loading succeded" << std::endl;
+    else
+        std::cout << "File loading failed" << std::endl;
+    if (n <= 200)
+        std::cout << arrayMap;
+
+    std::cout << "------------------------------------------------" << std::endl;
+
+
     std::cout << "Starting serial generation" << std::endl;
     startTime = tbb::tick_count::now();
     WorldMap map = WorldMap(n, n);

@@ -20,6 +20,14 @@ void ArrayMap::insert(Coordinate coord, char tile)
 	this->arrayWorldMap[coord.y * this->width + coord.x] = tile;
 }
 
+bool ArrayMap::contains(Coordinate coord)
+{
+	long address = coord.y * this->width + coord.x;
+	if (address > (this->width * this->length) || address < 0)
+		return false;
+	return true;
+}
+
 void ArrayMap::GenerateOneIslandMap()
 {
 	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);

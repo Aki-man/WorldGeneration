@@ -35,6 +35,12 @@ void ParallelWorldMap::insert(Coordinate coord, char tile)
 	a->second = tile;
 }
 
+bool ParallelWorldMap::contains(Coordinate coord)
+{
+	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::const_accessor a;
+	return this->parallelWorldMap.find(a, coord);
+}
+
 void ParallelWorldMap::GenerateOneIslandMap()
 {
 	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);

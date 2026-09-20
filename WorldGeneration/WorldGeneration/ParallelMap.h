@@ -18,6 +18,7 @@ public:
 	~ParallelWorldMap();
 	char get(Coordinate coord) override;
 	void insert(Coordinate coord, char tile) override;
+	bool contains(Coordinate coord) override;
 	void GenerateOneIslandMap() override;
 	void GenerateOneIslandMapParallel();
 	void GenerateFourIslandMap() override;

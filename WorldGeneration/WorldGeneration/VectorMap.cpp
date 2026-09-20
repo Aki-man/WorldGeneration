@@ -23,6 +23,11 @@ void VectorMap::insert(Coordinate coord, char tile)
 	this->vectorWorldMap[coord.y * this->width + coord.x] = tile;
 }
 
+bool VectorMap::contains(Coordinate coord)
+{
+	return this->get(coord) != '\0';
+}
+
 void VectorMap::GenerateOneIslandMap()
 {
 	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);

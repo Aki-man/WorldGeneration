@@ -136,7 +136,7 @@ void Tests::ParallelViewTest(int n) {
 
     ParallelWorldMap parallelMap = ParallelWorldMap(200, 200);
     parallelMap.GenerateFourIslandMap();
-    ParallelPlayer parallelPlayer(Coordinate(50, 50), map, &parallelMap, n);
+    ParallelPlayer parallelPlayer(Coordinate(50, 50), parallelMap, n);
 
     std::cout << "Generated view size " << n << "*" << n << std::endl;
     std::cout << "------------------------------------------------" << std::endl;

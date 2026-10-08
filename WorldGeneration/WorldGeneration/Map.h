@@ -12,7 +12,7 @@ protected:
 	
 	int width;
 	int length;
-	
+	int chunkSize;
 public:
 
 	std::string name;
@@ -33,6 +33,7 @@ public:
 	bool load(std::string saveName);
 	virtual void loadMap(int fileNumber, std::string saveName);
 	void loadMapChunk(std::string fileName, int i, int l);
+	std::string getChunkId(Coordinate coord);
 	friend std::ostream& operator<<(std::ostream& out, WorldMap& map);
 	
 };

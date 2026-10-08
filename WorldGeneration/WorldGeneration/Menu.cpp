@@ -29,7 +29,7 @@ void Menu::saveMapMenu(WorldMap& map, Player& player)
     }
     std::cout << "saving..." << std::endl;
     if(player.world.isChanged)
-        player.world.save(map.name);
+        player.world.parallelSave(map.name);
     player.save(map.name);
 }
 

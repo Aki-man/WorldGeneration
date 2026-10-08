@@ -104,16 +104,21 @@ void WorldMap::save(std::string saveName)
 	file << std::to_string(this->width) << " " << std::to_string(this->length);
 	file.close();
 
-	fileNumber++;
+	//fileNumber++;
+	int fileIdX = 0;
+	int fileIdY = 0;
 	tbb::task_group g;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
-			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
+			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileIdX) + std::to_string(fileIdY) + ".txt";
 
 			g.run([=] {this->saveMapChunk(fileName, i, l); });
 
-			fileNumber++;
+			//fileNumber++;
+			fileIdX++;
 		}
+		fileIdY++;
+		fileIdX = 0;
 	}
 	g.wait();
 	this->isChanged = false;
@@ -129,16 +134,21 @@ void WorldMap::parallelSave(std::string saveName) {
 	file << std::to_string(this->width) << " " << std::to_string(this->length);
 	file.close();
 
-	fileNumber++;
+	//fileNumber++;
 	tbb::task_group g;
+	int fileIdX = 0;
+	int fileIdY = 0;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
-			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
+			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileIdX) + std::to_string(fileIdY) + ".txt";
 			 
 			g.run([=] {this->saveMapChunk(fileName, i, l) ; });
 
-			fileNumber++;
+			//fileNumber++;
+			fileIdX++;
 		}
+		fileIdY++;
+		fileIdX = 0;
 	}
 	g.wait();
 }
@@ -183,15 +193,20 @@ bool WorldMap::load(std::string saveName) {
 
 void WorldMap::loadMap(int fileNumber, std::string saveName)
 {
-	fileNumber++;
+	//fileNumber++;
+	int fileIdX = 0;
+	int fileIdY = 0;
 	for (int i = 0; i < 2; ++i) {
 		for (int l = 0; l < 2; ++l) {
-			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
+			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileIdX) + std::to_string(fileIdY) + ".txt";
 			if (std::filesystem::exists(fileName))
 				this->loadMapChunk(fileName, i, l);
 
-			fileNumber++;
+			fileIdX++;
+			//fileNumber++;
 		}
+		fileIdY++;
+		fileIdX = 0;
 	}
 }
 
@@ -229,6 +244,13 @@ void WorldMap::loadMapChunk(std::string fileName, int i, int l)
 		this->insert(Coordinate(x, y), tile);
 	}
 	file.close();*/
+}
+
+std::string WorldMap::getChunkId(Coordinate coord)
+{
+	int chunkX = coord.x / this->chunkSize;
+	int chunkY = coord.y / this->chunkSize;
+	return std::to_string(chunkX) + std::to_string(chunkY);
 }
 
 

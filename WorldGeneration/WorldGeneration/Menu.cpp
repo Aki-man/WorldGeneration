@@ -28,7 +28,8 @@ void Menu::saveMapMenu(WorldMap& map, Player& player)
         map.name = userInput;
     }
     std::cout << "saving..." << std::endl;
-    player.world.save(map.name);
+    if(map.isChanged)
+        map.save(map.name);
     player.save(map.name);
 }
 

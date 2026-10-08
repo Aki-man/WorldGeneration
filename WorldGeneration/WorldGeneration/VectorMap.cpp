@@ -36,6 +36,7 @@ void VectorMap::GenerateOneIslandMap()
 	generator.generateIsland();
 
 	generator.secondPass();
+	this->isChanged = true;
 }
 
 void VectorMap::GenerateFourIslandMap()
@@ -69,4 +70,5 @@ void VectorMap::GenerateFourIslandMap()
 	g2.run([&] {generatorFour.secondPass(); });
 
 	g2.wait();
+	this->isChanged = true;
 }

@@ -28,4 +28,17 @@ std::unordered_map<std::string, int> SaveSystemHelper::GetSaveMap()
 	return saveDirectories;
 }
 
+int SaveSystemHelper::GetSaveSize(std::string saveName)
+{
+	int n = 0;
+	std::string fileName = "data/saves/" + saveName + "/save0.txt";
+	if (std::filesystem::exists(fileName)) {
+		std::ifstream file(fileName, std::ios::out | std::ios::binary);
+		file >> n;
+		file.close();
+	}
+	return n;
+}
+
+
 

@@ -4,6 +4,8 @@
 #include "Player.h"
 #include <tbb/tick_count.h>
 #include "ParallelPlayer.h"
+#include "VectorMap.h"
+#include "ArrayMap.h"
 
 void Tests::ParallelGenerationTest(int n) {
 
@@ -31,6 +33,55 @@ void Tests::ParallelGenerationTest(int n) {
     if (n <= 200)
         std::cout << map << std::endl;
     
+}
+
+void Tests::VectorGenerationTest(int n) {
+
+    std::cout << "Generated island size " << n << "*" << n << std::endl;
+    std::cout << "------------------------------------------------" << std::endl;
+    std::cout << "Starting parallel generation" << std::endl;
+    tbb::tick_count startTime = tbb::tick_count::now();
+    ParallelWorldMap parallelMap = ParallelWorldMap(n, n);
+    parallelMap.GenerateFourIslandMap();
+    tbb::tick_count endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Parallel time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+    if (n <= 200)
+        std::cout << parallelMap << std::endl;
+
+    std::cout << "------------------------------------------------" << std::endl;
+    std::cout << "Starting array generation" << std::endl;
+    startTime = tbb::tick_count::now();
+    ArrayMap arrayMap = ArrayMap(n, n);
+    arrayMap.GenerateFourIslandMap();
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Array time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+    if (n <= 200)
+        std::cout << arrayMap << std::endl;
+
+    std::cout << "------------------------------------------------" << std::endl;
+    std::cout << "Starting vector generation" << std::endl;
+    startTime = tbb::tick_count::now();
+    VectorMap vectorMap = VectorMap(n, n);
+    vectorMap.GenerateFourIslandMap();
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Vector time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+    if (n <= 200)
+        std::cout << vectorMap << std::endl;
+
+    std::cout << "------------------------------------------------" << std::endl;
+    std::cout << "Starting serial generation" << std::endl;
+    startTime = tbb::tick_count::now();
+    WorldMap map = WorldMap(n, n);
+    map.GenerateFourIslandMap();
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Serial time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+    if (n <= 200)
+        std::cout << map << std::endl;
+
 }
 
 void Tests::ParallelOneIslandGenerationTest(int n) {
@@ -85,7 +136,7 @@ void Tests::ParallelViewTest(int n) {
 
     ParallelWorldMap parallelMap = ParallelWorldMap(200, 200);
     parallelMap.GenerateFourIslandMap();
-    ParallelPlayer parallelPlayer(Coordinate(50, 50), map, &parallelMap, n);
+    ParallelPlayer parallelPlayer(Coordinate(50, 50), parallelMap, n);
 
     std::cout << "Generated view size " << n << "*" << n << std::endl;
     std::cout << "------------------------------------------------" << std::endl;
@@ -133,7 +184,7 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
     std::cout << "Parallel saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
 
     parallelMap = ParallelWorldMap(n, n);
-    std::cout << "Starting serial load" << std::endl;
+    std::cout << "Starting parallel load" << std::endl;
     startTime = tbb::tick_count::now();
     bool success = parallelMap.load(fileName + "ParallelSave");
     endTime = tbb::tick_count::now();
@@ -149,6 +200,81 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
         std::cout << parallelMap;
 
     std::cout << "------------------------------------------------" << std::endl;
+
+    std::cout << "Starting vector generation" << std::endl;
+    startTime = tbb::tick_count::now();
+    VectorMap vectorMap = VectorMap(n, n);
+    vectorMap.GenerateFourIslandMap();
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Vector generation time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    if (n <= 200)
+        std::cout << vectorMap;
+
+    std::cout << "------------------------------------------------" << std::endl;
+
+    std::cout << "Starting vector save" << std::endl;
+    startTime = tbb::tick_count::now();
+    vectorMap.save(fileName + "VectorSave");
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Vector saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    vectorMap = VectorMap(n, n);
+    std::cout << "Starting vector load" << std::endl;
+    startTime = tbb::tick_count::now();
+    success = vectorMap.load(fileName + "VectorSave");
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Vector loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    if (success)
+        std::cout << "File loading succeded" << std::endl;
+    else
+        std::cout << "File loading failed" << std::endl;
+    if (n <= 200)
+        std::cout << vectorMap;
+
+    std::cout << "------------------------------------------------" << std::endl;
+
+    std::cout << "Starting array generation" << std::endl;
+    startTime = tbb::tick_count::now();
+    ArrayMap arrayMap = ArrayMap(n, n);
+    arrayMap.GenerateFourIslandMap();
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Array generation time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    if (n <= 200)
+        std::cout << arrayMap;
+
+    std::cout << "------------------------------------------------" << std::endl;
+
+    std::cout << "Starting array save" << std::endl;
+    startTime = tbb::tick_count::now();
+    arrayMap.save(fileName + "ArraySave");
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Array saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    arrayMap = ArrayMap(n, n);
+    std::cout << "Starting array load" << std::endl;
+    startTime = tbb::tick_count::now();
+    success = arrayMap.load(fileName + "ArraySave");
+    endTime = tbb::tick_count::now();
+    std::cout << "done\n";
+    std::cout << "Array loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    if (success)
+        std::cout << "File loading succeded" << std::endl;
+    else
+        std::cout << "File loading failed" << std::endl;
+    if (n <= 200)
+        std::cout << arrayMap;
+
+    std::cout << "------------------------------------------------" << std::endl;
+
 
     std::cout << "Starting serial generation" << std::endl;
     startTime = tbb::tick_count::now();

@@ -107,7 +107,8 @@ void ParallelPlayer::getFourthQuarter(double increasePerTile, Coordinate startin
 bool ParallelPlayer::checkAddingCurrentCoordinate(Coordinate viewedCoordinate, bool ranIntoBlock)
 {
 	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::accessor a;
-	bool found = (*this->parallelWorld).parallelWorldMap.find(a, viewedCoordinate);
+	//bool found = (*this->parallelWorld).parallelWorldMap.find(a, viewedCoordinate);
+	bool found = this->world.contains(viewedCoordinate);
 	if (ranIntoBlock) {
 		bool found = parallelView.find(a, viewedCoordinate);
 		if (!found)
@@ -115,7 +116,7 @@ bool ParallelPlayer::checkAddingCurrentCoordinate(Coordinate viewedCoordinate, b
 			a->second = '+';
 	}
 	else if (found) {
-		char temp = a->second;
+		char temp = this->world.get(viewedCoordinate);
 		parallelView.insert(a, viewedCoordinate);
 		a->second = temp;
 		if (temp == 'M' || temp == 'T')
@@ -144,11 +145,11 @@ void ParallelPlayer::cleanUpView()
 					a->second = '+';
 				}
 				else {
-					bool found = (*this->parallelWorld).parallelWorldMap.find(a, viewedCoordinate);
-
+					//bool found = (*this->parallelWorld).parallelWorldMap.find(a, viewedCoordinate);
+					bool found = this->world.contains(viewedCoordinate);
 
 					if (found) {
-						char temp = a->second;
+						char temp = this->world.get(viewedCoordinate);
 						this->parallelView.insert(a, viewedCoordinate);
 						a->second = temp;
 					}

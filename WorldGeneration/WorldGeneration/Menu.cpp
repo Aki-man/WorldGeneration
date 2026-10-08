@@ -1,4 +1,6 @@
 #include "Menu.h"
+#include "VectorMap.h"
+#include "ArrayMap.h"
 
 void Menu::saveMapMenu(WorldMap& map, Player& player)
 {
@@ -26,8 +28,8 @@ void Menu::saveMapMenu(WorldMap& map, Player& player)
         map.name = userInput;
     }
     std::cout << "saving..." << std::endl;
-    if(map.isChanged)
-        map.save(map.name);
+    if(player.world.isChanged)
+        player.world.save(map.name);
     player.save(map.name);
 }
 
@@ -59,7 +61,7 @@ void Menu::PlayerMenu(WorldMap& map, Player& newPlayer) {
     }
 }
 
-void Menu::ParallelPlayerMenu(ParallelWorldMap map, ParallelPlayer newPlayer) {
+void Menu::ParallelPlayerMenu(WorldMap& map, ParallelPlayer& newPlayer) {
     while (true) {
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
@@ -134,18 +136,17 @@ void Menu::generateNewIslandMenu() {
             PlayerMenu(map, newPlayer);
         }
         if (userInput == "3") {
-            ParallelWorldMap map = ParallelWorldMap(size, size);
-            WorldMap smap = WorldMap(size, size);
-            ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), smap, &map, 20);
-            map.GenerateFourIslandMap();
-            ParallelPlayerMenu(map, newPlayer);
+            VectorMap pmap = VectorMap(size, size);
+            
+            ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), pmap, 20);
+            pmap.GenerateFourIslandMap();
+            ParallelPlayerMenu(pmap, newPlayer);
         }
         else if (userInput == "4") {
-            ParallelWorldMap map = ParallelWorldMap(size, size);
-            WorldMap smap = WorldMap(size, size);
-            ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), smap, &map, 20);
-            map.GenerateOneIslandMap();
-            ParallelPlayerMenu(map, newPlayer);
+            VectorMap pmap = VectorMap(size, size);
+            ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), pmap, 20);
+            pmap.GenerateOneIslandMap();
+            ParallelPlayerMenu(pmap, newPlayer);
         }
 
     }
@@ -180,10 +181,11 @@ void Menu::loadIslandMenu() {
             continue;
         }
 
-        ParallelWorldMap map;
+        int n = SaveSystemHelper::GetSaveSize(saves[convertedInput - 1]);
+        VectorMap map = VectorMap(n, n);
         map.load(saves[convertedInput - 1]);
-        WorldMap smap;
-        ParallelPlayer newPlayer(Coordinate(0, 0), smap, &map, 20);
+        //WorldMap smap = map;
+        ParallelPlayer newPlayer(Coordinate(0, 0), map, 20);
         newPlayer.load(saves[convertedInput - 1]);
         ParallelPlayerMenu(map, newPlayer);
     }
@@ -211,7 +213,7 @@ void Menu::testsMenu() {
             std::cin >> sizeInput;
 
             system("cls");
-            Tests::ParallelGenerationTest(sizeInput);
+            Tests::VectorGenerationTest(sizeInput);
             std::cout << "Enter any key to continue" << std::endl;
             std::cin >> userInput;
         }

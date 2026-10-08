@@ -35,6 +35,12 @@ void ParallelWorldMap::insert(Coordinate coord, char tile)
 	a->second = tile;
 }
 
+bool ParallelWorldMap::contains(Coordinate coord)
+{
+	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>::const_accessor a;
+	return this->parallelWorldMap.find(a, coord);
+}
+
 void ParallelWorldMap::GenerateOneIslandMap()
 {
 	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);
@@ -82,34 +88,6 @@ void ParallelWorldMap::GenerateFourIslandMap()
 	g2.wait();
 	this->isChanged = true;
 }
-
-/*bool ParallelWorldMap::load(std::string saveName)
-{
-	this->name = saveName;
-	int fileNumber = 0;
-	std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
-	if (std::filesystem::exists(fileName)) {
-		std::ifstream file(fileName, std::ios::out | std::ios::binary);
-		file >> this->length;
-		file >> this->width;
-		file.close();
-	}
-
-	fileNumber++;
-	task_group g;
-	for (int i = 0; i < 2; ++i) {
-		for (int l = 0; l < 2; ++l) {
-			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
-			if(std::filesystem::exists(fileName))
-				g.run([=]{this->loadMapChunk(fileName, i, l); });
-			fileNumber++;
-		}
-	}
-	g.wait();
-	if (parallelWorldMap.size() != this->length * this->width)
-		return false;
-	return true;
-}*/
 
 void ParallelWorldMap::loadMap(int fileNumber, std::string saveName)
 {

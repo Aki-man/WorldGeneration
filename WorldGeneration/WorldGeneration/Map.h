@@ -23,6 +23,7 @@ public:
 	~WorldMap();
 	virtual void insert(Coordinate coord, char tile);
 	virtual char get(Coordinate coord);
+	virtual bool contains(Coordinate coord);
 	virtual void GenerateOneIslandMap();
 	virtual void GenerateFourIslandMap();
 	void print(std::ostream& out);

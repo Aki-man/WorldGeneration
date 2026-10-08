@@ -133,6 +133,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ArrayIslandGenerator.cpp" />
+    <ClCompile Include="ArrayMap.cpp" />
     <ClCompile Include="Coordinate.cpp" />
     <ClCompile Include="IslandGenerator.cpp" />
     <ClCompile Include="IslandGeneratorConfiguration.cpp" />
@@ -147,8 +149,12 @@
     <ClCompile Include="SaveSystemHelper.cpp" />
     <ClCompile Include="Tests.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="VectorIslandGenerator.cpp" />
+    <ClCompile Include="VectorMap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArrayIslandGenerator.h" />
+    <ClInclude Include="ArrayMap.h" />
     <ClInclude Include="Coordinate.h" />
     <ClInclude Include="HashInjection.h" />
     <ClInclude Include="IslandGenerator.h" />
@@ -164,6 +170,8 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="SaveSystemHelper.h" />
     <ClInclude Include="Tests.h" />
+    <ClInclude Include="VectorIslandGenerator.h" />
+    <ClInclude Include="VectorMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

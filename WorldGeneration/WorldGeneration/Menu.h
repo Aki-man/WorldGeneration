@@ -10,7 +10,7 @@
 struct Menu {
 	static void saveMapMenu(WorldMap& map, Player& player);
 	static void PlayerMenu(WorldMap& map, Player& newPlayer);
-	static void ParallelPlayerMenu(ParallelWorldMap map, ParallelPlayer newPlayer);
+	static void ParallelPlayerMenu(WorldMap& map, ParallelPlayer& newPlayer);
 	static void generateNewIslandMenu();
 	static void loadIslandMenu();
 	static void testsMenu();

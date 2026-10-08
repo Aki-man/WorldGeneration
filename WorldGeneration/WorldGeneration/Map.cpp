@@ -6,7 +6,6 @@
 #include <random>
 #include <tuple>
 #include <tbb/parallel_for.h>
-#include <filesystem>
 
 WorldMap::~WorldMap()
 {
@@ -24,6 +23,11 @@ void WorldMap::insert(Coordinate coord, char tile)
 char WorldMap::get(Coordinate coord)
 {
 	return worldMap[coord];
+}
+
+bool WorldMap::contains(Coordinate coord)
+{
+	return this->worldMap.contains(coord);
 }
 
 void WorldMap::GenerateOneIslandMap()

@@ -240,17 +240,6 @@ void WorldMap::loadMapChunk(std::string fileName, int i, int l)
 		}
 	}
 	file.close();
-	/*std::ifstream file(fileName, std::ios::out | std::ios::binary);
-	while (!file.eof()) {
-		int x;
-		int y;
-		char tile;
-		file >> x;
-		file >> y;
-		file >> tile;
-		this->insert(Coordinate(x, y), tile);
-	}
-	file.close();*/
 }
 
 std::string WorldMap::getChunkId(Coordinate coord)

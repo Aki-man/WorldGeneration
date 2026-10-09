@@ -18,8 +18,8 @@ public:
 	std::string name;
 	std::unordered_map<Coordinate, char> worldMap;
 	bool isChanged;
-	WorldMap() : width(0), length(0), name(""), worldMap(std::unordered_map<Coordinate, char>()), isChanged(false) {};
-	WorldMap(int width, int length) : width(width), length(length), name(""),worldMap(std::unordered_map<Coordinate, char>()), isChanged(false) {};
+	WorldMap() : width(0), length(0), name(""), worldMap(std::unordered_map<Coordinate, char>()), isChanged(false), chunkSize(0) {};
+	WorldMap(int width, int length) : width(width), length(length), name(""),worldMap(std::unordered_map<Coordinate, char>()), isChanged(false), chunkSize(length/4) {};
 	~WorldMap();
 	virtual void insert(Coordinate coord, char tile);
 	virtual char get(Coordinate coord);

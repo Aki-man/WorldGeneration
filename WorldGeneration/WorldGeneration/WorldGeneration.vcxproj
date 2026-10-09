@@ -155,6 +155,7 @@
   <ItemGroup>
     <ClInclude Include="ArrayIslandGenerator.h" />
     <ClInclude Include="ArrayMap.h" />
+    <ClInclude Include="ChunkedMap.h" />
     <ClInclude Include="Coordinate.h" />
     <ClInclude Include="HashInjection.h" />
     <ClInclude Include="IslandGenerator.h" />

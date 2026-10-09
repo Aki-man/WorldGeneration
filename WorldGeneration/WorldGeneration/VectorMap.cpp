@@ -15,7 +15,7 @@ char VectorMap::get(Coordinate coord)
 {
 	//int x = coord.x;
 	//int y = coord.y;
-	return this->vectorWorldMap[coord.y*this->width + coord.x];
+	return this->vectorWorldMap[coord.y * this->width + coord.x];
 }
 
 void VectorMap::insert(Coordinate coord, char tile)

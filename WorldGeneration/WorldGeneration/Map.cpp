@@ -152,17 +152,19 @@ void WorldMap::parallelSave(std::string saveName) {
 		fileIdX = 0;
 	}
 	g.wait();
+	this->isChanged = false;
 }
 
 void WorldMap::saveMapChunk(std::string fileName, int i, int l) {
 
 	std::ofstream file(fileName, std::ios::out | std::ios::binary);
 	int chunkNumber = this->length / this->chunkSize;
-	char currentTile = this->get(Coordinate(i * (this->length / 2), l * (this->width / 2)));
+	char currentTile = this->get(Coordinate(i * (this->length / chunkNumber), l * (this->width / chunkNumber)));
 	int currentCount = 0;
 	for (int j = i * (this->length / chunkNumber); j < (i + 1) * (this->length / chunkNumber); ++j) {
 		for (int k = l * (this->width / chunkNumber); k < (l + 1) * (this->length / chunkNumber); ++k) {
-			char newTile = this->get(Coordinate(k, j));
+			Coordinate temp(k, j);
+			char newTile = this->get(temp);
 			if (newTile != currentTile) {
 				std::string savedData = std::to_string(currentCount) + " " + currentTile + " ";
 				currentTile = newTile;

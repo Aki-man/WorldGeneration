@@ -21,5 +21,5 @@ public:
 	char get(Coordinate coord);
 	void insert(Coordinate coord, char tile);
 	bool contains(Coordinate coord);
-	void loadChunk(Coordinate chunkID);
+	bool loadChunk(Coordinate chunkID);
 };

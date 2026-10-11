@@ -28,15 +28,18 @@ void ChunkedMap::insert(Coordinate coord, char tile)
 bool ChunkedMap::contains(Coordinate coord)
 {
     Coordinate id = this->getChunkId(coord);
-    return this->chunks.contains(id);
+	if (this->chunks.contains(id))
+		return true;
+	return this->loadChunk(id)
+    //return this->chunks.contains(id);
 }
 
-void ChunkedMap::loadChunk(Coordinate chunkID)
+bool ChunkedMap::loadChunk(Coordinate chunkID)
 {
 	std::string fileName = "data/saves/" + this->name + "/save" 
 		+ std::to_string(chunkID.x) + std::to_string(chunkID.y) + ".txt";
 	if (std::filesystem::exists(fileName) == false)
-		return;
+		return false;
 	std::ifstream file(fileName, std::ios::out | std::ios::binary);
 	int chunkNumber = this->length / this->chunkSize;
 	char currentTile = '=';
@@ -63,4 +66,5 @@ void ChunkedMap::loadChunk(Coordinate chunkID)
 	}
 	this->chunks[chunkID] = &chunk;
 	file.close();
+	return true;
 }

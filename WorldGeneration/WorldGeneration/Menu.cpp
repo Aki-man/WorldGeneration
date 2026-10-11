@@ -1,35 +1,30 @@
 #include "Menu.h"
 #include "VectorMap.h"
 
-void Menu::saveMapMenu(WorldMap& map, Player& player)
+std::string Menu::getSaveName()
 {
-    if (map.name == "") {
-        std::vector<std::string> currentSaves = SaveSystemHelper::GetSaves();
-        std::unordered_map<std::string, int> saveMap = SaveSystemHelper::GetSaveMap();
-        std::string userInput;
-        while (true) {
-            std::cout << "These are the currently existing saves:\n";
-            for (int i = 0; i < currentSaves.size(); ++i) {
-                std::cout << i + 1 << ":" << currentSaves[i] << std::endl;
-            }
-            std::cout << "What would you like to call the new save?\n";
-
-            std::cin >> userInput;
-
-            if (saveMap.find(userInput) != saveMap.end()) {
-                system("cls");
-                std::cout << "That save already exists!\n";
-            }
-            else {
-                break;
-            }
+    system("cls");
+    std::vector<std::string> currentSaves = SaveSystemHelper::GetSaves();
+    std::unordered_map<std::string, int> saveMap = SaveSystemHelper::GetSaveMap();
+    std::string userInput;
+    while (true) {
+        std::cout << "These are the currently existing saves:\n";
+        for (int i = 0; i < currentSaves.size(); ++i) {
+            std::cout << i + 1 << ":" << currentSaves[i] << std::endl;
         }
-        map.name = userInput;
+        std::cout << "What would you like to call the new save?\n";
+
+        std::cin >> userInput;
+
+        if (saveMap.find(userInput) != saveMap.end()) {
+            system("cls");
+            std::cout << "That save already exists!\n";
+        }
+        else {
+            break;
+        }
     }
-    std::cout << "saving..." << std::endl;
-    if(player.world.isChanged)
-        player.world.parallelSave(map.name);
-    player.save(map.name);
+    return userInput;
 }
 
 void Menu::PlayerMenu(WorldMap& map, Player& newPlayer) {
@@ -52,7 +47,7 @@ void Menu::PlayerMenu(WorldMap& map, Player& newPlayer) {
         else if (entry == "q")
             break;
         else if (entry == "save") {
-            saveMapMenu(map, newPlayer);
+            newPlayer.save(map.name);
         }
         else
             continue;
@@ -80,7 +75,7 @@ void Menu::ParallelPlayerMenu(WorldMap& map, ParallelPlayer& newPlayer) {
         else if (entry == "q")
             break;
         else if (entry == "save") {
-            saveMapMenu(map, newPlayer);
+            newPlayer.save(map.name);
         }
         else
             continue;
@@ -88,7 +83,7 @@ void Menu::ParallelPlayerMenu(WorldMap& map, ParallelPlayer& newPlayer) {
     }
 }
 
-void Menu::generateNewIslandMenu() {
+void Menu::generateNewIslandMenu(std::string name) {
 
     while (true) {
         system("cls");
@@ -126,12 +121,18 @@ void Menu::generateNewIslandMenu() {
             WorldMap map = WorldMap(size, size);
             Player newPlayer(Coordinate(size / 2, size / 2), map, 20);
             map.GenerateFourIslandMap();
+            map.name = name;
+            map.save();
+            newPlayer.save(name);
             PlayerMenu(map, newPlayer);
         }
         else if (userInput == "2") {
             WorldMap map = WorldMap(size, size);
             Player newPlayer(Coordinate(size / 2, size / 2), map, 20);
             map.GenerateOneIslandMap();
+            map.name = name;
+            map.save();
+            newPlayer.save(name);
             PlayerMenu(map, newPlayer);
         }
         if (userInput == "3") {
@@ -139,12 +140,18 @@ void Menu::generateNewIslandMenu() {
             
             ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), pmap, 20);
             pmap.GenerateFourIslandMap();
+            pmap.name = name;
+            pmap.parallelSave();
+            newPlayer.save(name);
             ParallelPlayerMenu(pmap, newPlayer);
         }
         else if (userInput == "4") {
             VectorMap pmap = VectorMap(size, size);
             ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), pmap, 20);
             pmap.GenerateOneIslandMap();
+            pmap.name = name;
+            pmap.parallelSave();
+            newPlayer.save(name);
             ParallelPlayerMenu(pmap, newPlayer);
         }
 
@@ -282,13 +289,13 @@ void Menu::playMenu() {
         
         std::vector<std::string> saves = SaveSystemHelper::GetSaves();
         if (saves.size() == 0)
-            std::cout << "There are no currently existing saves, press n to create a new save";
+            std::cout << "There are no currently existing saves, press n to create a new save\n";
         else {
             std::cout << "Please pick one of the following:" << std::endl;
             for (int i = 0; i < saves.size(); ++i) {
                 std::cout << i + 1 << ":" << saves[i] << std::endl;
             }
-            std::cout << "Or press n to create a new save";
+            std::cout << "Or press n to create a new save\n";
         }
 
         std::string userInput = "";
@@ -299,7 +306,8 @@ void Menu::playMenu() {
             break;
         }
         else if (userInput == "n") {
-            generateNewIslandMenu();
+            std::string mapName = getSaveName();
+            generateNewIslandMenu(mapName);
             continue;
         }
         int convertedInput = 0;

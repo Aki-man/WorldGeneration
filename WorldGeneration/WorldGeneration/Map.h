@@ -27,8 +27,8 @@ public:
 	virtual void GenerateOneIslandMap();
 	virtual void GenerateFourIslandMap();
 	void print(std::ostream& out);
-	void save(std::string saveName);
-	void parallelSave(std::string saveName);
+	void save();
+	void parallelSave();
 	void saveMapChunk(std::string fileName, int i, int l);
 	bool load(std::string saveName);
 	virtual void loadMap(int fileNumber, std::string saveName);

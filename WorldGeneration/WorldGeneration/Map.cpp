@@ -93,13 +93,13 @@ void WorldMap::print(std::ostream& out)
 	
 }
 
-void WorldMap::save(std::string saveName)
+void WorldMap::save()
 {
-	std::filesystem::path path = "data/saves/" + saveName;
+	std::filesystem::path path = "data/saves/" + this->name;
 	if (!std::filesystem::is_directory(path))
 		std::filesystem::create_directory(path);
 	int fileNumber = 0;
-	std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
+	std::string fileName = "data/saves/" + this->name + "/save" + std::to_string(fileNumber) + ".txt";
 	std::ofstream file(fileName, std::ios::out | std::ios::binary);
 	file << std::to_string(this->width) << " " << std::to_string(this->length) << " " << std::to_string(this->chunkSize);
 	file.close();
@@ -107,10 +107,11 @@ void WorldMap::save(std::string saveName)
 	//fileNumber++;
 	int fileIdX = 0;
 	int fileIdY = 0;
+	int chunkNumber = this->length / this->chunkSize;
 	tbb::task_group g;
-	for (int i = 0; i < 2; ++i) {
-		for (int l = 0; l < 2; ++l) {
-			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileIdX) + std::to_string(fileIdY) + ".txt";
+	for (int i = 0; i < chunkNumber; ++i) {
+		for (int l = 0; l < chunkNumber; ++l) {
+			std::string fileName = "data/saves/" + this->name + "/save" + std::to_string(fileIdX) + std::to_string(fileIdY) + ".txt";
 
 			g.run([=] {this->saveMapChunk(fileName, i, l); });
 
@@ -124,12 +125,12 @@ void WorldMap::save(std::string saveName)
 	this->isChanged = false;
 }
 
-void WorldMap::parallelSave(std::string saveName) {
-	std::filesystem::path path = "data/saves/" + saveName;
+void WorldMap::parallelSave() {
+	std::filesystem::path path = "data/saves/" + this->name;
 	if (!std::filesystem::is_directory(path))
 		std::filesystem::create_directory(path);
 	int fileNumber = 0;
-	std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
+	std::string fileName = "data/saves/" + this->name + "/save" + std::to_string(fileNumber) + ".txt";
 	std::ofstream file(fileName, std::ios::out | std::ios::binary);
 	file << std::to_string(this->width) << " " << std::to_string(this->length) << " " << std::to_string(this->chunkSize);
 	file.close();
@@ -141,7 +142,7 @@ void WorldMap::parallelSave(std::string saveName) {
 	int chunkNumber = this->length / this->chunkSize;
 	for (int i = 0; i < chunkNumber; ++i) {
 		for (int l = 0; l < chunkNumber; ++l) {
-			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileIdX) + std::to_string(fileIdY) + ".txt";
+			std::string fileName = "data/saves/" + this->name + "/save" + std::to_string(fileIdX) + std::to_string(fileIdY) + ".txt";
 			 
 			g.run([=] {this->saveMapChunk(fileName, i, l) ; });
 

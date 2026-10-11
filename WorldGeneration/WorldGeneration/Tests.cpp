@@ -169,7 +169,8 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
 
     std::cout << "Starting parallel save" << std::endl;
     startTime = tbb::tick_count::now();
-    parallelMap.save(fileName + "ParallelSave");
+    parallelMap.name = fileName + "ParallelSave";
+    parallelMap.save();
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Parallel saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
@@ -207,7 +208,8 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
 
     std::cout << "Starting vector save" << std::endl;
     startTime = tbb::tick_count::now();
-    vectorMap.save(fileName + "VectorSave");
+    vectorMap.name = fileName + "VectorSave";
+    vectorMap.save();
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Vector saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
@@ -242,7 +244,8 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
 
     std::cout << "Starting serial save" << std::endl;
     startTime = tbb::tick_count::now();
-    map.save(fileName + "SerialSave");
+    map.name = fileName + "SerialSave";
+    map.save();
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Serial saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
@@ -297,7 +300,8 @@ void Tests::SaveWorldToFileTestSerial(int n, std::string fileName)
 
     std::cout << "Starting serial save" << std::endl;
     startTime = tbb::tick_count::now();
-    map.save(fileName);
+    map.name = fileName;
+    map.save();
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Serial saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
@@ -321,7 +325,8 @@ void Tests::SaveWorldToFileTestSerial(int n, std::string fileName)
 
     std::cout << "Starting serial parallel save" << std::endl;
     startTime = tbb::tick_count::now();
-    map.parallelSave(fileName + "Parallel");
+    map.name = fileName + "Parallel";
+    map.parallelSave();
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Serial parallel saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";

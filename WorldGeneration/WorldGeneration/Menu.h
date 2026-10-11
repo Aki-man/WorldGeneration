@@ -8,10 +8,10 @@
 #include "SaveSystemHelper.h"
 
 struct Menu {
-	static void saveMapMenu(WorldMap& map, Player& player);
+	static std::string getSaveName();
 	static void PlayerMenu(WorldMap& map, Player& newPlayer);
 	static void ParallelPlayerMenu(WorldMap& map, ParallelPlayer& newPlayer);
-	static void generateNewIslandMenu();
+	static void generateNewIslandMenu(std::string name);
 	static void loadIslandMenu();
 	static void testsMenu();
 	static void playMenu();

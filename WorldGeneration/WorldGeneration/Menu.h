@@ -9,8 +9,8 @@
 
 struct Menu {
 	static std::string getSaveName();
-	static void PlayerMenu(WorldMap& map, Player& newPlayer);
-	static void ParallelPlayerMenu(WorldMap& map, ParallelPlayer& newPlayer);
+	static void PlayerMenu(std::string name, Player& newPlayer);
+	static void ParallelPlayerMenu(std::string name, ParallelPlayer& newPlayer);
 	static void generateNewIslandMenu(std::string name);
 	static void loadIslandMenu();
 	static void testsMenu();

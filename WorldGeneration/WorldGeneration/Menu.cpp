@@ -27,7 +27,7 @@ std::string Menu::getSaveName()
     return userInput;
 }
 
-void Menu::PlayerMenu(WorldMap& map, Player& newPlayer) {
+void Menu::PlayerMenu(std::string name, Player& newPlayer) {
     while (true) {
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
@@ -47,7 +47,7 @@ void Menu::PlayerMenu(WorldMap& map, Player& newPlayer) {
         else if (entry == "q")
             break;
         else if (entry == "save") {
-            newPlayer.save(map.name);
+            newPlayer.save(name);
         }
         else
             continue;
@@ -55,7 +55,7 @@ void Menu::PlayerMenu(WorldMap& map, Player& newPlayer) {
     }
 }
 
-void Menu::ParallelPlayerMenu(WorldMap& map, ParallelPlayer& newPlayer) {
+void Menu::ParallelPlayerMenu(std::string name, ParallelPlayer& newPlayer) {
     while (true) {
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
@@ -75,7 +75,7 @@ void Menu::ParallelPlayerMenu(WorldMap& map, ParallelPlayer& newPlayer) {
         else if (entry == "q")
             break;
         else if (entry == "save") {
-            newPlayer.save(map.name);
+            newPlayer.save(name);
         }
         else
             continue;
@@ -119,40 +119,49 @@ void Menu::generateNewIslandMenu(std::string name) {
 
         if (userInput == "1") {
             WorldMap map = WorldMap(size, size);
-            Player newPlayer(Coordinate(size / 2, size / 2), map, 20);
+            
             map.GenerateFourIslandMap();
             map.name = name;
             map.save();
+            ChunkedMap playMap = ChunkedMap(size, size, name);
+            Player newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
             newPlayer.save(name);
-            PlayerMenu(map, newPlayer);
+            PlayerMenu(name, newPlayer);
         }
         else if (userInput == "2") {
             WorldMap map = WorldMap(size, size);
-            Player newPlayer(Coordinate(size / 2, size / 2), map, 20);
+            
             map.GenerateOneIslandMap();
             map.name = name;
             map.save();
+            ChunkedMap playMap = ChunkedMap(size, size, name);
+            Player newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
             newPlayer.save(name);
-            PlayerMenu(map, newPlayer);
+            PlayerMenu(name, newPlayer);
         }
         if (userInput == "3") {
             VectorMap pmap = VectorMap(size, size);
             
-            ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), pmap, 20);
+           
             pmap.GenerateFourIslandMap();
             pmap.name = name;
             pmap.parallelSave();
+            ChunkedMap playMap = ChunkedMap(size, size, name);
+            ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
             newPlayer.save(name);
-            ParallelPlayerMenu(pmap, newPlayer);
+
+            ParallelPlayerMenu(name, newPlayer);
         }
         else if (userInput == "4") {
             VectorMap pmap = VectorMap(size, size);
-            ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), pmap, 20);
+            
             pmap.GenerateOneIslandMap();
             pmap.name = name;
             pmap.parallelSave();
+            ChunkedMap playMap = ChunkedMap(size, size, name);
+            ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
             newPlayer.save(name);
-            ParallelPlayerMenu(pmap, newPlayer);
+            ParallelPlayerMenu(name, newPlayer);
         }
 
     }
@@ -188,12 +197,14 @@ void Menu::loadIslandMenu() {
         }
 
         int n = SaveSystemHelper::GetSaveSize(saves[convertedInput - 1]);
-        VectorMap map = VectorMap(n, n);
-        map.load(saves[convertedInput - 1]);
+        //VectorMap map = VectorMap(n, n);
+        //map.load(saves[convertedInput - 1]);
         //WorldMap smap = map;
-        ParallelPlayer newPlayer(Coordinate(0, 0), map, 20);
+        ChunkedMap playMap = ChunkedMap(n, n, saves[convertedInput - 1]);
+        ParallelPlayer newPlayer(Coordinate(0, 0), playMap, 20);
         newPlayer.load(saves[convertedInput - 1]);
-        ParallelPlayerMenu(map, newPlayer);
+        playMap.loadChunk(playMap.getChunkId(newPlayer.currentCoordinate));
+        ParallelPlayerMenu(saves[convertedInput - 1], newPlayer);
     }
 
 }
@@ -323,12 +334,14 @@ void Menu::playMenu() {
         }
 
         int n = SaveSystemHelper::GetSaveSize(saves[convertedInput - 1]);
-        VectorMap map = VectorMap(n, n);
-        map.load(saves[convertedInput - 1]);
+        //VectorMap map = VectorMap(n, n);
+        //map.load(saves[convertedInput - 1]);
         //WorldMap smap = map;
-        ParallelPlayer newPlayer(Coordinate(0, 0), map, 20);
+        ChunkedMap playMap = ChunkedMap(n, n, saves[convertedInput - 1]);
+        ParallelPlayer newPlayer(Coordinate(0, 0), playMap, 20);
         newPlayer.load(saves[convertedInput - 1]);
-        ParallelPlayerMenu(map, newPlayer);
+        playMap.loadChunk(playMap.getChunkId(newPlayer.currentCoordinate));
+        ParallelPlayerMenu(saves[convertedInput - 1], newPlayer);
     }
 }
 

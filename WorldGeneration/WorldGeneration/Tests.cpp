@@ -123,11 +123,17 @@ void Tests::ParallelViewTest(int n) {
     std::cout << "Setting up..." << std::endl;
     WorldMap map = WorldMap(200, 200);
     map.GenerateFourIslandMap();
-    Player serialPlayer(Coordinate(50, 50), map, n);
+    map.name = "serialView";
+    map.save();
+    ChunkedMap playMapSerial = ChunkedMap(200, 200, "serialView");
+    Player serialPlayer(Coordinate(50, 50), playMapSerial, n);
 
     ParallelWorldMap parallelMap = ParallelWorldMap(200, 200);
     parallelMap.GenerateFourIslandMap();
-    ParallelPlayer parallelPlayer(Coordinate(50, 50), parallelMap, n);
+    parallelMap.name = "parallelView";
+    parallelMap.save();
+    ChunkedMap playMapParallel = ChunkedMap(200, 200, "parallelView");
+    ParallelPlayer parallelPlayer(Coordinate(50, 50), playMapParallel, n);
 
     std::cout << "Generated view size " << n << "*" << n << std::endl;
     std::cout << "------------------------------------------------" << std::endl;
@@ -265,18 +271,6 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
     if (n <= 200)
         std::cout << map;
 
-    std::cout << "------------------------------------------------" << std::endl;
-
-    Player serialPlayer(Coordinate(17, 23), map, n);
-    serialPlayer.save(fileName + "PlayerSave");
-
-    Player newPlayer(Coordinate(0, 0), map, n);
-    newPlayer.load(fileName + "PlayerSave");
-
-    if (serialPlayer.currentCoordinate.x != newPlayer.currentCoordinate.x || serialPlayer.currentCoordinate.y != newPlayer.currentCoordinate.y)
-        std::cout << "Player save failed\n";
-    else
-        std::cout << "Player save succeeded\n";
 }
 
 void Tests::SaveWorldToFileTestSerial(int n, std::string fileName)

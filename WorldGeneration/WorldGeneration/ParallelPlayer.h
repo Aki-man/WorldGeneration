@@ -6,7 +6,7 @@ class ParallelPlayer : public Player{
 	//ParallelWorldMap* parallelWorld;
 	tbb::concurrent_hash_map<Coordinate, char, MyHashCompare> parallelView;
 public:
-	ParallelPlayer(Coordinate start, WorldMap& map, int view) : Player(start, map, view),
+	ParallelPlayer(Coordinate start, ChunkedMap& map, int view) : Player(start, map, view),
 		/*parallelWorld(world),*/ parallelView(tbb::concurrent_hash_map<Coordinate, char, MyHashCompare>()) { };
 
 	

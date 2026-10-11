@@ -29,8 +29,8 @@ void Player::getView()
 	for (int i = 0; i <= this->viewSize*2; ++i) {
 		for (int j = 0; j <= this->viewSize*2; ++j) {
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + j, startingCoordinate.y + i);
-			if (this->world.worldMap.contains(viewedCoordinate)) {
-				this->currentView[viewedCoordinate] = this->world.worldMap[viewedCoordinate];
+			if (this->world.contains(viewedCoordinate)) {
+				this->currentView[viewedCoordinate] = this->world.get(viewedCoordinate);
 			}
 			else {
 				this->currentView[viewedCoordinate] = '/';
@@ -143,8 +143,8 @@ bool Player::checkAddingCurrentCoordinate(Coordinate viewedCoordinate, bool ranI
 		if(!this->currentView.contains(viewedCoordinate))
 			this->currentView[viewedCoordinate] = '+';
 	}
-	else if (this->world.worldMap.contains(viewedCoordinate)) {
-		char temp = this->world.worldMap[viewedCoordinate];
+	else if (this->world.contains(viewedCoordinate)) {
+		char temp = this->world.get(viewedCoordinate);
 		this->currentView[viewedCoordinate] = temp;
 		if (temp == 'M' || temp == 'T')
 			ranIntoBlock = true;
@@ -165,8 +165,8 @@ void Player::cleanUpView() {
 				if (this->isAdjacent(viewedCoordinate, '+'))
 					this->currentView[viewedCoordinate] = '+';
 				else
-					if (this->world.worldMap.contains(viewedCoordinate))
-						this->currentView[viewedCoordinate] = this->world.worldMap[viewedCoordinate];
+					if (this->world.contains(viewedCoordinate))
+						this->currentView[viewedCoordinate] = this->world.get(viewedCoordinate);
 					else
 						this->currentView[viewedCoordinate] = '/';
 			}

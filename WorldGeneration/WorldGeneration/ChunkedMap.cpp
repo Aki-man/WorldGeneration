@@ -14,7 +14,7 @@ char ChunkedMap::get(Coordinate coord)
     Coordinate id = this->getChunkId(coord);
     int offsetX = coord.x - (id.x*this->chunkSize);
     int offsetY = coord.y - (id.y*this->chunkSize);
-    return (*this->chunks.at(id))[offsetY * this->chunkSize + offsetX];
+    return this->chunks.at(id)[offsetY * this->chunkSize + offsetX];
 }
 
 void ChunkedMap::insert(Coordinate coord, char tile)
@@ -22,7 +22,7 @@ void ChunkedMap::insert(Coordinate coord, char tile)
     Coordinate id = this->getChunkId(coord);
     int offsetX = coord.x - (id.x * this->chunkSize);
     int offsetY = coord.y - (id.y * this->chunkSize);
-    (*this->chunks.at(id))[offsetY * this->chunkSize + offsetX] = tile;
+    this->chunks.at(id)[offsetY * this->chunkSize + offsetX] = tile;
 }
 
 bool ChunkedMap::contains(Coordinate coord)
@@ -64,7 +64,7 @@ bool ChunkedMap::loadChunk(Coordinate chunkID)
 
 		}
 	}
-	this->chunks[chunkID] = &chunk;
+	this->chunks[chunkID] = chunk;
 	file.close();
 	return true;
 }

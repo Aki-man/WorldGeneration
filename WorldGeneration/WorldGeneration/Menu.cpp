@@ -74,6 +74,7 @@ void Menu::ParallelPlayerMenu(std::string name, ParallelPlayer& newPlayer) {
             newPlayer.moveRight();
         else if (entry == "q")
             break;
+
         else if (entry == "save") {
             newPlayer.save(name);
         }

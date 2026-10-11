@@ -30,7 +30,7 @@ bool ChunkedMap::contains(Coordinate coord)
     Coordinate id = this->getChunkId(coord);
 	if (this->chunks.contains(id))
 		return true;
-	return this->loadChunk(id)
+	return this->loadChunk(id);
     //return this->chunks.contains(id);
 }
 

@@ -276,28 +276,70 @@ void Menu::testsMenu() {
     }
 }
 
+void Menu::playMenu() {
+    while (true) {
+        system("cls");
+        
+        std::vector<std::string> saves = SaveSystemHelper::GetSaves();
+        if (saves.size() == 0)
+            std::cout << "There are no currently existing saves, press n to create a new save";
+        else {
+            std::cout << "Please pick one of the following:" << std::endl;
+            for (int i = 0; i < saves.size(); ++i) {
+                std::cout << i + 1 << ":" << saves[i] << std::endl;
+            }
+            std::cout << "Or press n to create a new save";
+        }
+
+        std::string userInput = "";
+
+        std::cin >> userInput;
+
+        if (userInput == "q") {
+            break;
+        }
+        else if (userInput == "n") {
+            generateNewIslandMenu();
+            continue;
+        }
+        int convertedInput = 0;
+        try {
+            convertedInput = std::stoi(userInput);
+        }
+        catch (std::exception e) {
+            continue;
+        }
+
+        if (convertedInput > saves.size()) {
+            continue;
+        }
+
+        int n = SaveSystemHelper::GetSaveSize(saves[convertedInput - 1]);
+        VectorMap map = VectorMap(n, n);
+        map.load(saves[convertedInput - 1]);
+        //WorldMap smap = map;
+        ParallelPlayer newPlayer(Coordinate(0, 0), map, 20);
+        newPlayer.load(saves[convertedInput - 1]);
+        ParallelPlayerMenu(map, newPlayer);
+    }
+}
+
 void Menu::mainMenu() {
-
-
 
     while (true) {
         system("cls");
         std::cout << "Welcome to the random world generation app!" << std::endl;
         std::cout << "Please pick one of the following:" << std::endl;
-        std::cout << "1: Generate a new island and start playing" << std::endl;
-        std::cout << "2: Load an already existing world" << std::endl;
-        std::cout << "3: Run some tests" << std::endl;
+        std::cout << "1: Play" << std::endl;
+        std::cout << "2: Run some tests" << std::endl;
 
         std::string userInput = "";
         std::cin >> userInput;
 
         if (userInput == "1") {
-            generateNewIslandMenu();
+            playMenu();
         }
         else if (userInput == "2") {
-            loadIslandMenu();
-        }
-        else if (userInput == "3") {
             testsMenu();
         }
         else if (userInput == "q") {

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Coordinate.h"
+#include "HashInjection.h"
 #include <unordered_map>
 #include <string>
 

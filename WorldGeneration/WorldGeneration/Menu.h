@@ -14,5 +14,6 @@ struct Menu {
 	static void generateNewIslandMenu();
 	static void loadIslandMenu();
 	static void testsMenu();
+	static void playMenu();
 	static void mainMenu();
 };

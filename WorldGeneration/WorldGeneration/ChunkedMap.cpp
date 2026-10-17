@@ -9,9 +9,18 @@ Coordinate ChunkedMap::getChunkId(Coordinate coord)
     return Coordinate(chunkX, chunkY);
 }
 
+void ChunkedMap::increaseChunkUse()
+{
+	for (auto it = this->chunkUse.begin(); it != this->chunkUse.end(); ++it) {
+		it->second++;
+	}
+}
+
 char ChunkedMap::get(Coordinate coord)
 {
+
     Coordinate id = this->getChunkId(coord);
+	this->chunkUse[id] = 0;
     int offsetX = coord.x - (id.x*this->chunkSize);
     int offsetY = coord.y - (id.y*this->chunkSize);
     return this->chunks.at(id)[offsetY * this->chunkSize + offsetX];
@@ -87,6 +96,14 @@ bool ChunkedMap::loadAllAdjacentChunks(Coordinate chunkID)
 
 void ChunkedMap::cleanUnusedChunks()
 {
+	std::vector<Coordinate> erasedChunks = std::vector<Coordinate>();
+	for (auto it = this->chunkUse.begin(); it != this->chunkUse.end(); ++it) {
+		if (it->second >= 10) {
+			this->chunks.erase(it->first);
+			erasedChunks.push_back(it->first);
+		}
+	}
+	for (auto it = erasedChunks.begin(); it != erasedChunks.end(); ++it) this->chunkUse.erase(*it);
 }
 
 void ChunkedMap::unloadChunk(Coordinate chunkID)

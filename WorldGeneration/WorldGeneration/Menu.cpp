@@ -29,8 +29,10 @@ std::string Menu::getSaveName()
 
 void Menu::PlayerMenu(std::string name, Player& newPlayer) {
     while (true) {
+        newPlayer.world.increaseChunkUse();
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
+        newPlayer.world.cleanUnusedChunks();
 
         std::cout << newPlayer << std::endl;
         std::cout << "please press a WASD button, q to quit, save to save" << std::endl;
@@ -57,8 +59,10 @@ void Menu::PlayerMenu(std::string name, Player& newPlayer) {
 
 void Menu::ParallelPlayerMenu(std::string name, ParallelPlayer& newPlayer) {
     while (true) {
+        newPlayer.world.increaseChunkUse();
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
+        newPlayer.world.cleanUnusedChunks();
 
         std::cout << newPlayer << std::endl;
         std::cout << "please press a WASD button, q to quit, save to save" << std::endl;
@@ -78,6 +82,14 @@ void Menu::ParallelPlayerMenu(std::string name, ParallelPlayer& newPlayer) {
         else if (entry == "save") {
             newPlayer.save(name);
         }
+        else if (entry == "dj")
+            newPlayer.currentCoordinate = Coordinate(newPlayer.currentCoordinate.x + 50, newPlayer.currentCoordinate.y);
+        else if (entry == "aj")
+            newPlayer.currentCoordinate = Coordinate(newPlayer.currentCoordinate.x - 50, newPlayer.currentCoordinate.y);
+        else if (entry == "wj")
+            newPlayer.currentCoordinate = Coordinate(newPlayer.currentCoordinate.x, newPlayer.currentCoordinate.y - 50);
+        else if (entry == "sj")
+            newPlayer.currentCoordinate = Coordinate(newPlayer.currentCoordinate.x, newPlayer.currentCoordinate.y + 50);
         else
             continue;
         system("cls");

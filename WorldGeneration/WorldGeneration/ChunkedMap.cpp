@@ -29,6 +29,7 @@ char ChunkedMap::get(Coordinate coord)
 void ChunkedMap::insert(Coordinate coord, char tile)
 {
     Coordinate id = this->getChunkId(coord);
+	this->chunkUse[id] = 0;
     int offsetX = coord.x - (id.x * this->chunkSize);
     int offsetY = coord.y - (id.y * this->chunkSize);
     this->chunks.at(id)[offsetY * this->chunkSize + offsetX] = tile;
@@ -74,6 +75,7 @@ bool ChunkedMap::loadChunk(Coordinate chunkID)
 		}
 	}
 	this->chunks[chunkID] = chunk;
+	this->chunkUse[chunkID] = 0;
 	file.close();
 	return true;
 }
@@ -92,6 +94,17 @@ bool ChunkedMap::loadAllAdjacentChunks(Coordinate chunkID)
 	for (int i = 0; i < coords.size(); ++i) {
 		this->loadChunk(coords[i]);
 	}
+}
+
+bool ChunkedMap::load(Coordinate playerCoordinate)
+{
+	std::string fileName = "data/saves/" + this->name + "/save"
+		+ std::to_string(0)  + ".txt";
+	if (std::filesystem::exists(fileName) == false)
+		return false;
+	std::ifstream file(fileName, std::ios::out | std::ios::binary);
+	file >> this->width >> this->length >> this->chunkSize;
+	this->loadAllAdjacentChunks(this->getChunkId(playerCoordinate));
 }
 
 void ChunkedMap::cleanUnusedChunks()

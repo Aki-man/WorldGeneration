@@ -61,6 +61,18 @@ void WorldMap::GenerateFourIslandMap()
 	this->isChanged = true;
 }
 
+void WorldMap::calculateChunkSize()
+{
+	if (this->width % 100 == 0) {
+		if (this->width > 200) this->chunkSize = 200;
+		else this->chunkSize = this->width;
+	}
+	else if (this->width % 10 == 0) {
+		this->chunkSize = 200;
+	}
+	this->chunkSize = 200;
+}
+
 void WorldMap::print(std::ostream& out)
 {
 	for (int i = 0; i < length; ++i) {

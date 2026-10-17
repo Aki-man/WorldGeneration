@@ -28,6 +28,7 @@ std::string Menu::getSaveName()
 }
 
 void Menu::PlayerMenu(std::string name, Player& newPlayer) {
+    newPlayer.world.load(newPlayer.currentCoordinate);
     while (true) {
         newPlayer.world.increaseChunkUse();
         newPlayer.getViewWithShadows();
@@ -58,6 +59,7 @@ void Menu::PlayerMenu(std::string name, Player& newPlayer) {
 }
 
 void Menu::ParallelPlayerMenu(std::string name, ParallelPlayer& newPlayer) {
+    newPlayer.world.load(newPlayer.currentCoordinate);
     while (true) {
         newPlayer.world.increaseChunkUse();
         newPlayer.getViewWithShadows();
@@ -135,6 +137,7 @@ void Menu::generateNewIslandMenu(std::string name) {
             
             (*map).GenerateFourIslandMap();
             (*map).name = name;
+            (*map).calculateChunkSize();
             (*map).save();
             delete map;
             ChunkedMap playMap = ChunkedMap(size, size, name);
@@ -147,6 +150,7 @@ void Menu::generateNewIslandMenu(std::string name) {
             
             (*map).GenerateOneIslandMap();
             (*map).name = name;
+            (*map).calculateChunkSize();
             (*map).save();
             delete map;
             ChunkedMap playMap = ChunkedMap(size, size, name);
@@ -160,6 +164,7 @@ void Menu::generateNewIslandMenu(std::string name) {
            
             (*pmap).GenerateFourIslandMap();
             (*pmap).name = name;
+            (*pmap).calculateChunkSize();
             (*pmap).parallelSave();
             delete pmap;
             ChunkedMap playMap = ChunkedMap(size, size, name);
@@ -173,6 +178,7 @@ void Menu::generateNewIslandMenu(std::string name) {
             
             (*pmap).GenerateOneIslandMap();
             (*pmap).name = name;
+            (*pmap).calculateChunkSize();
             (*pmap).parallelSave();
             delete pmap;
             ChunkedMap playMap = ChunkedMap(size, size, name);
@@ -357,7 +363,7 @@ void Menu::playMenu() {
         ChunkedMap playMap = ChunkedMap(n, n, saves[convertedInput - 1]);
         ParallelPlayer newPlayer(Coordinate(0, 0), playMap, 20);
         newPlayer.load(saves[convertedInput - 1]);
-        playMap.loadChunk(playMap.getChunkId(newPlayer.currentCoordinate));
+        //playMap.loadChunk(playMap.getChunkId(newPlayer.currentCoordinate));
         ParallelPlayerMenu(saves[convertedInput - 1], newPlayer);
     }
 }

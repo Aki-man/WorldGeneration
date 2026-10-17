@@ -26,6 +26,7 @@ public:
 	bool contains(Coordinate coord);
 	bool loadChunk(Coordinate chunkID);
 	bool loadAllAdjacentChunks(Coordinate chunkID);
+	bool load(Coordinate playerCoordinate);
 	void cleanUnusedChunks();
 	void unloadChunk(Coordinate chunkID);
 };

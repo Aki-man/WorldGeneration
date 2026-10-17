@@ -26,6 +26,7 @@ public:
 	virtual bool contains(Coordinate coord);
 	virtual void GenerateOneIslandMap();
 	virtual void GenerateFourIslandMap();
+	void calculateChunkSize();
 	void print(std::ostream& out);
 	void save();
 	void parallelSave();

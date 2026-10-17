@@ -119,34 +119,37 @@ void Menu::generateNewIslandMenu(std::string name) {
             size = 50;
 
         if (userInput == "1") {
-            WorldMap map = WorldMap(size, size);
+            WorldMap *map = new WorldMap(size, size);
             
-            map.GenerateFourIslandMap();
-            map.name = name;
-            map.save();
+            (*map).GenerateFourIslandMap();
+            (*map).name = name;
+            (*map).save();
+            delete map;
             ChunkedMap playMap = ChunkedMap(size, size, name);
             Player newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
             newPlayer.save(name);
             PlayerMenu(name, newPlayer);
         }
         else if (userInput == "2") {
-            WorldMap map = WorldMap(size, size);
+            WorldMap *map = new WorldMap(size, size);
             
-            map.GenerateOneIslandMap();
-            map.name = name;
-            map.save();
+            (*map).GenerateOneIslandMap();
+            (*map).name = name;
+            (*map).save();
+            delete map;
             ChunkedMap playMap = ChunkedMap(size, size, name);
             Player newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
             newPlayer.save(name);
             PlayerMenu(name, newPlayer);
         }
         if (userInput == "3") {
-            VectorMap pmap = VectorMap(size, size);
+            VectorMap *pmap = new VectorMap(size, size);
             
            
-            pmap.GenerateFourIslandMap();
-            pmap.name = name;
-            pmap.parallelSave();
+            (*pmap).GenerateFourIslandMap();
+            (*pmap).name = name;
+            (*pmap).parallelSave();
+            delete pmap;
             ChunkedMap playMap = ChunkedMap(size, size, name);
             ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
             newPlayer.save(name);
@@ -154,11 +157,12 @@ void Menu::generateNewIslandMenu(std::string name) {
             ParallelPlayerMenu(name, newPlayer);
         }
         else if (userInput == "4") {
-            VectorMap pmap = VectorMap(size, size);
+            VectorMap* pmap = new VectorMap(size, size);
             
-            pmap.GenerateOneIslandMap();
-            pmap.name = name;
-            pmap.parallelSave();
+            (*pmap).GenerateOneIslandMap();
+            (*pmap).name = name;
+            (*pmap).parallelSave();
+            delete pmap;
             ChunkedMap playMap = ChunkedMap(size, size, name);
             ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
             newPlayer.save(name);

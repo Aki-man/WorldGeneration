@@ -23,4 +23,7 @@ public:
 	void insert(Coordinate coord, char tile);
 	bool contains(Coordinate coord);
 	bool loadChunk(Coordinate chunkID);
+	bool loadAllAdjacentChunks(Coordinate chunkID);
+	void cleanUnusedChunks();
+	void unloadChunk(Coordinate chunkID);
 };

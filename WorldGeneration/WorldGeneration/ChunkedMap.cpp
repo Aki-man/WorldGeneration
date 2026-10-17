@@ -68,3 +68,28 @@ bool ChunkedMap::loadChunk(Coordinate chunkID)
 	file.close();
 	return true;
 }
+
+bool ChunkedMap::loadAllAdjacentChunks(Coordinate chunkID)
+{
+	std::vector<Coordinate> coords = { chunkID,
+	Coordinate(chunkID.x - 1, chunkID.y),
+	Coordinate(chunkID.x + 1, chunkID.y),
+	Coordinate(chunkID.x, chunkID.y - 1),
+	Coordinate(chunkID.x, chunkID.y + 1),
+	Coordinate(chunkID.x - 1, chunkID.y - 1),
+	Coordinate(chunkID.x - 1, chunkID.y + 1),
+	Coordinate(chunkID.x + 1, chunkID.y - 1),
+	Coordinate(chunkID.x + 1, chunkID.y + 1) };
+	for (int i = 0; i < coords.size(); ++i) {
+		this->loadChunk(coords[i]);
+	}
+}
+
+void ChunkedMap::cleanUnusedChunks()
+{
+}
+
+void ChunkedMap::unloadChunk(Coordinate chunkID)
+{
+	this->chunks.erase(chunkID);
+}

@@ -33,7 +33,7 @@ void Menu::PlayerMenu(std::string name, Player& newPlayer) {
         newPlayer.world.increaseChunkUse();
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
-        newPlayer.world.cleanUnusedChunks();
+        newPlayer.world.cleanUnusedChunks(newPlayer.currentCoordinate);
 
         std::cout << newPlayer << std::endl;
         std::cout << "please press a WASD button, q to quit, save to save" << std::endl;
@@ -64,7 +64,7 @@ void Menu::ParallelPlayerMenu(std::string name, ParallelPlayer& newPlayer) {
         newPlayer.world.increaseChunkUse();
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
-        newPlayer.world.cleanUnusedChunks();
+        newPlayer.world.cleanUnusedChunks(newPlayer.currentCoordinate);
 
         std::cout << newPlayer << std::endl;
         std::cout << "please press a WASD button, q to quit, save to save" << std::endl;

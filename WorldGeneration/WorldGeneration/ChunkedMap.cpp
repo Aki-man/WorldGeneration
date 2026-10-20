@@ -1,6 +1,7 @@
 #include "ChunkedMap.h"
 #include <filesystem>
 #include <fstream>
+#include <cmath>
 
 Coordinate ChunkedMap::getChunkId(Coordinate coord)
 {
@@ -107,13 +108,17 @@ bool ChunkedMap::load(Coordinate playerCoordinate)
 	this->loadAllAdjacentChunks(this->getChunkId(playerCoordinate));
 }
 
-void ChunkedMap::cleanUnusedChunks()
+void ChunkedMap::cleanUnusedChunks(Coordinate currentCoordinate)
 {
 	std::vector<Coordinate> erasedChunks = std::vector<Coordinate>();
 	for (auto it = this->chunkUse.begin(); it != this->chunkUse.end(); ++it) {
 		if (it->second >= 10) {
-			this->chunks.erase(it->first);
-			erasedChunks.push_back(it->first);
+			Coordinate chunkCenter = Coordinate((it->first.x * this->chunkSize) + (this->chunkSize/2), (it->first.y * this->chunkSize) + (this->chunkSize / 2));
+			int distance = std::sqrt(pow(currentCoordinate.x - chunkCenter.x, 2) + pow(currentCoordinate.y - chunkCenter.y, 2));
+			if (distance > this->chunkSize / 2) {
+				this->chunks.erase(it->first);
+				erasedChunks.push_back(it->first);
+			}
 		}
 	}
 	for (auto it = erasedChunks.begin(); it != erasedChunks.end(); ++it) this->chunkUse.erase(*it);

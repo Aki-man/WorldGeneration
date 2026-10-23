@@ -63,14 +63,19 @@ void WorldMap::GenerateFourIslandMap()
 
 void WorldMap::calculateChunkSize()
 {
-	if (this->width % 100 == 0) {
+	/*if (this->width % 100 == 0) {
 		if (this->width > 200) this->chunkSize = 200;
 		else this->chunkSize = this->width;
 	}
 	else if (this->width % 10 == 0) {
 		this->chunkSize = 200;
-	}
+	}*/
 	this->chunkSize = 200;
+	int chunkNumber = this->length / this->chunkSize;
+	if (this->chunkSize * chunkNumber < this->length) chunkNumber++;
+	this->chunkSize = this->length / chunkNumber;
+	this->length = this->chunkSize * chunkNumber;
+	this->width = this->chunkSize * chunkNumber;
 }
 
 void WorldMap::print(std::ostream& out)
@@ -105,6 +110,7 @@ void WorldMap::print(std::ostream& out)
 	
 }
 
+//OLD IMPLEMENTATION
 void WorldMap::save()
 {
 	std::filesystem::path path = "data/saves/" + this->name;
@@ -120,6 +126,7 @@ void WorldMap::save()
 	int fileIdX = 0;
 	int fileIdY = 0;
 	int chunkNumber = this->length / this->chunkSize;
+	if (chunkNumber * this->chunkSize < this->length ) chunkNumber++;
 	tbb::task_group g;
 	for (int i = 0; i < chunkNumber; ++i) {
 		for (int l = 0; l < chunkNumber; ++l) {
@@ -152,6 +159,7 @@ void WorldMap::parallelSave() {
 	int fileIdX = 0;
 	int fileIdY = 0;
 	int chunkNumber = this->length / this->chunkSize;
+	//if (chunkNumber * this->chunkSize < this->length) chunkNumber++;
 	for (int i = 0; i < chunkNumber; ++i) {
 		for (int l = 0; l < chunkNumber; ++l) {
 			std::string fileName = "data/saves/" + this->name + "/save" + std::to_string(fileIdX) + "_" + std::to_string(fileIdY) + ".txt";

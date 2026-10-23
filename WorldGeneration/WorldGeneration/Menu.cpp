@@ -135,9 +135,9 @@ void Menu::generateNewIslandMenu(std::string name) {
         if (userInput == "1") {
             WorldMap *map = new WorldMap(size, size);
             
+            (*map).calculateChunkSize();
             (*map).GenerateFourIslandMap();
             (*map).name = name;
-            (*map).calculateChunkSize();
             (*map).save();
             delete map;
             ChunkedMap playMap = ChunkedMap(size, size, name);
@@ -148,9 +148,9 @@ void Menu::generateNewIslandMenu(std::string name) {
         else if (userInput == "2") {
             WorldMap *map = new WorldMap(size, size);
             
+            (*map).calculateChunkSize();
             (*map).GenerateOneIslandMap();
             (*map).name = name;
-            (*map).calculateChunkSize();
             (*map).save();
             delete map;
             ChunkedMap playMap = ChunkedMap(size, size, name);
@@ -161,10 +161,9 @@ void Menu::generateNewIslandMenu(std::string name) {
         if (userInput == "3") {
             VectorMap *pmap = new VectorMap(size, size);
             
-           
+            (*pmap).calculateChunkSize();
             (*pmap).GenerateFourIslandMap();
             (*pmap).name = name;
-            (*pmap).calculateChunkSize();
             (*pmap).parallelSave();
             delete pmap;
             ChunkedMap playMap = ChunkedMap(size, size, name);
@@ -176,9 +175,9 @@ void Menu::generateNewIslandMenu(std::string name) {
         else if (userInput == "4") {
             VectorMap* pmap = new VectorMap(size, size);
             
+            (*pmap).calculateChunkSize();
             (*pmap).GenerateOneIslandMap();
             (*pmap).name = name;
-            (*pmap).calculateChunkSize();
             (*pmap).parallelSave();
             delete pmap;
             ChunkedMap playMap = ChunkedMap(size, size, name);

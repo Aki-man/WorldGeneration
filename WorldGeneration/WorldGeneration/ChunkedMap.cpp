@@ -48,7 +48,7 @@ bool ChunkedMap::contains(Coordinate coord)
 bool ChunkedMap::loadChunk(Coordinate chunkID)
 {
 	std::string fileName = "data/saves/" + this->name + "/save" 
-		+ std::to_string(chunkID.x) + std::to_string(chunkID.y) + ".txt";
+		+ std::to_string(chunkID.x) + "_" + std::to_string(chunkID.y) + ".txt";
 	if (std::filesystem::exists(fileName) == false)
 		return false;
 	std::ifstream file(fileName, std::ios::out | std::ios::binary);

@@ -123,7 +123,7 @@ void WorldMap::save()
 	tbb::task_group g;
 	for (int i = 0; i < chunkNumber; ++i) {
 		for (int l = 0; l < chunkNumber; ++l) {
-			std::string fileName = "data/saves/" + this->name + "/save" + std::to_string(fileIdX) + std::to_string(fileIdY) + ".txt";
+			std::string fileName = "data/saves/" + this->name + "/save" + std::to_string(fileIdX) + "_" + std::to_string(fileIdY) + ".txt";
 
 			g.run([=] {this->saveMapChunk(fileName, i, l); });
 
@@ -154,7 +154,7 @@ void WorldMap::parallelSave() {
 	int chunkNumber = this->length / this->chunkSize;
 	for (int i = 0; i < chunkNumber; ++i) {
 		for (int l = 0; l < chunkNumber; ++l) {
-			std::string fileName = "data/saves/" + this->name + "/save" + std::to_string(fileIdX) + std::to_string(fileIdY) + ".txt";
+			std::string fileName = "data/saves/" + this->name + "/save" + std::to_string(fileIdX) + "_" + std::to_string(fileIdY) + ".txt";
 			 
 			g.run([=] {this->saveMapChunk(fileName, i, l) ; });
 
@@ -217,7 +217,7 @@ void WorldMap::loadMap(int fileNumber, std::string saveName)
 	int chunkNumber = this->length / this->chunkSize;
 	for (int i = 0; i < chunkNumber; ++i) {
 		for (int l = 0; l < chunkNumber; ++l) {
-			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileIdX) + std::to_string(fileIdY) + ".txt";
+			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileIdX) + "_" + std::to_string(fileIdY) + ".txt";
 			if (std::filesystem::exists(fileName))
 				this->loadMapChunk(fileName, i, l);
 

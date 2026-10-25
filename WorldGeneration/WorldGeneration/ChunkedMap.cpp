@@ -113,8 +113,10 @@ void ChunkedMap::cleanUnusedChunks(Coordinate currentCoordinate)
 	std::vector<Coordinate> erasedChunks = std::vector<Coordinate>();
 	for (auto it = this->chunkUse.begin(); it != this->chunkUse.end(); ++it) {
 		if (it->second >= 10) {
-			Coordinate chunkCenter = Coordinate((it->first.x * this->chunkSize) + (this->chunkSize/2), (it->first.y * this->chunkSize) + (this->chunkSize / 2));
-			int distance = std::sqrt(pow(currentCoordinate.x - chunkCenter.x, 2) + pow(currentCoordinate.y - chunkCenter.y, 2));
+			
+			int dx = std::max((it->first.x*this->chunkSize) - currentCoordinate.x,currentCoordinate.x - ((it->first.x+1) * this->chunkSize));
+			int dy = std::max((it->first.y*this->chunkSize) - currentCoordinate.y, currentCoordinate.y - ((it->first.y+1) * this->chunkSize));
+			int distance = std::sqrt(pow(dx, 2) + pow(dy, 2));
 			if (distance > this->chunkSize) {
 				this->chunks.erase(it->first);
 				erasedChunks.push_back(it->first);

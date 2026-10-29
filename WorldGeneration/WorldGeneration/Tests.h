@@ -10,4 +10,5 @@ public:
 	static void SaveWorldToFileTestSerial(int n, std::string fileName);
 	static void BatchTests(int islandSize, int viewSize, std::string fileName);
 	static void ChunkTest(int islandSize, int viewSize, std::string fileName);
+	static void ChunkSpeedTest(int islandSize, int viewSize, std::string fileName);
 };

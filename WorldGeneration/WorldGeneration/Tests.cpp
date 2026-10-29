@@ -414,3 +414,45 @@ void Tests::ChunkTest(int islandSize, int viewSize, std::string fileName)
     std::cout << "Success!" << std::endl;
     return;
 }
+
+void Tests::ChunkSpeedTest(int islandSize, int viewSize, std::string fileName)
+{
+    VectorMap* map = new VectorMap(islandSize, islandSize);
+    (*map).calculateChunkSize();
+    (*map).name = fileName;
+    std::cout << "Generating..." << std::endl;
+    (*map).GenerateFourIslandMap();
+    std::cout << "Saving..." << std::endl;
+    (*map).parallelSave();
+    delete map;
+
+    VectorMap newMap = VectorMap(islandSize, islandSize);
+    newMap.name = fileName;
+    
+    std::cout << "Regular load..." << std::endl;
+    tbb::tick_count startTime = tbb::tick_count::now();
+    newMap.load(fileName);
+    tbb::tick_count endTime = tbb::tick_count::now();
+    std::cout << "Regular loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    ChunkedMap chunks = ChunkedMap(islandSize, islandSize, fileName);
+
+    ParallelPlayer testPlayer = ParallelPlayer(Coordinate(islandSize/2, islandSize/2), chunks, 20);
+    std::cout << "Loading chunks..." << std::endl;
+    startTime = tbb::tick_count::now();
+    testPlayer.world.load(testPlayer.world.getChunkId(testPlayer.currentCoordinate));
+    endTime = tbb::tick_count::now();
+    std::cout << "Chunked loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    testPlayer.currentCoordinate = Coordinate(testPlayer.currentCoordinate.x + (2*testPlayer.world.chunkSize),
+        testPlayer.currentCoordinate.y + (2*testPlayer.world.chunkSize));
+    std::cout << "Loading new chunks..." << std::endl;
+    startTime = tbb::tick_count::now();
+    //testPlayer.world.load(testPlayer.world.getChunkId(testPlayer.currentCoordinate));
+    testPlayer.world.increaseChunkUse();
+    testPlayer.getViewWithShadows();
+    testPlayer.cleanUpView();
+    testPlayer.world.cleanUnusedChunks(testPlayer.currentCoordinate);
+    endTime = tbb::tick_count::now();
+    std::cout << "Move loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+}

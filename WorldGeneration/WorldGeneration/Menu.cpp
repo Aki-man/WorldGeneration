@@ -243,6 +243,7 @@ void Menu::testsMenu() {
         std::cout << "5: Run all tests" << std::endl;
         std::cout << "6: Run serial save tests" << std::endl;
         std::cout << "7: Run chunk tests" << std::endl;
+        std::cout << "8: Run chunk speed tests" << std::endl;
 
         std::string userInput = "";
         std::cin >> userInput;
@@ -314,6 +315,16 @@ void Menu::testsMenu() {
         else if (userInput == "7") {
             system("cls");
             Tests::ChunkTest(2000, 20, "chunkTest");
+            std::cout << "Enter any key to continue" << std::endl;
+            std::cin >> userInput;
+        }
+        else if (userInput == "8") {
+            int sizeInput = 0;
+            std::cout << "Input island size for chunk test:" << std::endl;
+            std::cin >> sizeInput;
+
+            system("cls");
+            Tests::ChunkSpeedTest(sizeInput, sizeInput, "chunkTestFile");
             std::cout << "Enter any key to continue" << std::endl;
             std::cin >> userInput;
         }

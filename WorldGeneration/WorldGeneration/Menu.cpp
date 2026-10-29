@@ -1,42 +1,39 @@
 #include "Menu.h"
 #include "VectorMap.h"
-#include "ArrayMap.h"
 
-void Menu::saveMapMenu(WorldMap& map, Player& player)
+std::string Menu::getSaveName()
 {
-    if (map.name == "") {
-        std::vector<std::string> currentSaves = SaveSystemHelper::GetSaves();
-        std::unordered_map<std::string, int> saveMap = SaveSystemHelper::GetSaveMap();
-        std::string userInput;
-        while (true) {
-            std::cout << "These are the currently existing saves:\n";
-            for (int i = 0; i < currentSaves.size(); ++i) {
-                std::cout << i + 1 << ":" << currentSaves[i] << std::endl;
-            }
-            std::cout << "What would you like to call the new save?\n";
-
-            std::cin >> userInput;
-
-            if (saveMap.find(userInput) != saveMap.end()) {
-                system("cls");
-                std::cout << "That save already exists!\n";
-            }
-            else {
-                break;
-            }
+    system("cls");
+    std::vector<std::string> currentSaves = SaveSystemHelper::GetSaves();
+    std::unordered_map<std::string, int> saveMap = SaveSystemHelper::GetSaveMap();
+    std::string userInput;
+    while (true) {
+        std::cout << "These are the currently existing saves:\n";
+        for (int i = 0; i < currentSaves.size(); ++i) {
+            std::cout << i + 1 << ":" << currentSaves[i] << std::endl;
         }
-        map.name = userInput;
+        std::cout << "What would you like to call the new save?\n";
+
+        std::cin >> userInput;
+
+        if (saveMap.find(userInput) != saveMap.end()) {
+            system("cls");
+            std::cout << "That save already exists!\n";
+        }
+        else {
+            break;
+        }
     }
-    std::cout << "saving..." << std::endl;
-    if(player.world.isChanged)
-        player.world.save(map.name);
-    player.save(map.name);
+    return userInput;
 }
 
-void Menu::PlayerMenu(WorldMap& map, Player& newPlayer) {
+void Menu::PlayerMenu(std::string name, Player& newPlayer) {
+    newPlayer.world.load(newPlayer.currentCoordinate);
     while (true) {
+        newPlayer.world.increaseChunkUse();
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
+        newPlayer.world.cleanUnusedChunks(newPlayer.currentCoordinate);
 
         std::cout << newPlayer << std::endl;
         std::cout << "please press a WASD button, q to quit, save to save" << std::endl;
@@ -53,7 +50,7 @@ void Menu::PlayerMenu(WorldMap& map, Player& newPlayer) {
         else if (entry == "q")
             break;
         else if (entry == "save") {
-            saveMapMenu(map, newPlayer);
+            newPlayer.save(name);
         }
         else
             continue;
@@ -61,10 +58,13 @@ void Menu::PlayerMenu(WorldMap& map, Player& newPlayer) {
     }
 }
 
-void Menu::ParallelPlayerMenu(WorldMap& map, ParallelPlayer& newPlayer) {
+void Menu::ParallelPlayerMenu(std::string name, ParallelPlayer& newPlayer) {
+    newPlayer.world.load(newPlayer.currentCoordinate);
     while (true) {
+        newPlayer.world.increaseChunkUse();
         newPlayer.getViewWithShadows();
         newPlayer.cleanUpView();
+        newPlayer.world.cleanUnusedChunks(newPlayer.currentCoordinate);
 
         std::cout << newPlayer << std::endl;
         std::cout << "please press a WASD button, q to quit, save to save" << std::endl;
@@ -80,16 +80,25 @@ void Menu::ParallelPlayerMenu(WorldMap& map, ParallelPlayer& newPlayer) {
             newPlayer.moveRight();
         else if (entry == "q")
             break;
+
         else if (entry == "save") {
-            saveMapMenu(map, newPlayer);
+            newPlayer.save(name);
         }
+        else if (entry == "dj")
+            newPlayer.currentCoordinate = Coordinate(newPlayer.currentCoordinate.x + 50, newPlayer.currentCoordinate.y);
+        else if (entry == "aj")
+            newPlayer.currentCoordinate = Coordinate(newPlayer.currentCoordinate.x - 50, newPlayer.currentCoordinate.y);
+        else if (entry == "wj")
+            newPlayer.currentCoordinate = Coordinate(newPlayer.currentCoordinate.x, newPlayer.currentCoordinate.y - 50);
+        else if (entry == "sj")
+            newPlayer.currentCoordinate = Coordinate(newPlayer.currentCoordinate.x, newPlayer.currentCoordinate.y + 50);
         else
             continue;
         system("cls");
     }
 }
 
-void Menu::generateNewIslandMenu() {
+void Menu::generateNewIslandMenu(std::string name) {
 
     while (true) {
         system("cls");
@@ -124,29 +133,57 @@ void Menu::generateNewIslandMenu() {
             size = 50;
 
         if (userInput == "1") {
-            WorldMap map = WorldMap(size, size);
-            Player newPlayer(Coordinate(size / 2, size / 2), map, 20);
-            map.GenerateFourIslandMap();
-            PlayerMenu(map, newPlayer);
+            WorldMap *map = new WorldMap(size, size);
+            
+            (*map).calculateChunkSize();
+            (*map).GenerateFourIslandMap();
+            (*map).name = name;
+            (*map).save();
+            delete map;
+            ChunkedMap playMap = ChunkedMap(size, size, name);
+            Player newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
+            newPlayer.save(name);
+            PlayerMenu(name, newPlayer);
         }
         else if (userInput == "2") {
-            WorldMap map = WorldMap(size, size);
-            Player newPlayer(Coordinate(size / 2, size / 2), map, 20);
-            map.GenerateOneIslandMap();
-            PlayerMenu(map, newPlayer);
+            WorldMap *map = new WorldMap(size, size);
+            
+            (*map).calculateChunkSize();
+            (*map).GenerateOneIslandMap();
+            (*map).name = name;
+            (*map).save();
+            delete map;
+            ChunkedMap playMap = ChunkedMap(size, size, name);
+            Player newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
+            newPlayer.save(name);
+            PlayerMenu(name, newPlayer);
         }
         if (userInput == "3") {
-            VectorMap pmap = VectorMap(size, size);
+            VectorMap *pmap = new VectorMap(size, size);
             
-            ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), pmap, 20);
-            pmap.GenerateFourIslandMap();
-            ParallelPlayerMenu(pmap, newPlayer);
+            (*pmap).calculateChunkSize();
+            (*pmap).GenerateFourIslandMap();
+            (*pmap).name = name;
+            (*pmap).parallelSave();
+            delete pmap;
+            ChunkedMap playMap = ChunkedMap(size, size, name);
+            ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
+            newPlayer.save(name);
+
+            ParallelPlayerMenu(name, newPlayer);
         }
         else if (userInput == "4") {
-            VectorMap pmap = VectorMap(size, size);
-            ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), pmap, 20);
-            pmap.GenerateOneIslandMap();
-            ParallelPlayerMenu(pmap, newPlayer);
+            VectorMap* pmap = new VectorMap(size, size);
+            
+            (*pmap).calculateChunkSize();
+            (*pmap).GenerateOneIslandMap();
+            (*pmap).name = name;
+            (*pmap).parallelSave();
+            delete pmap;
+            ChunkedMap playMap = ChunkedMap(size, size, name);
+            ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
+            newPlayer.save(name);
+            ParallelPlayerMenu(name, newPlayer);
         }
 
     }
@@ -182,12 +219,14 @@ void Menu::loadIslandMenu() {
         }
 
         int n = SaveSystemHelper::GetSaveSize(saves[convertedInput - 1]);
-        VectorMap map = VectorMap(n, n);
-        map.load(saves[convertedInput - 1]);
+        //VectorMap map = VectorMap(n, n);
+        //map.load(saves[convertedInput - 1]);
         //WorldMap smap = map;
-        ParallelPlayer newPlayer(Coordinate(0, 0), map, 20);
+        ChunkedMap playMap = ChunkedMap(n, n, saves[convertedInput - 1]);
+        ParallelPlayer newPlayer(Coordinate(0, 0), playMap, 20);
         newPlayer.load(saves[convertedInput - 1]);
-        ParallelPlayerMenu(map, newPlayer);
+        playMap.loadChunk(playMap.getChunkId(newPlayer.currentCoordinate));
+        ParallelPlayerMenu(saves[convertedInput - 1], newPlayer);
     }
 
 }
@@ -203,6 +242,8 @@ void Menu::testsMenu() {
         std::cout << "4: Run one island generation tests" << std::endl;
         std::cout << "5: Run all tests" << std::endl;
         std::cout << "6: Run serial save tests" << std::endl;
+        std::cout << "7: Run chunk tests" << std::endl;
+        std::cout << "8: Run chunk speed tests" << std::endl;
 
         std::string userInput = "";
         std::cin >> userInput;
@@ -271,34 +312,95 @@ void Menu::testsMenu() {
             std::cout << "Enter any key to continue" << std::endl;
             std::cin >> userInput;
         }
+        else if (userInput == "7") {
+            system("cls");
+            Tests::ChunkTest(2000, 20, "chunkTest");
+            std::cout << "Enter any key to continue" << std::endl;
+            std::cin >> userInput;
+        }
+        else if (userInput == "8") {
+            int sizeInput = 0;
+            std::cout << "Input island size for chunk test:" << std::endl;
+            std::cin >> sizeInput;
+
+            system("cls");
+            Tests::ChunkSpeedTest(sizeInput, sizeInput, "chunkTestFile");
+            std::cout << "Enter any key to continue" << std::endl;
+            std::cin >> userInput;
+        }
         else if (userInput == "q") {
             break;
         }
     }
 }
 
+void Menu::playMenu() {
+    while (true) {
+        system("cls");
+        
+        std::vector<std::string> saves = SaveSystemHelper::GetSaves();
+        if (saves.size() == 0)
+            std::cout << "There are no currently existing saves, press n to create a new save\n";
+        else {
+            std::cout << "Please pick one of the following:" << std::endl;
+            for (int i = 0; i < saves.size(); ++i) {
+                std::cout << i + 1 << ":" << saves[i] << std::endl;
+            }
+            std::cout << "Or press n to create a new save\n";
+        }
+
+        std::string userInput = "";
+
+        std::cin >> userInput;
+
+        if (userInput == "q") {
+            break;
+        }
+        else if (userInput == "n") {
+            std::string mapName = getSaveName();
+            generateNewIslandMenu(mapName);
+            continue;
+        }
+        int convertedInput = 0;
+        try {
+            convertedInput = std::stoi(userInput);
+        }
+        catch (std::exception e) {
+            continue;
+        }
+
+        if (convertedInput > saves.size()) {
+            continue;
+        }
+
+        int n = SaveSystemHelper::GetSaveSize(saves[convertedInput - 1]);
+        //VectorMap map = VectorMap(n, n);
+        //map.load(saves[convertedInput - 1]);
+        //WorldMap smap = map;
+        ChunkedMap playMap = ChunkedMap(n, n, saves[convertedInput - 1]);
+        ParallelPlayer newPlayer(Coordinate(0, 0), playMap, 20);
+        newPlayer.load(saves[convertedInput - 1]);
+        //playMap.loadChunk(playMap.getChunkId(newPlayer.currentCoordinate));
+        ParallelPlayerMenu(saves[convertedInput - 1], newPlayer);
+    }
+}
+
 void Menu::mainMenu() {
-
-
 
     while (true) {
         system("cls");
         std::cout << "Welcome to the random world generation app!" << std::endl;
         std::cout << "Please pick one of the following:" << std::endl;
-        std::cout << "1: Generate a new island and start playing" << std::endl;
-        std::cout << "2: Load an already existing world" << std::endl;
-        std::cout << "3: Run some tests" << std::endl;
+        std::cout << "1: Play" << std::endl;
+        std::cout << "2: Run some tests" << std::endl;
 
         std::string userInput = "";
         std::cin >> userInput;
 
         if (userInput == "1") {
-            generateNewIslandMenu();
+            playMenu();
         }
         else if (userInput == "2") {
-            loadIslandMenu();
-        }
-        else if (userInput == "3") {
             testsMenu();
         }
         else if (userInput == "q") {

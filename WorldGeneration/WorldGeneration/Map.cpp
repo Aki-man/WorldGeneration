@@ -61,6 +61,23 @@ void WorldMap::GenerateFourIslandMap()
 	this->isChanged = true;
 }
 
+void WorldMap::calculateChunkSize()
+{
+	/*if (this->width % 100 == 0) {
+		if (this->width > 200) this->chunkSize = 200;
+		else this->chunkSize = this->width;
+	}
+	else if (this->width % 10 == 0) {
+		this->chunkSize = 200;
+	}*/
+	this->chunkSize = 200;
+	int chunkNumber = this->length / this->chunkSize;
+	if (this->chunkSize * chunkNumber < this->length) chunkNumber++;
+	this->chunkSize = this->length / chunkNumber;
+	this->length = this->chunkSize * chunkNumber;
+	this->width = this->chunkSize * chunkNumber;
+}
+
 void WorldMap::print(std::ostream& out)
 {
 	for (int i = 0; i < length; ++i) {
@@ -93,64 +110,82 @@ void WorldMap::print(std::ostream& out)
 	
 }
 
-void WorldMap::save(std::string saveName)
+//OLD IMPLEMENTATION
+void WorldMap::save()
 {
-	std::filesystem::path path = "data/saves/" + saveName;
+	std::filesystem::path path = "data/saves/" + this->name;
 	if (!std::filesystem::is_directory(path))
 		std::filesystem::create_directory(path);
 	int fileNumber = 0;
-	std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
+	std::string fileName = "data/saves/" + this->name + "/save" + std::to_string(fileNumber) + ".txt";
 	std::ofstream file(fileName, std::ios::out | std::ios::binary);
-	file << std::to_string(this->width) << " " << std::to_string(this->length);
+	file << std::to_string(this->width) << " " << std::to_string(this->length) << " " << std::to_string(this->chunkSize);
 	file.close();
 
-	fileNumber++;
+	//fileNumber++;
+	int fileIdX = 0;
+	int fileIdY = 0;
+	int chunkNumber = this->length / this->chunkSize;
+	if (chunkNumber * this->chunkSize < this->length ) chunkNumber++;
 	tbb::task_group g;
-	for (int i = 0; i < 2; ++i) {
-		for (int l = 0; l < 2; ++l) {
-			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
+	for (int i = 0; i < chunkNumber; ++i) {
+		for (int l = 0; l < chunkNumber; ++l) {
+			std::string fileName = "data/saves/" + this->name + "/save" + std::to_string(fileIdX) + "_" + std::to_string(fileIdY) + ".txt";
 
 			g.run([=] {this->saveMapChunk(fileName, i, l); });
 
-			fileNumber++;
+			//fileNumber++;
+			fileIdX++;
 		}
+		fileIdY++;
+		fileIdX = 0;
 	}
 	g.wait();
 	this->isChanged = false;
 }
 
-void WorldMap::parallelSave(std::string saveName) {
-	std::filesystem::path path = "data/saves/" + saveName;
+void WorldMap::parallelSave() {
+	std::filesystem::path path = "data/saves/" + this->name;
 	if (!std::filesystem::is_directory(path))
 		std::filesystem::create_directory(path);
 	int fileNumber = 0;
-	std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
+	std::string fileName = "data/saves/" + this->name + "/save" + std::to_string(fileNumber) + ".txt";
 	std::ofstream file(fileName, std::ios::out | std::ios::binary);
-	file << std::to_string(this->width) << " " << std::to_string(this->length);
+	file << std::to_string(this->width) << " " << std::to_string(this->length) << " " << std::to_string(this->chunkSize);
 	file.close();
 
-	fileNumber++;
+	//fileNumber++;
 	tbb::task_group g;
-	for (int i = 0; i < 2; ++i) {
-		for (int l = 0; l < 2; ++l) {
-			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
+	int fileIdX = 0;
+	int fileIdY = 0;
+	int chunkNumber = this->length / this->chunkSize;
+	//if (chunkNumber * this->chunkSize < this->length) chunkNumber++;
+	for (int i = 0; i < chunkNumber; ++i) {
+		for (int l = 0; l < chunkNumber; ++l) {
+			std::string fileName = "data/saves/" + this->name + "/save" + std::to_string(fileIdX) + "_" + std::to_string(fileIdY) + ".txt";
 			 
 			g.run([=] {this->saveMapChunk(fileName, i, l) ; });
 
-			fileNumber++;
+			//fileNumber++;
+			fileIdX++;
 		}
+		fileIdY++;
+		fileIdX = 0;
 	}
 	g.wait();
+	this->isChanged = false;
 }
 
 void WorldMap::saveMapChunk(std::string fileName, int i, int l) {
 
 	std::ofstream file(fileName, std::ios::out | std::ios::binary);
-	char currentTile = this->get(Coordinate(i * (this->length / 2), l * (this->width / 2)));
+	int chunkNumber = this->length / this->chunkSize;
+	char currentTile = this->get(Coordinate(i * (this->length / chunkNumber), l * (this->width / chunkNumber)));
 	int currentCount = 0;
-	for (int j = i * (this->length / 2); j < (i + 1) * (this->length / 2); ++j) {
-		for (int k = l * (this->width / 2); k < (l + 1) * (this->length / 2); ++k) {
-			char newTile = this->get(Coordinate(k, j));
+	for (int j = i * (this->length / chunkNumber); j < (i + 1) * (this->length / chunkNumber); ++j) {
+		for (int k = l * (this->width / chunkNumber); k < (l + 1) * (this->length / chunkNumber); ++k) {
+			Coordinate temp(k, j);
+			char newTile = this->get(temp);
 			if (newTile != currentTile) {
 				std::string savedData = std::to_string(currentCount) + " " + currentTile + " ";
 				currentTile = newTile;
@@ -173,6 +208,7 @@ bool WorldMap::load(std::string saveName) {
 		std::ifstream file(fileName, std::ios::out | std::ios::binary);
 		file >> this->length;
 		file >> this->width;
+		file >> this->chunkSize;
 		file.close();
 	}
 	this->loadMap(fileNumber, saveName);
@@ -183,27 +219,34 @@ bool WorldMap::load(std::string saveName) {
 
 void WorldMap::loadMap(int fileNumber, std::string saveName)
 {
-	fileNumber++;
-	for (int i = 0; i < 2; ++i) {
-		for (int l = 0; l < 2; ++l) {
-			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileNumber) + ".txt";
+	//fileNumber++;
+	int fileIdX = 0;
+	int fileIdY = 0;
+	int chunkNumber = this->length / this->chunkSize;
+	for (int i = 0; i < chunkNumber; ++i) {
+		for (int l = 0; l < chunkNumber; ++l) {
+			std::string fileName = "data/saves/" + saveName + "/save" + std::to_string(fileIdX) + "_" + std::to_string(fileIdY) + ".txt";
 			if (std::filesystem::exists(fileName))
 				this->loadMapChunk(fileName, i, l);
 
-			fileNumber++;
+			fileIdX++;
+			//fileNumber++;
 		}
+		fileIdY++;
+		fileIdX = 0;
 	}
 }
 
 void WorldMap::loadMapChunk(std::string fileName, int i, int l)
 {
 	std::ifstream file(fileName, std::ios::out | std::ios::binary);
+	int chunkNumber = this->length / this->chunkSize;
 	char currentTile = '=';
 	int currentCount = 0;
 	file >> currentCount;
 	file >> currentTile;
-	for (int j = i * (this->length / 2); j < (i + 1) * (this->length / 2); ++j) {
-		for (int k = l * (this->width / 2); k < (l + 1) * (this->length / 2); ++k) {
+	for (int j = i * (this->length / chunkNumber); j < (i + 1) * (this->length / chunkNumber); ++j) {
+		for (int k = l * (this->width / chunkNumber); k < (l + 1) * (this->length / chunkNumber); ++k) {
 			if (currentCount != 0) {
 				this->insert(Coordinate(k, j), currentTile);
 				currentCount--;
@@ -218,17 +261,13 @@ void WorldMap::loadMapChunk(std::string fileName, int i, int l)
 		}
 	}
 	file.close();
-	/*std::ifstream file(fileName, std::ios::out | std::ios::binary);
-	while (!file.eof()) {
-		int x;
-		int y;
-		char tile;
-		file >> x;
-		file >> y;
-		file >> tile;
-		this->insert(Coordinate(x, y), tile);
-	}
-	file.close();*/
+}
+
+std::string WorldMap::getChunkId(Coordinate coord)
+{
+	int chunkX = coord.x / this->chunkSize;
+	int chunkY = coord.y / this->chunkSize;
+	return std::to_string(chunkX) + std::to_string(chunkY);
 }
 
 

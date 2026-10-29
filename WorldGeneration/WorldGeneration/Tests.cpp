@@ -5,7 +5,6 @@
 #include <tbb/tick_count.h>
 #include "ParallelPlayer.h"
 #include "VectorMap.h"
-#include "ArrayMap.h"
 
 void Tests::ParallelGenerationTest(int n) {
 
@@ -49,16 +48,8 @@ void Tests::VectorGenerationTest(int n) {
     if (n <= 200)
         std::cout << parallelMap << std::endl;
 
-    std::cout << "------------------------------------------------" << std::endl;
-    std::cout << "Starting array generation" << std::endl;
-    startTime = tbb::tick_count::now();
-    ArrayMap arrayMap = ArrayMap(n, n);
-    arrayMap.GenerateFourIslandMap();
-    endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Array time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-    if (n <= 200)
-        std::cout << arrayMap << std::endl;
+
+    
 
     std::cout << "------------------------------------------------" << std::endl;
     std::cout << "Starting vector generation" << std::endl;
@@ -132,11 +123,17 @@ void Tests::ParallelViewTest(int n) {
     std::cout << "Setting up..." << std::endl;
     WorldMap map = WorldMap(200, 200);
     map.GenerateFourIslandMap();
-    Player serialPlayer(Coordinate(50, 50), map, n);
+    map.name = "serialView";
+    map.save();
+    ChunkedMap playMapSerial = ChunkedMap(200, 200, "serialView");
+    Player serialPlayer(Coordinate(50, 50), playMapSerial, n);
 
     ParallelWorldMap parallelMap = ParallelWorldMap(200, 200);
     parallelMap.GenerateFourIslandMap();
-    ParallelPlayer parallelPlayer(Coordinate(50, 50), parallelMap, n);
+    parallelMap.name = "parallelView";
+    parallelMap.save();
+    ChunkedMap playMapParallel = ChunkedMap(200, 200, "parallelView");
+    ParallelPlayer parallelPlayer(Coordinate(50, 50), playMapParallel, n);
 
     std::cout << "Generated view size " << n << "*" << n << std::endl;
     std::cout << "------------------------------------------------" << std::endl;
@@ -178,7 +175,8 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
 
     std::cout << "Starting parallel save" << std::endl;
     startTime = tbb::tick_count::now();
-    parallelMap.save(fileName + "ParallelSave");
+    parallelMap.name = fileName + "ParallelSave";
+    parallelMap.save();
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Parallel saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
@@ -216,7 +214,8 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
 
     std::cout << "Starting vector save" << std::endl;
     startTime = tbb::tick_count::now();
-    vectorMap.save(fileName + "VectorSave");
+    vectorMap.name = fileName + "VectorSave";
+    vectorMap.save();
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Vector saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
@@ -236,46 +235,6 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
     if (n <= 200)
         std::cout << vectorMap;
 
-    std::cout << "------------------------------------------------" << std::endl;
-
-    std::cout << "Starting array generation" << std::endl;
-    startTime = tbb::tick_count::now();
-    ArrayMap arrayMap = ArrayMap(n, n);
-    arrayMap.GenerateFourIslandMap();
-    endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Array generation time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-
-    if (n <= 200)
-        std::cout << arrayMap;
-
-    std::cout << "------------------------------------------------" << std::endl;
-
-    std::cout << "Starting array save" << std::endl;
-    startTime = tbb::tick_count::now();
-    arrayMap.save(fileName + "ArraySave");
-    endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Array saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-
-    arrayMap = ArrayMap(n, n);
-    std::cout << "Starting array load" << std::endl;
-    startTime = tbb::tick_count::now();
-    success = arrayMap.load(fileName + "ArraySave");
-    endTime = tbb::tick_count::now();
-    std::cout << "done\n";
-    std::cout << "Array loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
-
-    if (success)
-        std::cout << "File loading succeded" << std::endl;
-    else
-        std::cout << "File loading failed" << std::endl;
-    if (n <= 200)
-        std::cout << arrayMap;
-
-    std::cout << "------------------------------------------------" << std::endl;
-
-
     std::cout << "Starting serial generation" << std::endl;
     startTime = tbb::tick_count::now();
     WorldMap map = WorldMap(n, n);
@@ -291,7 +250,8 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
 
     std::cout << "Starting serial save" << std::endl;
     startTime = tbb::tick_count::now();
-    map.save(fileName + "SerialSave");
+    map.name = fileName + "SerialSave";
+    map.save();
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Serial saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
@@ -311,18 +271,6 @@ void Tests::SaveWorldToFileTest(int n, std::string fileName) {
     if (n <= 200)
         std::cout << map;
 
-    std::cout << "------------------------------------------------" << std::endl;
-
-    Player serialPlayer(Coordinate(17, 23), map, n);
-    serialPlayer.save(fileName + "PlayerSave");
-
-    Player newPlayer(Coordinate(0, 0), map, n);
-    newPlayer.load(fileName + "PlayerSave");
-
-    if (serialPlayer.currentCoordinate.x != newPlayer.currentCoordinate.x || serialPlayer.currentCoordinate.y != newPlayer.currentCoordinate.y)
-        std::cout << "Player save failed\n";
-    else
-        std::cout << "Player save succeeded\n";
 }
 
 void Tests::SaveWorldToFileTestSerial(int n, std::string fileName)
@@ -346,7 +294,8 @@ void Tests::SaveWorldToFileTestSerial(int n, std::string fileName)
 
     std::cout << "Starting serial save" << std::endl;
     startTime = tbb::tick_count::now();
-    map.save(fileName);
+    map.name = fileName;
+    map.save();
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Serial saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
@@ -370,7 +319,8 @@ void Tests::SaveWorldToFileTestSerial(int n, std::string fileName)
 
     std::cout << "Starting serial parallel save" << std::endl;
     startTime = tbb::tick_count::now();
-    map.parallelSave(fileName + "Parallel");
+    map.name = fileName + "Parallel";
+    map.parallelSave();
     endTime = tbb::tick_count::now();
     std::cout << "done\n";
     std::cout << "Serial parallel saving time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
@@ -406,4 +356,103 @@ void Tests::BatchTests(int islandSize, int viewSize, std::string fileName) {
     SaveWorldToFileTest(islandSize, "testFile");
     std::cout << "Finished save tests" << std::endl;
     std::cout << "====================================================================" << std::endl;
+}
+
+void Tests::ChunkTest(int islandSize, int viewSize, std::string fileName)
+{
+    VectorMap map = VectorMap(islandSize, islandSize);
+    map.calculateChunkSize();
+    map.name = fileName;
+    std::cout << "Generating..." << std::endl;
+    map.GenerateFourIslandMap();
+    std::cout << "Saving..." << std::endl;
+    map.parallelSave();
+
+    ChunkedMap chunks = ChunkedMap(islandSize, islandSize, fileName);
+
+    ParallelPlayer testPlayer = ParallelPlayer(Coordinate(islandSize-1, islandSize-1), chunks, 20);
+    std::cout << "Loading chunks..." << std::endl;
+    tbb::tick_count startTime = tbb::tick_count::now();
+    testPlayer.world.load(testPlayer.world.getChunkId(testPlayer.currentCoordinate));
+    tbb::tick_count endTime = tbb::tick_count::now();
+    std::cout << "4 chunks loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+    
+    if (testPlayer.world.chunks.size() != 4) {
+        std::cout << testPlayer.world.chunks.size() << std::endl;
+        std::cout << "Unexpected amount of chunks loaded!" << std::endl;
+        for (auto i = testPlayer.world.chunks.begin(); i != testPlayer.world.chunks.end(); i++) {
+            std::cout << i->first << std::endl;
+        }
+        std::cout << "Current coordinate: " << testPlayer.currentCoordinate << std::endl;
+        std::cout << "Current chunk: " << testPlayer.world.getChunkId(testPlayer.currentCoordinate) << std::endl;
+        std::cout << "Chunk size: " << testPlayer.world.chunkSize << std::endl;
+        return;
+    }
+    std::cout << "Pass" << std::endl;
+    std::cout << "Moving..." << std::endl;
+    for (int i = 0; i < 10; i++) {
+        testPlayer.world.increaseChunkUse();
+        testPlayer.getViewWithShadows();
+        testPlayer.cleanUpView();
+        testPlayer.world.cleanUnusedChunks(testPlayer.currentCoordinate);
+        testPlayer.moveDown();
+        testPlayer.moveRight();
+    }
+   
+    if (testPlayer.world.chunks.size() != 1) {
+        std::cout << testPlayer.world.chunks.size() << std::endl;
+        std::cout << "Unexpected amount of chunks loaded!" << std::endl;
+        for (auto i = testPlayer.world.chunkUse.begin(); i != testPlayer.world.chunkUse.end(); i++) {
+            std::cout << i->first << 
+                " use:" << i->second <<  
+                " distance:" << testPlayer.world.calculateDistance(testPlayer.currentCoordinate, i->first) 
+                << std::endl;
+        }
+        return;
+    }
+
+    std::cout << "Success!" << std::endl;
+    return;
+}
+
+void Tests::ChunkSpeedTest(int islandSize, int viewSize, std::string fileName)
+{
+    VectorMap* map = new VectorMap(islandSize, islandSize);
+    (*map).calculateChunkSize();
+    (*map).name = fileName;
+    std::cout << "Generating..." << std::endl;
+    (*map).GenerateFourIslandMap();
+    std::cout << "Saving..." << std::endl;
+    (*map).parallelSave();
+    delete map;
+
+    VectorMap newMap = VectorMap(islandSize, islandSize);
+    newMap.name = fileName;
+    
+    std::cout << "Regular load..." << std::endl;
+    tbb::tick_count startTime = tbb::tick_count::now();
+    newMap.load(fileName);
+    tbb::tick_count endTime = tbb::tick_count::now();
+    std::cout << "Regular loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    ChunkedMap chunks = ChunkedMap(islandSize, islandSize, fileName);
+
+    ParallelPlayer testPlayer = ParallelPlayer(Coordinate(islandSize/2, islandSize/2), chunks, 20);
+    std::cout << "Loading chunks..." << std::endl;
+    startTime = tbb::tick_count::now();
+    testPlayer.world.load(testPlayer.world.getChunkId(testPlayer.currentCoordinate));
+    endTime = tbb::tick_count::now();
+    std::cout << "Chunked loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+
+    testPlayer.currentCoordinate = Coordinate(testPlayer.currentCoordinate.x + (2*testPlayer.world.chunkSize),
+        testPlayer.currentCoordinate.y + (2*testPlayer.world.chunkSize));
+    std::cout << "Loading new chunks..." << std::endl;
+    startTime = tbb::tick_count::now();
+    //testPlayer.world.load(testPlayer.world.getChunkId(testPlayer.currentCoordinate));
+    testPlayer.world.increaseChunkUse();
+    testPlayer.getViewWithShadows();
+    testPlayer.cleanUpView();
+    testPlayer.world.cleanUnusedChunks(testPlayer.currentCoordinate);
+    endTime = tbb::tick_count::now();
+    std::cout << "Move loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
 }

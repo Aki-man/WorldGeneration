@@ -1,4 +1,5 @@
 #include "coordinate.h"
+#include <ostream>
 
 Coordinate::~Coordinate()
 {
@@ -28,5 +29,11 @@ bool Coordinate::operator<(const Coordinate coord) const
 	else {
 		return false;
 	}
+}
+
+std::ostream& operator<<(std::ostream& os, const Coordinate& coord)
+{
+	os << "x:" << coord.x << " y:" << coord.y;
+	return os;
 }
 

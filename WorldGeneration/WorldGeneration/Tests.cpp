@@ -357,3 +357,60 @@ void Tests::BatchTests(int islandSize, int viewSize, std::string fileName) {
     std::cout << "Finished save tests" << std::endl;
     std::cout << "====================================================================" << std::endl;
 }
+
+void Tests::ChunkTest(int islandSize, int viewSize, std::string fileName)
+{
+    VectorMap map = VectorMap(islandSize, islandSize);
+    map.calculateChunkSize();
+    map.name = fileName;
+    std::cout << "Generating..." << std::endl;
+    map.GenerateFourIslandMap();
+    std::cout << "Saving..." << std::endl;
+    map.parallelSave();
+
+    ChunkedMap chunks = ChunkedMap(islandSize, islandSize, fileName);
+
+    ParallelPlayer testPlayer = ParallelPlayer(Coordinate(islandSize-1, islandSize-1), chunks, 20);
+    std::cout << "Loading chunks..." << std::endl;
+    tbb::tick_count startTime = tbb::tick_count::now();
+    testPlayer.world.load(testPlayer.world.getChunkId(testPlayer.currentCoordinate));
+    tbb::tick_count endTime = tbb::tick_count::now();
+    std::cout << "4 chunks loading time: \t\t\t" << (endTime - startTime).seconds() << " seconds\n";
+    
+    if (testPlayer.world.chunks.size() != 4) {
+        std::cout << testPlayer.world.chunks.size() << std::endl;
+        std::cout << "Unexpected amount of chunks loaded!" << std::endl;
+        for (auto i = testPlayer.world.chunks.begin(); i != testPlayer.world.chunks.end(); i++) {
+            std::cout << i->first << std::endl;
+        }
+        std::cout << "Current coordinate: " << testPlayer.currentCoordinate << std::endl;
+        std::cout << "Current chunk: " << testPlayer.world.getChunkId(testPlayer.currentCoordinate) << std::endl;
+        std::cout << "Chunk size: " << testPlayer.world.chunkSize << std::endl;
+        return;
+    }
+    std::cout << "Pass" << std::endl;
+    std::cout << "Moving..." << std::endl;
+    for (int i = 0; i < 10; i++) {
+        testPlayer.world.increaseChunkUse();
+        testPlayer.getViewWithShadows();
+        testPlayer.cleanUpView();
+        testPlayer.world.cleanUnusedChunks(testPlayer.currentCoordinate);
+        testPlayer.moveDown();
+        testPlayer.moveRight();
+    }
+   
+    if (testPlayer.world.chunks.size() != 1) {
+        std::cout << testPlayer.world.chunks.size() << std::endl;
+        std::cout << "Unexpected amount of chunks loaded!" << std::endl;
+        for (auto i = testPlayer.world.chunkUse.begin(); i != testPlayer.world.chunkUse.end(); i++) {
+            std::cout << i->first << 
+                " use:" << i->second <<  
+                " distance:" << testPlayer.world.calculateDistance(testPlayer.currentCoordinate, i->first) 
+                << std::endl;
+        }
+        return;
+    }
+
+    std::cout << "Success!" << std::endl;
+    return;
+}

@@ -242,6 +242,7 @@ void Menu::testsMenu() {
         std::cout << "4: Run one island generation tests" << std::endl;
         std::cout << "5: Run all tests" << std::endl;
         std::cout << "6: Run serial save tests" << std::endl;
+        std::cout << "7: Run chunk tests" << std::endl;
 
         std::string userInput = "";
         std::cin >> userInput;
@@ -307,6 +308,12 @@ void Menu::testsMenu() {
 
             system("cls");
             Tests::SaveWorldToFileTestSerial(sizeInput, "testFile");
+            std::cout << "Enter any key to continue" << std::endl;
+            std::cin >> userInput;
+        }
+        else if (userInput == "7") {
+            system("cls");
+            Tests::ChunkTest(2000, 20, "chunkTest");
             std::cout << "Enter any key to continue" << std::endl;
             std::cin >> userInput;
         }

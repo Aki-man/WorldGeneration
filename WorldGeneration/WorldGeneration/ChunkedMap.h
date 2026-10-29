@@ -27,6 +27,7 @@ public:
 	bool loadChunk(Coordinate chunkID);
 	bool loadAllAdjacentChunks(Coordinate chunkID);
 	bool load(Coordinate playerCoordinate);
+	int calculateDistance(Coordinate currentCoordinate, Coordinate chunkID);
 	void cleanUnusedChunks(Coordinate currentCoordinate);
 	void unloadChunk(Coordinate chunkID);
 };

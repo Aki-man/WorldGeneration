@@ -1,4 +1,5 @@
 #pragma once
+#include <ostream>
 
 struct Coordinate {
 	int x;
@@ -8,4 +9,5 @@ struct Coordinate {
 	~Coordinate();
 	bool operator==(const Coordinate& coord) const;
 	bool operator<(const Coordinate coord) const;
+	friend std::ostream& operator<<(std::ostream& os, const Coordinate& coord);
 };

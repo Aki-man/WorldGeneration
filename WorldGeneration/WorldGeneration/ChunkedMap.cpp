@@ -108,15 +108,23 @@ bool ChunkedMap::load(Coordinate playerCoordinate)
 	this->loadAllAdjacentChunks(this->getChunkId(playerCoordinate));
 }
 
+int ChunkedMap::calculateDistance(Coordinate currentCoordinate, Coordinate chunkID)
+{
+	int dx = std::max((chunkID.x * this->chunkSize) - currentCoordinate.x, currentCoordinate.x - ((chunkID.x + 1) * this->chunkSize));
+	int dy = std::max((chunkID.y * this->chunkSize) - currentCoordinate.y, currentCoordinate.y - ((chunkID.y + 1) * this->chunkSize));
+	return std::sqrt(pow(dx, 2) + pow(dy, 2));
+}
+
 void ChunkedMap::cleanUnusedChunks(Coordinate currentCoordinate)
 {
 	std::vector<Coordinate> erasedChunks = std::vector<Coordinate>();
 	for (auto it = this->chunkUse.begin(); it != this->chunkUse.end(); ++it) {
 		if (it->second >= 10) {
 			
-			int dx = std::max((it->first.x*this->chunkSize) - currentCoordinate.x,currentCoordinate.x - ((it->first.x+1) * this->chunkSize));
-			int dy = std::max((it->first.y*this->chunkSize) - currentCoordinate.y, currentCoordinate.y - ((it->first.y+1) * this->chunkSize));
-			int distance = std::sqrt(pow(dx, 2) + pow(dy, 2));
+			//int dx = std::max((it->first.x*this->chunkSize) - currentCoordinate.x,currentCoordinate.x - ((it->first.x+1) * this->chunkSize));
+			//int dy = std::max((it->first.y*this->chunkSize) - currentCoordinate.y, currentCoordinate.y - ((it->first.y+1) * this->chunkSize));
+			//int distance = std::sqrt(pow(dx, 2) + pow(dy, 2));
+			int distance = this->calculateDistance(currentCoordinate, it->first);
 			if (distance > this->chunkSize) {
 				this->chunks.erase(it->first);
 				erasedChunks.push_back(it->first);

@@ -2,6 +2,8 @@
 #include <filesystem>
 #include <fstream>
 #include <cmath>
+#include <iostream>
+#include "TileColorMap.h"
 
 Coordinate ChunkedMap::getChunkId(Coordinate coord)
 {
@@ -138,4 +140,54 @@ void ChunkedMap::cleanUnusedChunks(Coordinate currentCoordinate)
 void ChunkedMap::unloadChunk(Coordinate chunkID)
 {
 	this->chunks.erase(chunkID);
+}
+
+char ChunkedMap::getChunkMajorityTile(Coordinate chunkID)
+{
+	std::string fileName = "data/saves/" + this->name + "/save"
+		+ std::to_string(chunkID.x) + "_" + std::to_string(chunkID.y) + ".txt";
+	if (std::filesystem::exists(fileName) == false)
+		return '/';
+	std::ifstream file(fileName, std::ios::out | std::ios::binary);
+	std::unordered_map<char, int> tileCount = std::unordered_map<char, int>();
+	char tile = '/';
+	int count = 0;
+	while (!file.eof()) {
+		file >> count;
+		file >> tile;
+		if (tileCount.contains(tile)) {
+			tileCount[tile] = tileCount.at(tile) + count;
+		}
+		else {
+			tileCount[tile] = count;
+		}
+	}
+	int maxCount = 0;
+	char maxTile = '/';
+	for (auto it = tileCount.begin(); it != tileCount.end(); it++) {
+		if (it->second > maxCount) {
+			maxCount = it->second;
+			maxTile = it->first;
+		}
+	}
+	return maxTile;
+}
+
+void ChunkedMap::printLarge(Coordinate currentCoordinate)
+{
+	int numberOfChunks = this->width / this->chunkSize;
+	TileColorMap colors = TileColorMap();
+	for (int i = 0; i < numberOfChunks; i++) {
+		for (int j = 0; j < numberOfChunks; j++) {
+			char temp = '/';
+			if (this->getChunkId(currentCoordinate) == Coordinate(j, i))
+				temp = '*';
+			else {
+				temp = this->getChunkMajorityTile(Coordinate(j, i));
+			}
+			std::cout << colors.get(temp);
+			std::cout << temp;
+		}
+		std::cout << std::endl;
+	}
 }

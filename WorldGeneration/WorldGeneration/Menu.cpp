@@ -92,6 +92,11 @@ void Menu::ParallelPlayerMenu(std::string name, ParallelPlayer& newPlayer) {
             newPlayer.currentCoordinate = Coordinate(newPlayer.currentCoordinate.x, newPlayer.currentCoordinate.y - 50);
         else if (entry == "sj")
             newPlayer.currentCoordinate = Coordinate(newPlayer.currentCoordinate.x, newPlayer.currentCoordinate.y + 50);
+        else if (entry == "m") {
+            newPlayer.world.printLarge(newPlayer.currentCoordinate);
+            std::cin >> entry;
+        }
+            
         else
             continue;
         system("cls");

@@ -30,4 +30,6 @@ public:
 	int calculateDistance(Coordinate currentCoordinate, Coordinate chunkID);
 	void cleanUnusedChunks(Coordinate currentCoordinate);
 	void unloadChunk(Coordinate chunkID);
+	char getChunkMajorityTile(Coordinate chunkID);
+	void printLarge(Coordinate currentCoordinate);
 };

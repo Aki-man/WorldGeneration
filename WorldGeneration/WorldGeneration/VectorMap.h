@@ -14,5 +14,5 @@ public:
 	bool contains(Coordinate coord) override;
 	void GenerateOneIslandMap() override;
 	void GenerateFourIslandMap() override;
-	void GenerateNIslandMap(int n, int startX, int width, int startY, int length);
+	void GenerateNIslandMap(int n, int startX, int endX, int startY, int endY);
 };

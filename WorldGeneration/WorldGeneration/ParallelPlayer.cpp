@@ -1,4 +1,5 @@
 #include "ParallelPlayer.h"
+#include "TileColorMap.h"
 
 void ParallelPlayer::getViewWithShadows()
 {
@@ -191,6 +192,7 @@ bool ParallelPlayer::isAdjacent(Coordinate coord, char tile)
 std::ostream& operator<<(std::ostream& out, ParallelPlayer& player)
 {
 	Coordinate startingCoordinate = Coordinate(player.currentCoordinate.x - player.viewSize, player.currentCoordinate.y - player.viewSize);
+	TileColorMap colors = TileColorMap();
 	for (int i = 0; i <= player.viewSize * 2; ++i) {
 		for (int j = 0; j <= player.viewSize * 2; ++j) {
 			Coordinate viewedCoordinate = Coordinate(startingCoordinate.x + j, startingCoordinate.y + i);
@@ -202,24 +204,8 @@ std::ostream& operator<<(std::ostream& out, ParallelPlayer& player)
 			}
 			else
 				temp = a->second;
-			if (temp == 'O') {
-				out << "\033[32m";
-			}
-			else if (temp == 'T') {
-				out << "\033[38;5;22m";
-			}
-			else if (temp == '~' || temp == 'L' || temp == 'R') {
-				out << "\033[34m";
-			}
-			else if (temp == 'C') {
-				out << "\033[33m";
-			}
-			else if (temp == '*') {
-				out << "\033[31m";
-			}
-			else {
-				out << "\x1b[0m";
-			}
+			
+			out << colors.get(temp);
 			out << temp;
 		}
 

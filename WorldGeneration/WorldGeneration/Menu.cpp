@@ -195,7 +195,7 @@ void Menu::generateNewIslandMenu(std::string name) {
             VectorMap* pmap = new VectorMap(size, size);
 
             (*pmap).calculateChunkSize();
-            (*pmap).GenerateNIslandMap(4);
+            (*pmap).GenerateNIslandMap(4, 0, size, 0, size);
             (*pmap).name = name;
             (*pmap).parallelSave();
             if(size < 1000)

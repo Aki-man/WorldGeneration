@@ -124,7 +124,7 @@ void IslandGenerator::secondPass() {
 	bool riverGenerated = false;
 	for (int i = startLength; i < endLength; ++i) {
 		for (int j = startWidth; j < endWidth; ++j) {
-			Coordinate coord(i, j);
+			Coordinate coord(j, i);
 			char tile = this->get(coord);
 			if (this->isAdjacentTo(coord, '~') && tile != '~' && tile != 'R' && tile != 'M') {
 				

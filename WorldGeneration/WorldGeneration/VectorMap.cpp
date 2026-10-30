@@ -43,18 +43,10 @@ void VectorMap::GenerateFourIslandMap()
 {
 	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);
 	VectorIslandGenerator generatorOne(nullptr, &this->vectorWorldMap,0, this->width / 2, 0, this->length / 2, this->width,config);
-	//generatorOne.generateIsland();
 	VectorIslandGenerator generatorTwo(nullptr, &this->vectorWorldMap, this->width / 2, this->width, 0, this->length / 2, this->width,config);
-	//generatorTwo.generateIsland();
 	VectorIslandGenerator generatorThree(nullptr, &this->vectorWorldMap,0, this->width / 2, this->length / 2, this->length, this->width, config);
-	//generatorThree.generateIsland();
 	VectorIslandGenerator generatorFour(nullptr, &this->vectorWorldMap,this->width / 2, this->width, this->length / 2, this->length, this->width,config);
-	//generatorFour.generateIsland();
 
-	/*generatorOne.secondPass();
-	generatorTwo.secondPass();
-	generatorThree.secondPass();
-	generatorFour.secondPass();*/
 	tbb::task_group g;
 	g.run([&] {generatorOne.generateIsland(); });
 	g.run([&] {generatorTwo.generateIsland(); });
@@ -73,19 +65,27 @@ void VectorMap::GenerateFourIslandMap()
 	this->isChanged = true;
 }
 
-void VectorMap::GenerateNIslandMap(int n)
+void VectorMap::GenerateNIslandMap(int n, int startX, int width, int startY, int length)
 {
-	std::uniform_int_distribution<int> partitionGenerator(this->length/6, this->length - (this->length/6));
-	std::random_device rd = std::random_device();
-	int y1 = partitionGenerator(rd);
-	int y2 = partitionGenerator(rd);
-	int x1 = partitionGenerator(rd);
+	std::uniform_int_distribution<int> XpartitionGenerator(startX + width/6, (startX+width) - (width/6));
+	std::uniform_int_distribution<int> YpartitionGenerator(startY + length / 6, (startY + length) - (length / 6));
 
-	IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(this->length / 2, this->width / 2);
-	VectorIslandGenerator generatorOne(nullptr, &this->vectorWorldMap, 0, x1, 0, y1, this->width, config);
-	VectorIslandGenerator generatorTwo(nullptr, &this->vectorWorldMap, x1, this->width, 0, y2, this->width, config);
-	VectorIslandGenerator generatorThree(nullptr, &this->vectorWorldMap, 0, x1, y1, this->length, this->width, config);
-	VectorIslandGenerator generatorFour(nullptr, &this->vectorWorldMap, x1, this->width, y2, this->length, this->width, config);
+	std::random_device rd = std::random_device();
+	int y1 = YpartitionGenerator(rd);
+	int y2 = YpartitionGenerator(rd);
+	int x1 = XpartitionGenerator(rd);
+
+	IslandGeneratorConfiguration config1 = IslandGeneratorConfiguration::generateConfiguration(y1 - startY, x1 - startX);
+	IslandGeneratorConfiguration config2 = IslandGeneratorConfiguration::generateConfiguration(y2 - startY, (startX + width) - x1);
+	IslandGeneratorConfiguration config3 = IslandGeneratorConfiguration::generateConfiguration((startY + length) - y1 , x1 - startX);
+	IslandGeneratorConfiguration config4 = IslandGeneratorConfiguration::generateConfiguration((startY + length) - y2, (startX + width) - x1);
+
+
+
+	VectorIslandGenerator generatorOne(nullptr, &this->vectorWorldMap, startX, x1, startY, y1, this->width, config1);
+	VectorIslandGenerator generatorTwo(nullptr, &this->vectorWorldMap, x1, startX + width, startY, y2, this->width, config2);
+	VectorIslandGenerator generatorThree(nullptr, &this->vectorWorldMap, startX, x1, y1, startY + length, this->width, config3);
+	VectorIslandGenerator generatorFour(nullptr, &this->vectorWorldMap, x1, startX + width, y2, startY + length, this->width, config4);
 	
 
 	tbb::task_group g;

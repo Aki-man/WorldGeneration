@@ -7,12 +7,12 @@ class VectorMap : public WorldMap{
 public:
 	std::vector<char> vectorWorldMap;
 	VectorMap() : WorldMap(), vectorWorldMap(std::vector<char>()) {};
-	VectorMap(int width, int length) : WorldMap(width, length), vectorWorldMap(std::vector<char>(width*length)) {};
+	VectorMap(int width, int length) : WorldMap(width, length), vectorWorldMap(std::vector<char>(width*length, '~')) {};
 	~VectorMap();
 	char get(Coordinate coord) override;
 	void insert(Coordinate coord, char tile) override;
 	bool contains(Coordinate coord) override;
 	void GenerateOneIslandMap() override;
 	void GenerateFourIslandMap() override;
-	void GenerateNIslandMap(int n);
+	void GenerateNIslandMap(int n, int startX, int width, int startY, int length);
 };

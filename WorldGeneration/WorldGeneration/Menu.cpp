@@ -107,6 +107,7 @@ void Menu::generateNewIslandMenu(std::string name) {
         std::cout << "2: Generate a serial one island map" << std::endl;
         std::cout << "3: Generate a parallel four island map" << std::endl;
         std::cout << "4: Generate a parallel one island map" << std::endl;
+        std::cout << "5: Generate n island map" << std::endl;
 
         std::string userInput = "";
         std::cin >> userInput;
@@ -179,6 +180,20 @@ void Menu::generateNewIslandMenu(std::string name) {
             (*pmap).GenerateOneIslandMap();
             (*pmap).name = name;
             (*pmap).parallelSave();
+            delete pmap;
+            ChunkedMap playMap = ChunkedMap(size, size, name);
+            ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
+            newPlayer.save(name);
+            ParallelPlayerMenu(name, newPlayer);
+        }
+        else if (userInput == "5") {
+            VectorMap* pmap = new VectorMap(size, size);
+
+            (*pmap).calculateChunkSize();
+            (*pmap).GenerateNIslandMap(4);
+            (*pmap).name = name;
+            (*pmap).parallelSave();
+            std::cout << (*pmap);
             delete pmap;
             ChunkedMap playMap = ChunkedMap(size, size, name);
             ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), playMap, 20);

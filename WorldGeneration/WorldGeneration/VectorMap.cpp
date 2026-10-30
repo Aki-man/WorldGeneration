@@ -85,14 +85,15 @@ void VectorMap::GenerateNIslandMap(int n, int startX, int width, int startY, int
 	VectorIslandGenerator generatorOne(nullptr, &this->vectorWorldMap, startX, x1, startY, y1, this->width, config1);
 	VectorIslandGenerator generatorTwo(nullptr, &this->vectorWorldMap, x1, startX + width, startY, y2, this->width, config2);
 	VectorIslandGenerator generatorThree(nullptr, &this->vectorWorldMap, startX, x1, y1, startY + length, this->width, config3);
-	VectorIslandGenerator generatorFour(nullptr, &this->vectorWorldMap, x1, startX + width, y2, startY + length, this->width, config4);
-	
+	//VectorIslandGenerator generatorFour(nullptr, &this->vectorWorldMap, x1, startX + width, y2, startY + length, this->width, config4);
+	if (n > 0)
+		this->GenerateNIslandMap(0, x1, (startX + width) - x1, y2, (startY + length) - y2);
 
 	tbb::task_group g;
 	g.run([&] {generatorOne.generateIsland(); });
 	g.run([&] {generatorTwo.generateIsland(); });
 	g.run([&] {generatorThree.generateIsland(); });
-	g.run([&] {generatorFour.generateIsland(); });
+	//g.run([&] {generatorFour.generateIsland(); });
 	g.wait();
 
 	tbb::task_group g2;
@@ -100,7 +101,7 @@ void VectorMap::GenerateNIslandMap(int n, int startX, int width, int startY, int
 	g2.run([&] {generatorOne.secondPass(); });
 	g2.run([&] {generatorTwo.secondPass(); });
 	g2.run([&] {generatorThree.secondPass(); });
-	g2.run([&] {generatorFour.secondPass(); });
+	//g2.run([&] {generatorFour.secondPass(); });
 
 	g2.wait();
 	this->isChanged = true;

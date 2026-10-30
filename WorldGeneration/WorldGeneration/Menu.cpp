@@ -193,7 +193,8 @@ void Menu::generateNewIslandMenu(std::string name) {
             (*pmap).GenerateNIslandMap(4);
             (*pmap).name = name;
             (*pmap).parallelSave();
-            std::cout << (*pmap);
+            if(size < 1000)
+                std::cout << (*pmap);
             delete pmap;
             ChunkedMap playMap = ChunkedMap(size, size, name);
             ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), playMap, 20);

@@ -19,7 +19,6 @@ void ChunkedMap::increaseChunkUse()
 
 char ChunkedMap::get(Coordinate coord)
 {
-
     Coordinate id = this->getChunkId(coord);
 	this->chunkUse[id] = 0;
     int offsetX = coord.x - (id.x*this->chunkSize);
@@ -38,6 +37,8 @@ void ChunkedMap::insert(Coordinate coord, char tile)
 
 bool ChunkedMap::contains(Coordinate coord)
 {
+	if (coord.x < 0 || coord.x > this->width || coord.y < 0 || coord.y > this->length)
+		return false;
     Coordinate id = this->getChunkId(coord);
 	if (this->chunks.contains(id))
 		return true;

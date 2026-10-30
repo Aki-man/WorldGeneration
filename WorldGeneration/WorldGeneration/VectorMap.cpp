@@ -2,6 +2,7 @@
 #include "IslandGeneratorConfiguration.h"
 #include "VectorIslandGenerator.h"
 #include <tbb/parallel_for.h>
+#include "Square.h"
 
 VectorMap::~VectorMap()
 {
@@ -72,42 +73,71 @@ void VectorMap::GenerateNIslandMap(int n, int startX, int endX, int startY, int 
 	std::uniform_int_distribution<int> XpartitionGenerator(startX + width/6, (endX) - (width/6));
 	std::uniform_int_distribution<int> YpartitionGenerator(startY + length / 6, (endY) - (length / 6));
 
+	int recursionNumber = n / 4;
 	std::random_device rd = std::random_device();
 	int x1 = XpartitionGenerator(rd);
 	int y1 = YpartitionGenerator(rd);
 	int y2 = YpartitionGenerator(rd);
-	
 
-	IslandGeneratorConfiguration config1 = IslandGeneratorConfiguration::generateConfiguration(y1 - startY, x1 - startX);
-	IslandGeneratorConfiguration config2 = IslandGeneratorConfiguration::generateConfiguration(y2 - startY, endX - x1);
-	IslandGeneratorConfiguration config3 = IslandGeneratorConfiguration::generateConfiguration(endY - y1 , x1 - startX);
-	IslandGeneratorConfiguration config4 = IslandGeneratorConfiguration::generateConfiguration(endY - y2, endX - x1);
+	std::vector<Square> squares = {
+		Square(startX, x1, startY, y1),
+		Square(x1, endX, startY, y2),
+		Square(startX, x1, y1, endY),
+		Square(x1, endX, y2, endY)
+	};
+	std::vector<VectorIslandGenerator> generators = std::vector<VectorIslandGenerator>();
+	if (n - 4 > 0) {
+		std::uniform_int_distribution<int> randomSquareSelector(0, 3);
+		int recursionSquare = randomSquareSelector(rd);
+		Square selectedSquare = squares[recursionSquare];
+		std::erase(squares, selectedSquare);
 
+		this->GenerateNIslandMap(n - 3, selectedSquare.begin.x, selectedSquare.end.x, selectedSquare.begin.y, selectedSquare.end.y);
+		for (int i = 0; i < 3; i++) {
+			std::uniform_int_distribution<int> randomSquareSelector(0, squares.size() - 1);
+			int recursionSquare = randomSquareSelector(rd);
+			std::cout << "selected: " << recursionSquare << std::endl;
+			Square selectedSquare = squares[recursionSquare];
+			
+			IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(selectedSquare.end.y - selectedSquare.begin.y, selectedSquare.end.x - selectedSquare.begin.x);
+			VectorIslandGenerator generator(nullptr, &this->vectorWorldMap, selectedSquare.begin.x, selectedSquare.end.x, selectedSquare.begin.y, selectedSquare.end.y, this->width, config);
+			generator.generateIsland();
+			generator.secondPass();
+			generators.push_back(generator);
+			std::erase(squares, selectedSquare);
+		}
+	}
+	else {
+		for (int i = 0; i < n; i++) {
+			std::uniform_int_distribution<int> randomSquareSelector(0, squares.size() - 1);
+			
+			int recursionSquare = randomSquareSelector(rd);
+			std::cout << "selected: " << recursionSquare << std::endl;
+			Square selectedSquare = squares[recursionSquare];
+			
 
-
-	VectorIslandGenerator generatorOne(nullptr, &this->vectorWorldMap, startX, x1, startY, y1, this->width, config1);
-	VectorIslandGenerator generatorTwo(nullptr, &this->vectorWorldMap, x1, endX, startY, y2, this->width, config2);
-	VectorIslandGenerator generatorThree(nullptr, &this->vectorWorldMap, startX, x1, y1, endY, this->width, config3);
-	VectorIslandGenerator generatorFour(nullptr, &this->vectorWorldMap, x1, endX, y2, endY, this->width, config4);
-	if (n > 0)
-		this->GenerateNIslandMap(0, x1, endX, y2, endY);
-
-	tbb::task_group g;
-	g.run([&] {generatorOne.generateIsland(); });
-	g.run([&] {generatorTwo.generateIsland(); });
-	g.run([&] {generatorThree.generateIsland(); });
-	if(n == 0)
-		g.run([&] {generatorFour.generateIsland(); });
+			IslandGeneratorConfiguration config = IslandGeneratorConfiguration::generateConfiguration(selectedSquare.end.y - selectedSquare.begin.y, selectedSquare.end.x - selectedSquare.begin.x);
+			VectorIslandGenerator generator(nullptr, &this->vectorWorldMap, selectedSquare.begin.x, selectedSquare.end.x, selectedSquare.begin.y, selectedSquare.end.y, this->width, config);
+			generator.generateIsland();
+			generator.secondPass();
+			generators.push_back(generator);
+			std::erase(squares, selectedSquare);
+		}
+	}
+	/*tbb::task_group g;
+	for (auto it = generators.begin(); it != generators.end(); it++) {
+		VectorIslandGenerator gen = (*it);
+		g.run([&] {gen.generateIsland(); });
+	}
 	g.wait();
 
 	tbb::task_group g2;
+	for (auto it = generators.begin(); it != generators.end(); it++) {
+		VectorIslandGenerator gen = (*it);
+		g2.run([&] {gen.secondPass(); });
+	}
+	g2.wait();*/
+	std::cout << generators.size() << std::endl;
 
-	g2.run([&] {generatorOne.secondPass(); });
-	g2.run([&] {generatorTwo.secondPass(); });
-	g2.run([&] {generatorThree.secondPass(); });
-	if(n == 0)
-		g2.run([&] {generatorFour.secondPass(); });
-
-	g2.wait();
 	this->isChanged = true;
 }

@@ -148,6 +148,7 @@
     <ClCompile Include="ParallelPlayer.h" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SaveSystemHelper.cpp" />
+    <ClCompile Include="Square.cpp" />
     <ClCompile Include="Tests.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="TileColorMap.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="ParallelSecondPassHelper.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SaveSystemHelper.h" />
+    <ClInclude Include="Square.h" />
     <ClInclude Include="Tests.h" />
     <ClInclude Include="TileColorMap.h" />
     <ClInclude Include="VectorIslandGenerator.h" />

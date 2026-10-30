@@ -17,7 +17,7 @@ void IslandGenerator::generateIsland()
 	std::uniform_int_distribution<int>  startGenerator(0, endWidth - startWidth);
 	std::uniform_int_distribution<int>  lengthGenerator(int((endWidth-startWidth)/6), int((endWidth - startWidth) / 4));
 	std::uniform_int_distribution<int> mountainGenerationStartGenerator(startLength, endLength);
-	
+	std::random_device rd = std::random_device();
 	
 	int mountainStartOfGeneration = mountainGenerationStartGenerator(rd);
 	std::uniform_int_distribution<int> mountainGenerationEndGenerator(mountainStartOfGeneration, endLength);
@@ -33,7 +33,7 @@ void IslandGenerator::generateIsland()
 	bool generateIsland = false;
 	bool generateMountain = false;
 	bool getWider = false;
-	LengthAndStartGenerator lengthAndStartGen(this->startWidth, this->endWidth, this->rd, this->config);
+	LengthAndStartGenerator lengthAndStartGen(this->startWidth, this->endWidth, rd, this->config);
 	for (int i = startLength; i < endLength; ++i) {
 		
 		std::tuple lengthAndStart = lengthAndStartGen.generateIslandLengthAndStart(islandLength, islandStart, i, getWider);
@@ -122,6 +122,7 @@ bool IslandGenerator::contains(Coordinate coord)
 void IslandGenerator::secondPass() {
 	int lakeNumber = config.lakeNumber;
 	bool riverGenerated = false;
+	std::random_device rd = std::random_device();
 	for (int i = startLength; i < endLength; ++i) {
 		for (int j = startWidth; j < endWidth; ++j) {
 			Coordinate coord(j, i);
@@ -170,6 +171,7 @@ void IslandGenerator::generateTileClump(Coordinate coord, int clumpSize, char ti
 	Coordinate(coord.x - 1, coord.y + 1),
 	Coordinate(coord.x + 1, coord.y - 1),
 	Coordinate(coord.x + 1, coord.y + 1) };
+	std::random_device rd = std::random_device();
 	
 	this->replace(coord, tile);
 	std::uniform_int_distribution<int> randomCoordinateSelector(0, coordinatesToConvert.size()-1);
@@ -237,6 +239,7 @@ void IslandGenerator::generateSeaLine(int length)
 void IslandGenerator::generateIslandLine(int island_begin, int island_end, int length)
 {
 	std::uniform_int_distribution<int> forestChanceGenerator(0, config.forestSpawnChance);
+	std::random_device rd = std::random_device();
 	for (int i = startWidth; i < endWidth; ++i) {
 		if (i >= island_begin && i <= island_end) {
 			Coordinate coord(i, length);
@@ -260,6 +263,7 @@ void IslandGenerator::generateIslandLineWithMountain(int island_begin, int islan
 {
 	std::uniform_int_distribution<int> forestChanceGenerator(0, config.forestSpawnChance);
 	std::uniform_int_distribution<int> mountainForestChanceGenerator(0, config.forestSpawnChance + (config.forestSpawnChance*0.25));
+	std::random_device rd = std::random_device();
 	for (int i = startWidth; i < endWidth; ++i) {
 		if (i >= island_begin && i <= island_end) {
 			Coordinate coord(i, length);

@@ -8,18 +8,19 @@
 #include <random>
 
 class IslandGenerator {
-	std::unordered_map<Coordinate, char> *worldMap;
+	std::unordered_map<Coordinate, char>* worldMap;
 protected:
-	
+
 	int startWidth;
 	int endWidth;
 	int startLength;
 	int endLength;
-	std::random_device rd;
+
 	IslandGeneratorConfiguration config;
 public:
 	IslandGenerator(std::unordered_map<Coordinate, char>* worldMap, int startWidth, int endWidth, int startLength, int endLength, IslandGeneratorConfiguration config) :
-		worldMap(worldMap), startWidth(startWidth), endWidth(endWidth), startLength(startLength), endLength(endLength), config(config), rd(std::random_device()){};
+		worldMap(worldMap), startWidth(startWidth), endWidth(endWidth), startLength(startLength), endLength(endLength), config(config) {
+	};
 	~IslandGenerator();
 	void generateIsland();
 	void generateIslandOrIslandWithMountain(int i, int islandLength, int islandStart, int mountainLength, int mountainStart, bool generateIsland, bool generateMountain, bool mountainEndOfGeneration);

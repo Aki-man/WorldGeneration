@@ -96,7 +96,10 @@ void Menu::ParallelPlayerMenu(std::string name, ParallelPlayer& newPlayer) {
             newPlayer.world.printLarge(newPlayer.currentCoordinate);
             std::cin >> entry;
         }
-            
+        else if (entry == "mm") {
+            newPlayer.world.printSmall(newPlayer.currentCoordinate);
+            std::cin >> entry;
+        }
         else
             continue;
         system("cls");

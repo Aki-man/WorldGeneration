@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include "TileColorMap.h"
+#include <tbb/task_group.h>
 
 Coordinate ChunkedMap::getChunkId(Coordinate coord)
 {
@@ -205,4 +206,76 @@ void ChunkedMap::printLarge(Coordinate currentCoordinate)
 
 	std::cout << "Total map size: " << this->length << "x" << this->width << std::endl;
 	std::cout << "Minimap tile size: " << minimapChunkSize << "x" << minimapChunkSize << std::endl;
+}
+
+char ChunkedMap::getSquareMajorityTile(Square sq)
+{
+	std::unordered_map<char, int> tileNum = std::unordered_map<char, int>();
+
+	for (int j = sq.begin.y; j != sq.end.y; j++) {
+		for (int i = sq.begin.x; i != sq.end.x; i++) {
+			char tile = '=';
+			if (!this->contains(Coordinate(i, j)))
+				tile = '/';
+			else
+				tile = this->get(Coordinate(i, j));
+			if (tileNum.contains(tile)) {
+				tileNum[tile] += 1;
+			}
+			else {
+				tileNum[tile] = 1;
+			}
+		}
+	}
+	int maxOccurence = 0;
+	char maxTile = ' ';
+
+	for (auto it = tileNum.begin(); it != tileNum.end(); it++) {
+		if (it->second > maxOccurence) {
+			maxOccurence = it->second;
+			maxTile = it->first;
+		}
+	}
+
+	return maxTile;
+}
+
+void ChunkedMap::printSmall(Coordinate currentCoordinate)
+{
+	static const int MINIMAP_WIDTH = 20;
+	int chunkSize = 5;
+	std::vector<char> minimap = std::vector<char>(MINIMAP_WIDTH * MINIMAP_WIDTH);
+	Square minimapArea = Square(currentCoordinate.x - 50, currentCoordinate.x + 50,
+		currentCoordinate.y - 50, currentCoordinate.y + 50);
+	//#pragma GCC unroll 40
+	for (int i = 0; i < MINIMAP_WIDTH; ++i) {
+		tbb::task_group g;
+		for (int l = 0; l < MINIMAP_WIDTH; ++l) {
+			Square chunk = Square(minimapArea.begin.x + (l*chunkSize),
+				minimapArea.begin.x + ((l + 1) * chunkSize),
+				minimapArea.begin.y + (i * chunkSize),
+				minimapArea.begin.y + ((i + 1) * chunkSize));
+			g.run([&, chunk, i, l] {
+				char tile = this->getSquareMajorityTile(chunk);
+				minimap[i * MINIMAP_WIDTH + l] = tile;
+				});
+		}
+		g.wait();
+	}
+
+	
+	Coordinate playerTile = Coordinate((currentCoordinate.x - minimapArea.begin.x) / chunkSize, (currentCoordinate.y - minimapArea.begin.y) / chunkSize);
+	TileColorMap colors = TileColorMap();
+	for (int i = 0; i < 20; i++) {
+		for (int l = 0; l < 20; l++) {
+			
+			char tile = minimap[i * MINIMAP_WIDTH + l];
+			if (playerTile.x == l && playerTile.y == i)
+				std::cout << colors.get('*');
+			else
+				std::cout << colors.get(tile);
+			std::cout << tile;
+		}
+		std::cout << std::endl;
+	}
 }

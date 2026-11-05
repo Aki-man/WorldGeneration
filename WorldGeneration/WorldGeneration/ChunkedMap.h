@@ -4,6 +4,7 @@
 #include "HashInjection.h"
 #include <unordered_map>
 #include <string>
+#include "Square.h"
 
 class ChunkedMap {
 public:
@@ -32,4 +33,6 @@ public:
 	void unloadChunk(Coordinate chunkID);
 	char getChunkMajorityTile(Coordinate chunkID);
 	void printLarge(Coordinate currentCoordinate);
+	char getSquareMajorityTile(Square square);
+	void printSmall(Coordinate currentCoordinate);
 };

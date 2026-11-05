@@ -305,11 +305,15 @@ void WorldMap::saveMiniMap()
 	int chunkSize = this->length / MINIMAP_WIDTH;
 	std::vector<char> minimap = std::vector<char>(MINIMAP_WIDTH * MINIMAP_WIDTH);
 	for (int i = 0; i < MINIMAP_WIDTH; ++i) {
+		tbb::task_group g;
 		for (int l = 0; l < MINIMAP_WIDTH; ++l) {
 			Square chunk = Square(l * chunkSize, (l + 1) * chunkSize, i * chunkSize, (i + 1) * chunkSize);
-			char tile = this->getSquareMajorityTile(chunk);
-			minimap[i * MINIMAP_WIDTH + l] = tile;
+			g.run([&, chunk, i, l] {
+				char tile = this->getSquareMajorityTile(chunk);
+				minimap[i * MINIMAP_WIDTH + l] = tile;
+			});
 		}
+		g.wait();
 	}
 
 	std::string fileName = "data/saves/" + this->name + "/saveMinimap.txt";

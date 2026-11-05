@@ -270,6 +270,80 @@ std::string WorldMap::getChunkId(Coordinate coord)
 	return std::to_string(chunkX) + std::to_string(chunkY);
 }
 
+char WorldMap::getSquareMajorityTile(Square sq)
+{
+	std::unordered_map<char, int> tileNum = std::unordered_map<char, int>();
+
+	for (int j = sq.begin.y; j != sq.end.y; j++) {
+		for (int i = sq.begin.x; i != sq.end.x; i++) {
+			char tile = this->get(Coordinate(i, j));
+			if (tileNum.contains(tile)) {
+				tileNum[tile] += 1;
+			}
+			else {
+				tileNum[tile] = 1;
+			}
+		}
+	}
+	int maxOccurence = 0;
+	char maxTile = ' ';
+
+	for (auto it = tileNum.begin(); it != tileNum.end(); it++) {
+		if (it->second > maxOccurence) {
+			maxOccurence = it->second;
+			maxTile = it->first;
+		}
+	}
+
+	return maxTile;
+}
+
+void WorldMap::saveMiniMap()
+{
+	//minimap should always be 20x20
+	static const int MINIMAP_WIDTH = 20;
+	int chunkSize = this->length / MINIMAP_WIDTH;
+	std::vector<char> minimap = std::vector<char>(MINIMAP_WIDTH * MINIMAP_WIDTH);
+	for (int i = 0; i < MINIMAP_WIDTH; ++i) {
+		for (int l = 0; l < MINIMAP_WIDTH; ++l) {
+			Square chunk = Square(l * chunkSize, (l + 1) * chunkSize, i * chunkSize, (i + 1) * chunkSize);
+			char tile = this->getSquareMajorityTile(chunk);
+			minimap[i * MINIMAP_WIDTH + l] = tile;
+		}
+	}
+
+	std::string fileName = "data/saves/" + this->name + "/saveMinimap.txt";
+	std::ofstream file(fileName, std::ios::out | std::ios::binary);
+
+	int currentCount = 0;
+	char currentTile = minimap[0];
+
+	for (int i = 0; i < MINIMAP_WIDTH; ++i) {
+		for (int l = 0; l < MINIMAP_WIDTH; ++l) {
+			char data = minimap[i * MINIMAP_WIDTH + l];
+			//std::string data = tile + " ";
+			file << data << " ";
+		}
+		//file << "\n";
+	}
+	file.close();
+	
+	/*for (int i = 0; i < MINIMAP_WIDTH; ++i) {
+		for (int l = 0; l < MINIMAP_WIDTH; ++l) {
+			char newTile = minimap[i * MINIMAP_WIDTH + l];
+			if (newTile != currentTile) {
+				std::string data = currentCount + " " + currentTile;
+				file << data;
+				currentCount = 1;
+				currentTile = newTile;
+			}
+			else {
+				currentCount++;
+			}
+		}
+	}*/
+}
+
 
 std::ostream& operator<<(std::ostream& out, WorldMap& map)
 {

@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include <string>
+#include "Square.h"
 
 class WorldMap {
 protected:
@@ -35,6 +36,8 @@ public:
 	virtual void loadMap(int fileNumber, std::string saveName);
 	void loadMapChunk(std::string fileName, int i, int l);
 	std::string getChunkId(Coordinate coord);
+	char getSquareMajorityTile(Square sq);
+	void saveMiniMap();
 	friend std::ostream& operator<<(std::ostream& out, WorldMap& map);
 	
 };

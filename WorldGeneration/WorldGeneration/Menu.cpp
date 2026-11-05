@@ -145,6 +145,7 @@ void Menu::generateNewIslandMenu(std::string name) {
             (*map).GenerateFourIslandMap();
             (*map).name = name;
             (*map).save();
+            (*map).saveMiniMap();
             delete map;
             ChunkedMap playMap = ChunkedMap(size, size, name);
             Player newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
@@ -158,6 +159,7 @@ void Menu::generateNewIslandMenu(std::string name) {
             (*map).GenerateOneIslandMap();
             (*map).name = name;
             (*map).save();
+            (*map).saveMiniMap();
             delete map;
             ChunkedMap playMap = ChunkedMap(size, size, name);
             Player newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
@@ -171,6 +173,7 @@ void Menu::generateNewIslandMenu(std::string name) {
             (*pmap).GenerateFourIslandMap();
             (*pmap).name = name;
             (*pmap).parallelSave();
+            (*pmap).saveMiniMap();
             delete pmap;
             ChunkedMap playMap = ChunkedMap(size, size, name);
             ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
@@ -185,6 +188,7 @@ void Menu::generateNewIslandMenu(std::string name) {
             (*pmap).GenerateOneIslandMap();
             (*pmap).name = name;
             (*pmap).parallelSave();
+            (*pmap).saveMiniMap();
             delete pmap;
             ChunkedMap playMap = ChunkedMap(size, size, name);
             ParallelPlayer newPlayer(Coordinate(size / 2, size / 2), playMap, 20);
@@ -198,6 +202,7 @@ void Menu::generateNewIslandMenu(std::string name) {
             (*pmap).GenerateNIslandMap(7, 0, size, 0, size);
             (*pmap).name = name;
             (*pmap).parallelSave();
+            (*pmap).saveMiniMap();
             if(size < 1000)
                 std::cout << (*pmap);
             delete pmap;

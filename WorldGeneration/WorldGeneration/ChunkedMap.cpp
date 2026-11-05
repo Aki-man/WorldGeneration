@@ -175,7 +175,24 @@ char ChunkedMap::getChunkMajorityTile(Coordinate chunkID)
 
 void ChunkedMap::printLarge(Coordinate currentCoordinate)
 {
-	int numberOfChunks = this->width / this->chunkSize;
+	std::string fileName = "data/saves/" + this->name + "/saveMinimap.txt";
+	std::ifstream file(fileName, std::ios::out | std::ios::binary);
+	int minimapChunkSize = this->length / 20;
+	Coordinate playerTile = Coordinate(currentCoordinate.x / minimapChunkSize, currentCoordinate.y / minimapChunkSize);
+	TileColorMap colors = TileColorMap();
+	for (int i = 0; i < 20; i++) {
+		for (int j = 0; j < 20; j++) {
+			char tile = '/';
+			if (playerTile.x == j && playerTile.y == i)
+				tile = '*';
+			else
+				file >> tile;
+			std::cout << colors.get(tile);
+			std::cout << tile;
+		}
+		std::cout << std::endl;
+	}
+	/*int numberOfChunks = this->width / this->chunkSize;
 	TileColorMap colors = TileColorMap();
 	for (int i = 0; i < numberOfChunks; i++) {
 		for (int j = 0; j < numberOfChunks; j++) {
@@ -189,5 +206,5 @@ void ChunkedMap::printLarge(Coordinate currentCoordinate)
 			std::cout << temp;
 		}
 		std::cout << std::endl;
-	}
+	}*/
 }

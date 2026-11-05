@@ -202,4 +202,7 @@ void ChunkedMap::printLarge(Coordinate currentCoordinate)
 		std::cout << std::endl;
 	}
 	file.close();
+
+	std::cout << "Total map size: " << this->length << "x" << this->width << std::endl;
+	std::cout << "Minimap tile size: " << minimapChunkSize << "x" << minimapChunkSize << std::endl;
 }

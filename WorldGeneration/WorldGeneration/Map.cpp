@@ -320,20 +320,9 @@ void WorldMap::saveMiniMap()
 
 	for (int i = 0; i < MINIMAP_WIDTH; ++i) {
 		for (int l = 0; l < MINIMAP_WIDTH; ++l) {
-			char data = minimap[i * MINIMAP_WIDTH + l];
-			//std::string data = tile + " ";
-			file << data << " ";
-		}
-		//file << "\n";
-	}
-	file.close();
-	
-	/*for (int i = 0; i < MINIMAP_WIDTH; ++i) {
-		for (int l = 0; l < MINIMAP_WIDTH; ++l) {
 			char newTile = minimap[i * MINIMAP_WIDTH + l];
 			if (newTile != currentTile) {
-				std::string data = currentCount + " " + currentTile;
-				file << data;
+				file << currentCount << " " << currentTile << " ";
 				currentCount = 1;
 				currentTile = newTile;
 			}
@@ -341,7 +330,8 @@ void WorldMap::saveMiniMap()
 				currentCount++;
 			}
 		}
-	}*/
+	}
+	file.close();
 }
 
 

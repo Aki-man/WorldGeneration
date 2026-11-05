@@ -180,31 +180,26 @@ void ChunkedMap::printLarge(Coordinate currentCoordinate)
 	int minimapChunkSize = this->length / 20;
 	Coordinate playerTile = Coordinate(currentCoordinate.x / minimapChunkSize, currentCoordinate.y / minimapChunkSize);
 	TileColorMap colors = TileColorMap();
+
+	int numberOfTile = 0;
+	char tile = '/';
+	file >> numberOfTile;
+	file >> tile;
+
 	for (int i = 0; i < 20; i++) {
 		for (int j = 0; j < 20; j++) {
-			char tile = '/';
 			if (playerTile.x == j && playerTile.y == i)
-				tile = '*';
+				std::cout << colors.get('*');
 			else
-				file >> tile;
-			std::cout << colors.get(tile);
+				std::cout << colors.get(tile);
 			std::cout << tile;
+			numberOfTile--;
+			if (numberOfTile == 0) {
+				file >> numberOfTile;
+				file >> tile;
+			}
 		}
 		std::cout << std::endl;
 	}
-	/*int numberOfChunks = this->width / this->chunkSize;
-	TileColorMap colors = TileColorMap();
-	for (int i = 0; i < numberOfChunks; i++) {
-		for (int j = 0; j < numberOfChunks; j++) {
-			char temp = '/';
-			if (this->getChunkId(currentCoordinate) == Coordinate(j, i))
-				temp = '*';
-			else {
-				temp = this->getChunkMajorityTile(Coordinate(j, i));
-			}
-			std::cout << colors.get(temp);
-			std::cout << temp;
-		}
-		std::cout << std::endl;
-	}*/
+	file.close();
 }
